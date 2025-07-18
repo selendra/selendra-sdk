@@ -1,0 +1,54 @@
+# Source files
+src/
+tests/
+scripts/
+examples/
+
+# Configuration files
+.env
+.env.local
+.env.example
+tsconfig.json
+rollup.config.js
+jest.config.js
+.eslintrc.js
+.prettierrc
+
+# Build artifacts
+coverage/
+*.tsbuildinfo
+.nyc_output
+
+# Development files
+.vscode/
+.idea/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Git
+.git/
+.gitignore
+.gitattributes
+
+# GitHub
+.github/
+
+# Documentation (except README)
+docs/
+CONTRIBUTING.md
+PUBLISHING_GUIDE.md
+CHANGELOG.md
+
+# Testing
+test-import.js
+*.test.js
+*.spec.js
+
+# Node modules
+node_modules/
+
+# OS files
+.DS_Store
+Thumbs.db
