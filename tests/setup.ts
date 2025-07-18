@@ -2,7 +2,7 @@ import 'dotenv/config';
 
 // Extend global types for testing
 declare global {
-  var mockProvider: any;
+  let mockProvider: any;
   interface Window {
     ethereum: any;
   }

@@ -1,6 +1,6 @@
 import { ethers } from 'ethers';
 import { EVMProvider } from './provider';
-import { ContractCallOptions, ContractMetadata } from '../types';
+import { ContractCallOptions } from '../types';
 
 export class EVMContract {
   private contract: ethers.Contract;
