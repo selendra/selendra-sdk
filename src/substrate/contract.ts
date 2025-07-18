@@ -1,4 +1,5 @@
-import { ApiPromise } from '@polkadot/api';
+// ApiPromise available for future substrate contract integrations
+// import { ApiPromise } from '@polkadot/api';
 import { ContractPromise } from '@polkadot/api-contract';
 import { Abi } from '@polkadot/api-contract';
 import { SubstrateAPI } from './api';
@@ -103,7 +104,8 @@ export class SubstrateContract {
     }
 
     try {
-      const { gasConsumed, gasRequired } = await this.contract.query[methodName](
+      const { gasRequired } = await this.contract.query[methodName](
+        // gasConsumed available in result for gas optimization
         options.caller || '',
         {
           gasLimit: -1,

@@ -11,15 +11,16 @@ const mockMetaMaskProvider = {
   chainId: '0x539'
 };
 
-const mockWalletConnectProvider = {
-  request: jest.fn(),
-  on: jest.fn(),
-  removeListener: jest.fn(),
-  accounts: [TEST_CONFIG.ACCOUNT_ADDRESS],
-  chainId: 1337,
-  connect: jest.fn().mockResolvedValue(undefined),
-  disconnect: jest.fn().mockResolvedValue(undefined)
-};
+// Mock WalletConnect provider (available for future WalletConnect integration tests)
+// const mockWalletConnectProvider = {
+//   request: jest.fn(),
+//   on: jest.fn(),
+//   removeListener: jest.fn(),
+//   accounts: [TEST_CONFIG.ACCOUNT_ADDRESS],
+//   chainId: 1337,
+//   connect: jest.fn().mockResolvedValue(undefined),
+//   disconnect: jest.fn().mockResolvedValue(undefined)
+// };
 
 // Mock window.ethereum
 Object.defineProperty(window, 'ethereum', {

@@ -1,17 +1,25 @@
 import { ethers } from 'ethers';
 import { EVMProvider } from './provider';
 import { ContractCallOptions } from '../types';
+import {
+  // ContractInterface, // Available for future use
+  LogDescription,
+  EventFilter,
+  Address,
+  HexString,
+  BlockNumber
+} from '../types/blockchain';
 
 export class EVMContract {
   private contract: ethers.Contract;
   private provider: EVMProvider;
-  private address: string;
-  private abi: any[];
+  private address: Address;
+  private abi: unknown[];
 
   constructor(
     provider: EVMProvider,
-    address: string,
-    abi: any[],
+    address: Address,
+    abi: unknown[],
     signer?: ethers.Signer
   ) {
     this.provider = provider;
@@ -25,7 +33,7 @@ export class EVMContract {
   /**
    * Call a read-only contract method
    */
-  async read(methodName: string, params: any[] = []): Promise<any> {
+  async read(methodName: string, params: unknown[] = []): Promise<unknown> {
     try {
       const result = await this.contract[methodName](...params);
       return result;
@@ -39,9 +47,9 @@ export class EVMContract {
    */
   async write(
     methodName: string,
-    params: any[] = [],
+    params: unknown[] = [],
     options?: ContractCallOptions
-  ): Promise<string> {
+  ): Promise<HexString> {
     try {
       const signer = this.provider.getSigner();
       if (!signer) {
@@ -51,7 +59,7 @@ export class EVMContract {
       const contractWithSigner = this.contract.connect(signer);
       
       // Prepare transaction options
-      const txOptions: any = {};
+      const txOptions: Record<string, unknown> = {};
       if (options?.gasLimit) txOptions.gasLimit = options.gasLimit;
       if (options?.gasPrice) txOptions.gasPrice = options.gasPrice;
       if (options?.maxFeePerGas) txOptions.maxFeePerGas = options.maxFeePerGas;
@@ -79,9 +87,9 @@ export class EVMContract {
   /**
    * Estimate gas for a contract method call
    */
-  async estimateGas(methodName: string, params: any[] = [], options?: ContractCallOptions): Promise<string> {
+  async estimateGas(methodName: string, params: unknown[] = [], options?: ContractCallOptions): Promise<string> {
     try {
-      const txOptions: any = {};
+      const txOptions: Record<string, unknown> = {};
       if (options?.value) txOptions.value = options.value;
       if (options?.from) txOptions.from = options.from;
 
@@ -97,10 +105,10 @@ export class EVMContract {
    */
   async getEvents(
     eventName: string,
-    filter?: any,
-    fromBlock?: number,
-    toBlock?: number
-  ): Promise<any[]> {
+    filter?: EventFilter,
+    fromBlock?: BlockNumber,
+    toBlock?: BlockNumber
+  ): Promise<ethers.EventLog[]> {
     try {
       const events = await this.contract.queryFilter(
         this.contract.filters[eventName](filter),
@@ -116,14 +124,14 @@ export class EVMContract {
   /**
    * Listen to contract events
    */
-  on(eventName: string, callback: (...args: any[]) => void): void {
+  on(eventName: string, callback: (...args: unknown[]) => void): void {
     this.contract.on(eventName, callback);
   }
 
   /**
    * Remove event listener
    */
-  off(eventName: string, callback?: (...args: any[]) => void): void {
+  off(eventName: string, callback?: (...args: unknown[]) => void): void {
     if (callback) {
       this.contract.off(eventName, callback);
     } else {
@@ -134,14 +142,14 @@ export class EVMContract {
   /**
    * Get contract address
    */
-  getAddress(): string {
+  getAddress(): Address {
     return this.address;
   }
 
   /**
    * Get contract ABI
    */
-  getABI(): any[] {
+  getABI(): unknown[] {
     return this.abi;
   }
 
@@ -155,21 +163,21 @@ export class EVMContract {
   /**
    * Encode function data
    */
-  encodeFunctionData(methodName: string, params: any[] = []): string {
+  encodeFunctionData(methodName: string, params: unknown[] = []): HexString {
     return this.contract.interface.encodeFunctionData(methodName, params);
   }
 
   /**
    * Decode function result
    */
-  decodeFunctionResult(methodName: string, data: string): any {
+  decodeFunctionResult(methodName: string, data: HexString): unknown {
     return this.contract.interface.decodeFunctionResult(methodName, data);
   }
 
   /**
    * Parse transaction logs
    */
-  parseLog(log: any): any {
+  parseLog(log: ethers.Log): LogDescription | null {
     try {
       return this.contract.interface.parseLog(log);
     } catch (error) {
@@ -182,7 +190,7 @@ export class EVMContract {
  * ERC-20 Token Contract Helper
  */
 export class ERC20Contract extends EVMContract {
-  constructor(provider: EVMProvider, address: string, signer?: ethers.Signer) {
+  constructor(provider: EVMProvider, address: Address, signer?: ethers.Signer) {
     const ERC20_ABI = [
       'function name() view returns (string)',
       'function symbol() view returns (string)',
@@ -216,28 +224,28 @@ export class ERC20Contract extends EVMContract {
     return (await this.read('totalSupply')).toString();
   }
 
-  async balanceOf(address: string): Promise<string> {
+  async balanceOf(address: Address): Promise<string> {
     return (await this.read('balanceOf', [address])).toString();
   }
 
-  async allowance(owner: string, spender: string): Promise<string> {
+  async allowance(owner: Address, spender: Address): Promise<string> {
     return (await this.read('allowance', [owner, spender])).toString();
   }
 
-  async transfer(to: string, amount: string, options?: ContractCallOptions): Promise<string> {
+  async transfer(to: Address, amount: string, options?: ContractCallOptions): Promise<HexString> {
     return await this.write('transfer', [to, amount], options);
   }
 
-  async approve(spender: string, amount: string, options?: ContractCallOptions): Promise<string> {
+  async approve(spender: Address, amount: string, options?: ContractCallOptions): Promise<HexString> {
     return await this.write('approve', [spender, amount], options);
   }
 
   async transferFrom(
-    from: string,
-    to: string,
+    from: Address,
+    to: Address,
     amount: string,
     options?: ContractCallOptions
-  ): Promise<string> {
+  ): Promise<HexString> {
     return await this.write('transferFrom', [from, to, amount], options);
   }
 }
@@ -253,11 +261,11 @@ export class ContractFactory {
   }
 
   async deploy(
-    abi: any[],
-    bytecode: string,
-    constructorArgs: any[] = [],
+    abi: unknown[],
+    bytecode: HexString,
+    constructorArgs: unknown[] = [],
     options?: ContractCallOptions
-  ): Promise<{ address: string; hash: string }> {
+  ): Promise<{ address: Address; hash: HexString }> {
     const signer = this.provider.getSigner();
     if (!signer) {
       throw new Error('Wallet not connected');
@@ -266,7 +274,7 @@ export class ContractFactory {
     try {
       const factory = new ethers.ContractFactory(abi, bytecode, signer);
       
-      const deployOptions: any = {};
+      const deployOptions: Record<string, unknown> = {};
       if (options?.gasLimit) deployOptions.gasLimit = options.gasLimit;
       if (options?.gasPrice) deployOptions.gasPrice = options.gasPrice;
       if (options?.value) deployOptions.value = options.value;

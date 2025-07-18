@@ -1,5 +1,12 @@
 import { ethers } from 'ethers';
 import { NetworkConfig, TransactionOptions, GasPriceInfo } from '../types';
+import {
+  EthereumProvider,
+  TransactionRequest,
+  Address,
+  HexString,
+  BlockNumber
+} from '../types/blockchain';
 import { GAS_PRICE_LEVELS } from '../config/networks';
 
 export class EVMProvider {
@@ -20,7 +27,7 @@ export class EVMProvider {
   /**
    * Connect to wallet (MetaMask, WalletConnect, etc.)
    */
-  async connect(provider?: any): Promise<string> {
+  async connect(provider?: EthereumProvider): Promise<string> {
     if (provider) {
       this.provider = new ethers.BrowserProvider(provider);
     } else if (typeof window !== 'undefined' && window.ethereum) {
@@ -53,7 +60,7 @@ export class EVMProvider {
   /**
    * Get account balance
    */
-  async getBalance(address?: string): Promise<string> {
+  async getBalance(address?: Address): Promise<string> {
     const targetAddress = address || await this.getAccount();
     const balance = await this.provider.getBalance(targetAddress);
     return balance.toString();
@@ -62,7 +69,7 @@ export class EVMProvider {
   /**
    * Get transaction count (nonce)
    */
-  async getTransactionCount(address?: string): Promise<number> {
+  async getTransactionCount(address?: Address): Promise<number> {
     const targetAddress = address || await this.getAccount();
     return await this.provider.getTransactionCount(targetAddress);
   }
@@ -93,7 +100,7 @@ export class EVMProvider {
   /**
    * Estimate gas for transaction
    */
-  async estimateGas(transaction: any): Promise<string> {
+  async estimateGas(transaction: TransactionRequest): Promise<string> {
     try {
       const gasEstimate = await this.provider.estimateGas(transaction);
       // Add 20% buffer
@@ -107,7 +114,7 @@ export class EVMProvider {
   /**
    * Send transaction
    */
-  async sendTransaction(transaction: any, options?: TransactionOptions): Promise<string> {
+  async sendTransaction(transaction: TransactionRequest, options?: TransactionOptions): Promise<string> {
     if (!this.signer) {
       throw new Error('Wallet not connected');
     }
@@ -126,21 +133,21 @@ export class EVMProvider {
   /**
    * Wait for transaction confirmation
    */
-  async waitForTransaction(hash: string, confirmations: number = 1): Promise<ethers.TransactionReceipt | null> {
+  async waitForTransaction(hash: HexString, confirmations: number = 1): Promise<ethers.TransactionReceipt | null> {
     return await this.provider.waitForTransaction(hash, confirmations);
   }
 
   /**
    * Get transaction by hash
    */
-  async getTransaction(hash: string): Promise<ethers.TransactionResponse | null> {
+  async getTransaction(hash: HexString): Promise<ethers.TransactionResponse | null> {
     return await this.provider.getTransaction(hash);
   }
 
   /**
    * Get transaction receipt
    */
-  async getTransactionReceipt(hash: string): Promise<ethers.TransactionReceipt | null> {
+  async getTransactionReceipt(hash: HexString): Promise<ethers.TransactionReceipt | null> {
     return await this.provider.getTransactionReceipt(hash);
   }
 
@@ -154,7 +161,7 @@ export class EVMProvider {
   /**
    * Get block by number or hash
    */
-  async getBlock(blockHashOrNumber: string | number): Promise<ethers.Block | null> {
+  async getBlock(blockHashOrNumber: BlockNumber | HexString): Promise<ethers.Block | null> {
     return await this.provider.getBlock(blockHashOrNumber);
   }
 
@@ -178,9 +185,10 @@ export class EVMProvider {
         method: 'wallet_switchEthereumChain',
         params: [{ chainId: `0x${this.networkConfig.chainId.toString(16)}` }]
       });
-    } catch (switchError: any) {
+    } catch (switchError: unknown) {
+      const error = switchError as { code?: number };
       // This error code indicates that the chain has not been added to MetaMask
-      if (switchError.code === 4902) {
+      if (error.code === 4902) {
         await this.addNetwork();
       } else {
         throw switchError;

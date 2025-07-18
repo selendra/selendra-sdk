@@ -232,7 +232,7 @@ export class SubstrateAPI {
    * Get transaction fee estimation
    */
   async estimateFee(extrinsic: any, address?: string): Promise<string> {
-    const api = this.getAPI();
+    // API instance available via this.getAPI() if needed for future enhancements
     const paymentInfo = await extrinsic.paymentInfo(address);
     return paymentInfo.partialFee.toString();
   }

@@ -1,5 +1,20 @@
 import { ethers } from 'ethers';
-import { ApiPromise } from '@polkadot/api';
+import {
+  EthereumProvider,
+  TransactionRequest,
+  TransactionResponse,
+  TransactionReceipt,
+  SubstrateKeyringPair,
+  SubstrateAccount,
+  SubstrateExtrinsic,
+  SubstrateEventRecord,
+  HexString,
+  Address,
+  Hash
+} from './blockchain';
+// ApiPromise and SelendraSDKError types available for advanced integrations
+// import { ApiPromise } from '@polkadot/api';
+// import { SelendraSDKError } from './errors';
 
 export interface NetworkConfig {
   name: string;
@@ -16,8 +31,14 @@ export interface NetworkConfig {
 
 export interface SelendraSDKConfig {
   network: 'mainnet' | 'testnet' | NetworkConfig;
-  provider?: ethers.Provider | any;
+  provider?: ethers.Provider | ethers.Eip1193Provider;
   substrateEndpoint?: string;
+  logLevel?: 'error' | 'warn' | 'info' | 'debug' | 'trace';
+  retryConfig?: {
+    maxAttempts?: number;
+    baseDelay?: number;
+    maxDelay?: number;
+  };
 }
 
 export interface TransactionOptions {
@@ -46,11 +67,11 @@ export interface EVMTransactionResult {
 }
 
 export interface SubstrateTransactionResult {
-  hash: string;
-  blockHash: string;
+  hash: Hash;
+  blockHash: Hash;
   blockNumber: number;
   status: 'success' | 'failed';
-  events: any[];
+  events: SubstrateEventRecord[];
 }
 
 export interface TokenInfo {
@@ -69,24 +90,26 @@ export interface AccountBalance {
 }
 
 export interface ContractMetadata {
-  address: string;
-  abi?: any[];
+  address: Address;
+  abi?: unknown[];
   bytecode?: string;
-  metadata?: any;
+  metadata?: Record<string, unknown>;
 }
 
 export interface WalletConnection {
-  address: string;
+  address: Address;
   chainId: number;
   connected: boolean;
-  provider: any;
+  provider: EthereumProvider | SubstrateKeyringPair | ethers.Provider | ethers.Eip1193Provider;
+  walletType: 'metamask' | 'walletconnect' | 'polkadotjs' | 'custom';
 }
 
-export interface EventSubscription {
+export interface EventSubscription<T = unknown> {
   id: string;
   active: boolean;
-  callback: (data: any) => void;
-  unsubscribe: () => void;
+  callback: (data: T) => void;
+  unsubscribe: () => Promise<void>;
+  isActive: () => boolean;
 }
 
 export interface NetworkStats {

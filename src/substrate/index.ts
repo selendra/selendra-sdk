@@ -57,7 +57,7 @@ export class Substrate {
   /**
    * Get formatted balance
    */
-  async getFormattedBalance(address: string, decimals: number = 4): Promise<string> {
+  async getFormattedBalance(address: string, _precision: number = 4): Promise<string> {
     const balance = await this.getBalance(address);
     return FormatUtils.formatUnits(balance, this.networkConfig.currency.decimals);
   }

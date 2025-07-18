@@ -143,13 +143,13 @@ export class WalletConnectProvider implements WalletProvider {
   private connector: any;
   private networkConfig: NetworkConfig;
 
-  constructor(networkConfig: NetworkConfig, projectId: string) {
+  constructor(networkConfig: NetworkConfig, _projectId: string) {
     this.networkConfig = networkConfig;
     // Initialize WalletConnect (would need actual WalletConnect v2 SDK)
-    this.initializeConnector(projectId);
+    this.initializeConnector(_projectId);
   }
 
-  private initializeConnector(projectId: string): void {
+  private initializeConnector(_projectId: string): void {
     // This would use the actual WalletConnect SDK
     // For now, this is a placeholder implementation
   }
@@ -189,7 +189,7 @@ export class WalletConnectProvider implements WalletProvider {
     return this.connector?.accounts || [];
   }
 
-  async signMessage(message: string): Promise<string> {
+  async signMessage(_message: string): Promise<string> {
     if (!this.connector) {
       throw new Error('WalletConnect not connected');
     }
@@ -198,7 +198,7 @@ export class WalletConnectProvider implements WalletProvider {
     throw new Error('Not implemented');
   }
 
-  async signTransaction(transaction: any): Promise<any> {
+  async signTransaction(_transaction: any): Promise<any> {
     if (!this.connector) {
       throw new Error('WalletConnect not connected');
     }
