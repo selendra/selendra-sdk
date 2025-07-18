@@ -1,6 +1,6 @@
 {
   "name": "@selendrajs/sdk",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Official TypeScript SDK for interacting with Selendra Network - supporting both EVM and WebAssembly (Substrate) interactions",
   "main": "dist/index.js",
   "module": "dist/index.esm.js",
