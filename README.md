@@ -15,7 +15,7 @@ Official TypeScript SDK for interacting with Selendra Network, supporting both E
 ## Installation
 
 ```bash
-npm install @selendra/sdk
+npm install @selendrajs/sdk
 ```
 
 ## Quick Start
@@ -23,7 +23,7 @@ npm install @selendra/sdk
 ### EVM Interactions
 
 ```typescript
-import { SelendraSDK } from '@selendra/sdk';
+import { SelendraSDK } from '@selendrajs/sdk';
 
 // Initialize SDK
 const sdk = new SelendraSDK({

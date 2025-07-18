@@ -1,4 +1,4 @@
-const { SelendraSDK } = require('../dist/index.js');
+const { SelendraSDK } = require('@selendrajs/sdk');
 
 async function main() {
   console.log('🚀 Selendra SDK Basic Usage Example');

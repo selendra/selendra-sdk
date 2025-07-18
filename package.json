@@ -1,5 +1,5 @@
 {
-  "name": "@selendra/sdk",
+  "name": "@selendrajs/sdk",
   "version": "1.0.0",
   "description": "Official TypeScript SDK for interacting with Selendra Network - supporting both EVM and WebAssembly (Substrate) interactions",
   "main": "dist/index.js",
@@ -82,5 +82,8 @@
   },
   "engines": {
     "node": ">=16.0.0"
+  },
+  "publishConfig": {
+    "access": "public"
   }
 }

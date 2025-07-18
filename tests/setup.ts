@@ -1,15 +1,32 @@
 import 'dotenv/config';
 
+// Extend global types for testing
+declare global {
+  var mockProvider: any;
+  interface Window {
+    ethereum: any;
+  }
+}
+
 // Mock Web3 provider for testing
-global.mockProvider = {
+(global as any).mockProvider = {
   request: jest.fn(),
   on: jest.fn(),
   removeListener: jest.fn(),
 };
 
 // Mock window.ethereum for browser environment tests
-Object.defineProperty(window, 'ethereum', {
-  value: global.mockProvider,
+Object.defineProperty(global, 'window', {
+  value: {
+    ethereum: (global as any).mockProvider,
+  },
+  writable: true,
+});
+
+Object.defineProperty(global, 'navigator', {
+  value: {
+    userAgent: 'test',
+  },
   writable: true,
 });
 

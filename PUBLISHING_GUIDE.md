@@ -131,7 +131,7 @@ Ensure `package.json` is properly configured:
 
 ```json
 {
-  "name": "@selendra/sdk",
+  "name": "@selendrajs/sdk",
   "version": "1.0.0",
   "description": "Official TypeScript SDK for Selendra Network",
   "main": "dist/index.js",
@@ -160,13 +160,13 @@ Official TypeScript SDK for interacting with Selendra Network.
 ## Installation
 
 ```bash
-npm install @selendra/sdk
+npm install @selendrajs/sdk
 ```
 
 ## Quick Start
 
 ```typescript
-import { SelendraSDK } from '@selendra/sdk';
+import { SelendraSDK } from '@selendrajs/sdk';
 
 const sdk = new SelendraSDK({
   rpcUrl: 'https://rpc-testnet.selendra.org',
@@ -252,17 +252,17 @@ npm publish --tag next
 
 1. Check the package on npm:
    ```bash
-   npm view @selendra/sdk
+   npm view @selendrajs/sdk
    ```
 
 2. Test installation:
    ```bash
-   npm install @selendra/sdk
+   npm install @selendrajs/sdk
    ```
 
 3. Verify in a test project:
    ```typescript
-   import { SelendraSDK } from '@selendra/sdk';
+   import { SelendraSDK } from '@selendrajs/sdk';
    console.log(SelendraSDK);
    ```
 
@@ -464,19 +464,19 @@ npx bundlesize
 
 ```bash
 # Package information
-npm view @selendra/sdk
+npm view @selendrajs/sdk
 
 # Download statistics
-npm view @selendra/sdk --json
+npm view @selendrajs/sdk --json
 
 # Check what files will be published
 npm pack --dry-run
 
 # Unpublish a version (within 72 hours)
-npm unpublish @selendra/sdk@1.0.0
+npm unpublish @selendrajs/sdk@1.0.0
 
 # Deprecate a version
-npm deprecate @selendra/sdk@1.0.0 "This version has been deprecated"
+npm deprecate @selendrajs/sdk@1.0.0 "This version has been deprecated"
 ```
 
 ## Support
