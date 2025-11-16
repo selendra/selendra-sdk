@@ -1,0 +1,55 @@
+src/evm/examples/usage.ts(143,48): error TS2345: Argument of type 'unknown' is not assignable to parameter of type 'string | bigint'.
+src/evm/examples/usage.ts(147,77): error TS2345: Argument of type 'unknown' is not assignable to parameter of type 'string'.
+src/index.ts(13,23): error TS2614: Module '"./sdk"' has no exported member 'Network'. Did you mean to use 'import Network from "./sdk"' instead?
+src/index.ts(13,53): error TS2614: Module '"./sdk"' has no exported member 'SDKConfig'. Did you mean to use 'import SDKConfig from "./sdk"' instead?
+src/index.ts(19,1): error TS2308: Module './types' has already exported a member named 'EventSubscription'. Consider explicitly re-exporting to resolve the ambiguity.
+src/index.ts(19,1): error TS2308: Module './types' has already exported a member named 'TransactionStatus'. Consider explicitly re-exporting to resolve the ambiguity.
+src/index.ts(19,1): error TS2308: Module './types' has already exported a member named 'TypedDataDomain'. Consider explicitly re-exporting to resolve the ambiguity.
+src/index.ts(19,1): error TS2308: Module './types' has already exported a member named 'TypedDataField'. Consider explicitly re-exporting to resolve the ambiguity.
+src/react/components.tsx(25,23): error TS2614: Module '"../sdk"' has no exported member 'ChainType'. Did you mean to use 'import ChainType from "../sdk"' instead?
+src/react/components.tsx(354,10): error TS2339: Property 'state' does not exist on type 'ErrorBoundary'.
+src/react/components.tsx(362,10): error TS2339: Property 'setState' does not exist on type 'ErrorBoundary'.
+src/react/components.tsx(363,10): error TS2339: Property 'props' does not exist on type 'ErrorBoundary'.
+src/react/components.tsx(367,14): error TS2339: Property 'state' does not exist on type 'ErrorBoundary'.
+src/react/components.tsx(367,37): error TS2339: Property 'state' does not exist on type 'ErrorBoundary'.
+src/react/components.tsx(368,38): error TS2339: Property 'props' does not exist on type 'ErrorBoundary'.
+src/react/components.tsx(369,45): error TS2339: Property 'state' does not exist on type 'ErrorBoundary'.
+src/react/components.tsx(369,76): error TS2339: Property 'setState' does not exist on type 'ErrorBoundary'.
+src/react/components.tsx(372,17): error TS2339: Property 'props' does not exist on type 'ErrorBoundary'.
+src/react/components.tsx(933,26): error TS2339: Property 'address' does not exist on type 'BalanceInfo'.
+src/react/components.tsx(933,62): error TS2339: Property 'address' does not exist on type 'BalanceInfo'.
+src/react/components.tsx(942,34): error TS2339: Property 'balance' does not exist on type 'BalanceInfo'.
+src/react/index.ts(30,23): error TS2614: Module '"../sdk"' has no exported member 'Network'. Did you mean to use 'import Network from "../sdk"' instead?
+src/react/index.ts(30,32): error TS2614: Module '"../sdk"' has no exported member 'ChainType'. Did you mean to use 'import ChainType from "../sdk"' instead?
+src/react/index.ts(31,15): error TS2614: Module '"../sdk"' has no exported member 'SDKConfig'. Did you mean to use 'import SDKConfig from "../sdk"' instead?
+src/react/provider.tsx(103,10): error TS2339: Property 'state' does not exist on type 'SelendraErrorBoundary'.
+src/react/provider.tsx(115,14): error TS2339: Property 'state' does not exist on type 'SelendraErrorBoundary'.
+src/react/provider.tsx(115,37): error TS2339: Property 'state' does not exist on type 'SelendraErrorBoundary'.
+src/react/provider.tsx(116,38): error TS2339: Property 'props' does not exist on type 'SelendraErrorBoundary'.
+src/react/provider.tsx(117,45): error TS2339: Property 'state' does not exist on type 'SelendraErrorBoundary'.
+src/react/provider.tsx(117,70): error TS2339: Property 'props' does not exist on type 'SelendraErrorBoundary'.
+src/react/provider.tsx(120,17): error TS2339: Property 'props' does not exist on type 'SelendraErrorBoundary'.
+src/react/provider.tsx(361,6): error TS2741: Property 'children' is missing in type '{ fallback: any; onRetry: any; }' but required in type 'ErrorBoundaryProps'.
+src/react/utils.ts(49,32): error TS2339: Property 'balance' does not exist on type 'BalanceInfo'.
+src/react/utils.ts(71,47): error TS2339: Property 'usdValue' does not exist on type 'BalanceInfo'.
+src/react/utils.ts(241,10): error TS2678: Type '"unified"' is not comparable to type 'ChainType'.
+src/react/utils.ts(296,39): error TS2339: Property 'balance' does not exist on type 'BalanceInfo'.
+src/react/utils.ts(528,19): error TS2339: Property 'currentBlockNumber' does not exist on type 'TransactionInfo'.
+src/react/utils.ts(529,44): error TS2339: Property 'currentBlockNumber' does not exist on type 'TransactionInfo'.
+src/sdk/evm.ts(8,3): error TS2305: Module '"../types"' has no exported member 'Balance'.
+src/sdk/evm.ts(146,9): error TS4104: The type 'readonly Log[]' is 'readonly' and cannot be assigned to the mutable type 'any[]'.
+src/sdk/evm.ts(183,9): error TS4104: The type 'readonly Log[]' is 'readonly' and cannot be assigned to the mutable type 'any[]'.
+src/sdk/evm.ts(219,42): error TS2339: Property 'hash' does not exist on type 'never'.
+src/sdk/evm.ts(301,7): error TS2322: Type 'TransactionResponse' is not assignable to type 'string'.
+src/sdk/index.ts(10,3): error TS2395: Individual declarations in merged declaration 'Network' must be all exported or all local.
+src/sdk/index.ts(10,3): error TS2440: Import declaration conflicts with local declaration of 'Network'.
+src/sdk/index.ts(13,3): error TS2305: Module '"../types"' has no exported member 'Balance'.
+src/sdk/index.ts(24,10): error TS2484: Export declaration conflicts with exported declaration of 'Network'.
+src/sdk/index.ts(346,13): error TS2395: Individual declarations in merged declaration 'Network' must be all exported or all local.
+src/sdk/unified.ts(7,3): error TS2305: Module '"../types"' has no exported member 'Balance'.
+src/types/hash.ts(288,26): error TS2352: Conversion of type 'Promise<string>' to type 'string' may be a mistake because neither type sufficiently overlaps with the other. If this was intentional, convert the expression to 'unknown' first.
+src/types/hash.ts(358,21): error TS2352: Conversion of type 'Promise<string>' to type 'string' may be a mistake because neither type sufficiently overlaps with the other. If this was intentional, convert the expression to 'unknown' first.
+src/types/signature.ts(138,18): error TS2430: Interface 'TypedDataSignature' incorrectly extends interface 'Signature'.
+  Types of property 'message' are incompatible.
+    Type 'Record<string, unknown>' is not assignable to type 'string | Uint8Array<ArrayBufferLike>'.
+      Type 'Record<string, unknown>' is missing the following properties from type 'Uint8Array<ArrayBufferLike>': BYTES_PER_ELEMENT, buffer, byteLength, byteOffset, and 26 more.

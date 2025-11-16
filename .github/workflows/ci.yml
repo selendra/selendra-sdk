@@ -1,0 +1,222 @@
+name: CI
+
+on:
+  push:
+    branches: [ main, master, develop ]
+  pull_request:
+    branches: [ main, master, develop ]
+
+env:
+  CARGO_TERM_COLOR: always
+  RUST_BACKTRACE: 1
+
+jobs:
+  # Rust CI Job
+  rust:
+    name: Rust
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        rust:
+          - stable
+          - beta
+          - nightly
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Install Rust
+      uses: dtolnay/rust-toolchain@master
+      with:
+        toolchain: ${{ matrix.rust }}
+        components: rustfmt, clippy
+
+    - name: Cache Cargo dependencies
+      uses: actions/cache@v3
+      with:
+        path: |
+          ~/.cargo/registry
+          ~/.cargo/git
+          rust/target
+        key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
+        restore-keys: |
+          ${{ runner.os }}-cargo-
+
+    - name: Check formatting
+      run: cargo fmt --all -- --check
+
+    - name: Run clippy
+      run: cargo clippy --all-targets --all-features -- -D warnings
+
+    - name: Build
+      run: cargo build --verbose --all-features
+
+    - name: Run tests
+      run: cargo test --verbose --all-features
+
+    - name: Run doc tests
+      run: cargo test --doc --all-features
+
+  # TypeScript CI Job
+  typescript:
+    name: TypeScript
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [18.x, 20.x]
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Setup Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v4
+      with:
+        node-version: ${{ matrix.node-version }}
+        cache: 'npm'
+        cache-dependency-path: typescript/package-lock.json
+
+    - name: Install dependencies
+      working-directory: ./typescript
+      run: npm ci
+
+    - name: Run type checking
+      working-directory: ./typescript
+      run: npm run build
+
+    - name: Run linting
+      working-directory: ./typescript
+      run: npm run lint
+
+    - name: Check formatting
+      working-directory: ./typescript
+      run: npm run format:check
+
+    - name: Run tests
+      working-directory: ./typescript
+      run: npm run test:coverage
+
+    - name: Upload coverage to Codecov
+      uses: codecov/codecov-action@v3
+      with:
+        file: ./typescript/coverage/lcov.info
+        flags: typescript
+        name: codecov-typescript
+        fail_ci_if_error: false
+
+  # Integration tests
+  integration:
+    name: Integration Tests
+    runs-on: ubuntu-latest
+    needs: [rust, typescript]
+
+    services:
+      polkadot:
+        image: parity/polkadot:latest
+        ports:
+          - 9944:9944
+        options: --name polkadot-node
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '20.x'
+        cache: 'npm'
+        cache-dependency-path: typescript/package-lock.json
+
+    - name: Install Rust
+      uses: dtolnay/rust-toolchain@stable
+
+    - name: Install TypeScript dependencies
+      working-directory: ./typescript
+      run: npm ci
+
+    - name: Wait for node to start
+      run: |
+        timeout 60 bash -c 'until curl -f http://localhost:9944/health; do sleep 2; done'
+
+    - name: Run Rust integration tests
+      working-directory: ./rust
+      run: cargo test --test integration --features std
+
+    - name: Run TypeScript integration tests
+      working-directory: ./typescript
+      run: npm run test:integration
+      env:
+        NODE_ENDPOINT: ws://localhost:9944
+
+  # Security audit
+  security:
+    name: Security Audit
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Rust security audit
+      uses: actions-rs/audit-check@v1
+      with:
+        token: ${{ secrets.GITHUB_TOKEN }}
+
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '20.x'
+        cache: 'npm'
+        cache-dependency-path: typescript/package-lock.json
+
+    - name: Install TypeScript dependencies
+      working-directory: ./typescript
+      run: npm ci
+
+    - name: Run npm audit
+      working-directory: ./typescript
+      run: npm audit --audit-level=moderate
+
+  # Build documentation
+  docs:
+    name: Documentation
+    runs-on: ubuntu-latest
+    needs: [rust, typescript]
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Install Rust
+      uses: dtolnay/rust-toolchain@stable
+      with:
+        components: rust-docs
+
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '20.x'
+        cache: 'npm'
+        cache-dependency-path: typescript/package-lock.json
+
+    - name: Install TypeScript dependencies
+      working-directory: ./typescript
+      run: npm ci
+
+    - name: Build Rust documentation
+      working-directory: ./rust
+      run: cargo doc --all-features --no-deps
+
+    - name: Build TypeScript documentation
+      working-directory: ./typescript
+      run: npm run build && npm run docs
+
+    - name: Upload documentation artifacts
+      uses: actions/upload-artifact@v3
+      with:
+        name: documentation
+        path: |
+          rust/target/doc
+          typescript/docs

@@ -1,0 +1,18 @@
+# Development Prometheus configuration for Selendra
+global:
+  scrape_interval: 10s
+  evaluation_interval: 10s
+
+scrape_configs:
+  # Prometheus itself
+  - job_name: 'prometheus'
+    static_configs:
+      - targets: ['localhost:9090']
+
+  # Selendra development node metrics
+  - job_name: 'selendra-dev'
+    static_configs:
+      - targets: ['selendra:9615']
+    scrape_interval: 5s
+    metrics_path: /metrics
+    scheme: http

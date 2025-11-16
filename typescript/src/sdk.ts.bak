@@ -1,0 +1,415 @@
+/**
+ * Selendra SDK - Main Class
+ *
+ * Comprehensive SDK for interacting with the Selendra blockchain.
+ * Supports both Substrate and EVM chains with unified interface.
+ *
+ * @author Selendra Team <team@selendra.org>
+ * @license Apache-2.0
+ * @version 0.1.0
+ */
+
+import { ApiPromise, WsProvider } from '@polkadot/api';
+import { Keyring } from '@polkadot/keyring';
+import { u8aToHex, hexToU8a } from '@polkadot/util';
+import { blake2AsHex } from '@polkadot/util-crypto';
+import { EventEmitter } from 'eventemitter3';
+
+import {
+  Network,
+  ChainType,
+  type SDKConfig,
+  type ConnectionInfo,
+  type AccountInfo,
+  type BalanceInfo,
+  type TransactionInfo,
+  type ContractInfo,
+  type BlockInfo,
+  type EventSubscription,
+  type SelendraError
+} from './types';
+
+import { SelendraEvmClient } from './evm';
+
+/**
+ * Main Selendra SDK class
+ */
+export class SelendraSDK extends EventEmitter {
+  private api: ApiPromise | null = null;
+  private evmClient: SelendraEvmClient | null = null;
+  private config: SDKConfig;
+  private isConnecting = false;
+  private isConnected = false;
+
+  constructor(config: SDKConfig = {}) {
+    super();
+    this.config = {
+      endpoint: 'wss://rpc.selendra.org',
+      network: Network.Selendra,
+      chainType: ChainType.Substrate,
+      timeout: 30000,
+      retryAttempts: 3,
+      retryDelay: 1000,
+      ...config
+    };
+  }
+
+  /**
+   * Connect to the blockchain
+   */
+  async connect(): Promise<void> {
+    if (this.isConnecting || this.isConnected) {
+      return;
+    }
+
+    this.isConnecting = true;
+    this.emit('connecting');
+
+    try {
+      if (this.config.chainType === ChainType.EVM) {
+        await this.connectEVM();
+      } else {
+        await this.connectSubstrate();
+      }
+
+      this.isConnected = true;
+      this.emit('connected');
+    } catch (error) {
+      this.emit('error', error);
+      throw error;
+    } finally {
+      this.isConnecting = false;
+    }
+  }
+
+  /**
+   * Disconnect from the blockchain
+   */
+  async disconnect(): Promise<void> {
+    try {
+      if (this.api) {
+        await this.api.disconnect();
+        this.api = null;
+      }
+
+      if (this.evmClient) {
+        await this.evmClient.disconnect();
+        this.evmClient = null;
+      }
+
+      this.isConnected = false;
+      this.emit('disconnected');
+    } catch (error) {
+      this.emit('error', error);
+      throw error;
+    }
+  }
+
+  /**
+   * Get connection information
+   */
+  getConnectionInfo(): ConnectionInfo {
+    return {
+      endpoint: this.config.endpoint!,
+      network: this.config.network!,
+      chainType: this.config.chainType!,
+      isConnected: this.isConnected,
+      isConnecting: this.isConnecting
+    };
+  }
+
+  /**
+   * Get account information
+   */
+  async getAccount(): Promise<AccountInfo> {
+    this.ensureConnected();
+
+    if (this.config.chainType === ChainType.EVM && this.evmClient) {
+      return await this.evmClient.getAccount();
+    }
+
+    // Placeholder for Substrate account info
+    throw new Error('Account information not implemented for Substrate chains yet');
+  }
+
+  /**
+   * Get balance for an address
+   */
+  async getBalance(address: string, options: {
+    includeUSD?: boolean;
+    includeMetadata?: boolean;
+  } = {}): Promise<BalanceInfo> {
+    this.ensureConnected();
+
+    if (this.config.chainType === ChainType.EVM && this.evmClient) {
+      return await this.evmClient.getBalance(address, options);
+    }
+
+    // Placeholder for Substrate balance
+    throw new Error('Balance query not implemented for Substrate chains yet');
+  }
+
+  /**
+   * Submit a transaction
+   */
+  async submitTransaction(
+    transaction: any,
+    options: {
+      autoSign?: boolean;
+      waitForInclusion?: boolean;
+      waitForFinality?: boolean;
+      timeout?: number;
+    } = {}
+  ): Promise<TransactionInfo> {
+    this.ensureConnected();
+
+    if (this.config.chainType === ChainType.EVM && this.evmClient) {
+      return await this.evmClient.submitTransaction(transaction, options);
+    }
+
+    // Placeholder for Substrate transaction
+    throw new Error('Transaction submission not implemented for Substrate chains yet');
+  }
+
+  /**
+   * Get transaction history
+   */
+  async getTransactionHistory(limit: number = 100): Promise<TransactionInfo[]> {
+    this.ensureConnected();
+
+    if (this.config.chainType === ChainType.EVM && this.evmClient) {
+      return await this.evmClient.getTransactionHistory(limit);
+    }
+
+    // Placeholder for Substrate transaction history
+    throw new Error('Transaction history not implemented for Substrate chains yet');
+  }
+
+  /**
+   * Get contract information
+   */
+  async getContract(
+    address: string,
+    options: {
+      abi?: any;
+      metadata?: any;
+      cache?: boolean;
+    } = {}
+  ): Promise<ContractInfo> {
+    this.ensureConnected();
+
+    if (this.config.chainType === ChainType.EVM && this.evmClient) {
+      return await this.evmClient.getContract(address, options);
+    }
+
+    // Placeholder for Substrate contracts
+    throw new Error('Contract interaction not implemented for Substrate chains yet');
+  }
+
+  /**
+   * Get contract instance
+   */
+  async getContractInstance(
+    address: string,
+    options: {
+      abi?: any;
+      metadata?: any;
+    } = {}
+  ): Promise<any> {
+    this.ensureConnected();
+
+    if (this.config.chainType === ChainType.EVM && this.evmClient) {
+      return await this.evmClient.getContractInstance(address, options);
+    }
+
+    throw new Error('Contract instance not implemented for Substrate chains yet');
+  }
+
+  /**
+   * Subscribe to balance changes
+   */
+  subscribeToBalanceChanges(
+    address: string,
+    callback: (balance: BalanceInfo) => void
+  ): () => void {
+    this.ensureConnected();
+
+    if (this.config.chainType === ChainType.EVM && this.evmClient) {
+      return this.evmClient.subscribeToBalanceChanges(address, callback);
+    }
+
+    // Return no-op for unsupported chains
+    return () => {};
+  }
+
+  /**
+   * Subscribe to events
+   */
+  subscribeToEvents(options: {
+    callback: (event: EventSubscription) => void;
+    filters?: Record<string, any>;
+  }): () => void {
+    this.ensureConnected();
+
+    if (this.config.chainType === ChainType.EVM && this.evmClient) {
+      return this.evmClient.subscribeToEvents(options);
+    }
+
+    // Return no-op for unsupported chains
+    return () => {};
+  }
+
+  /**
+   * Subscribe to blocks
+   */
+  subscribeToBlocks(options: {
+    callback: (block: BlockInfo) => void;
+    includeDetails?: boolean;
+    includeExtrinsics?: boolean;
+    includeEvents?: boolean;
+  }): () => void {
+    this.ensureConnected();
+
+    if (this.config.chainType === ChainType.EVM && this.evmClient) {
+      return this.evmClient.subscribeToBlocks(options);
+    }
+
+    // Return no-op for unsupported chains
+    return () => {};
+  }
+
+  /**
+   * Get current block
+   */
+  async getCurrentBlock(): Promise<BlockInfo> {
+    this.ensureConnected();
+
+    if (this.config.chainType === ChainType.EVM && this.evmClient) {
+      return await this.evmClient.getCurrentBlock();
+    }
+
+    // Placeholder for Substrate block info
+    throw new Error('Block query not implemented for Substrate chains yet');
+  }
+
+  /**
+   * Builder pattern for configuring SDK
+   */
+  withEndpoint(endpoint: string): SelendraSDK {
+    this.config.endpoint = endpoint;
+    return this;
+  }
+
+  withNetwork(network: Network): SelendraSDK {
+    this.config.network = network;
+    return this;
+  }
+
+  withChainType(chainType: ChainType): SelendraSDK {
+    this.config.chainType = chainType;
+    return this;
+  }
+
+  withOptions(options: Partial<SDKConfig>): SelendraSDK {
+    this.config = { ...this.config, ...options };
+    return this;
+  }
+
+  /**
+   * Connect to EVM chain
+   */
+  private async connectEVM(): Promise<void> {
+    if (!this.config.endpoint) {
+      throw new Error('EVM endpoint is required');
+    }
+
+    this.evmClient = new SelendraEvmClient({
+      endpoint: this.config.endpoint,
+      network: this.config.network,
+      timeout: this.config.timeout,
+      retryAttempts: this.config.retryAttempts,
+      retryDelay: this.config.retryDelay
+    });
+
+    await this.evmClient.connect();
+
+    // Forward events from EVM client
+    this.evmClient.on('connected', () => this.emit('connected'));
+    this.evmClient.on('disconnected', () => this.emit('disconnected'));
+    this.evmClient.on('error', (error) => this.emit('error', error));
+  }
+
+  /**
+   * Connect to Substrate chain
+   */
+  private async connectSubstrate(): Promise<void> {
+    if (!this.config.endpoint) {
+      throw new Error('Substrate endpoint is required');
+    }
+
+    const wsProvider = new WsProvider(this.config.endpoint);
+    this.api = await ApiPromise.create({ provider: wsProvider });
+
+    // Set up event listeners
+    this.api.on('connected', () => this.emit('connected'));
+    this.api.on('disconnected', () => this.emit('disconnected'));
+    this.api.on('error', (error) => this.emit('error', error));
+  }
+
+  /**
+   * Ensure SDK is connected
+   */
+  private ensureConnected(): void {
+    if (!this.isConnected) {
+      throw new Error('SDK is not connected. Call connect() first.');
+    }
+  }
+}
+
+/**
+ * Network enumeration
+ */
+export enum Network {
+  Selendra = 'selendra',
+  SelendraTestnet = 'selendra-testnet',
+  Ethereum = 'ethereum',
+  Polygon = 'polygon',
+  BSC = 'bsc'
+}
+
+/**
+ * Chain type enumeration
+ */
+export enum ChainType {
+  Substrate = 'substrate',
+  EVM = 'evm'
+}
+
+/**
+ * SDK configuration interface
+ */
+export interface SDKConfig {
+  endpoint?: string;
+  network?: Network;
+  chainType?: ChainType;
+  timeout?: number;
+  retryAttempts?: number;
+  retryDelay?: number;
+}
+
+/**
+ * Create SDK instance with factory function
+ */
+export function createSDK(config?: SDKConfig): SelendraSDK {
+  return new SelendraSDK(config);
+}
+
+/**
+ * Default SDK instance
+ */
+export const sdk = createSDK();
+
+/**
+ * Legacy export for backward compatibility
+ */
+export default SelendraSDK;

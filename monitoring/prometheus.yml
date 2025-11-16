@@ -1,0 +1,28 @@
+# Prometheus configuration for Selendra monitoring
+global:
+  scrape_interval: 15s
+  evaluation_interval: 15s
+
+rule_files:
+  # - "first_rules.yml"
+  # - "second_rules.yml"
+
+scrape_configs:
+  # Prometheus itself
+  - job_name: 'prometheus'
+    static_configs:
+      - targets: ['localhost:9090']
+
+  # Selendra node metrics
+  - job_name: 'selendra'
+    static_configs:
+      - targets: ['selendra:9615']
+    scrape_interval: 5s
+    metrics_path: /metrics
+    scheme: http
+
+  # Optional: Add more nodes if running a cluster
+  # - job_name: 'selendra-validator-1'
+  #   static_configs:
+  #     - targets: ['validator1:9615']
+  #   scrape_interval: 5s

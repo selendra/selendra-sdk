@@ -1,0 +1,102 @@
+{
+  "name": "@selendrajs/sdk",
+  "version": "0.1.0",
+  "description": "A comprehensive SDK for interacting with the Selendra blockchain",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc && npm run build:types",
+    "build:watch": "tsc --watch",
+    "build:types": "tsc --declaration --emitDeclarationOnly --outDir dist/types",
+    "test": "jest",
+    "test:watch": "jest --watch",
+    "test:coverage": "jest --coverage",
+    "test:ci": "jest --coverage --ci --watchAll=false",
+    "lint": "eslint src/**/*.ts",
+    "lint:fix": "eslint src/**/*.ts --fix",
+    "lint:types": "tsc --noEmit",
+    "format": "prettier --write src/**/*.ts",
+    "format:check": "prettier --check src/**/*.ts",
+    "clean": "rimraf dist coverage",
+    "prepublishOnly": "npm run clean && npm run lint && npm run test && npm run build",
+    "dev": "ts-node -r tsconfig-paths/register src/index.ts",
+    "docs": "typedoc src/index.ts",
+    "size": "bundlesize"
+  },
+  "keywords": [
+    "blockchain",
+    "substrate",
+    "polkadot",
+    "selendra",
+    "sdk",
+    "evm",
+    "typescript",
+    "javascript"
+  ],
+  "author": "Selendra Team <team@selendra.org>",
+  "license": "Apache-2.0",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/selendra/selendra-sdk.git",
+    "directory": "typescript"
+  },
+  "bugs": {
+    "url": "https://github.com/selendra/selendra-sdk/issues"
+  },
+  "homepage": "https://github.com/selendra/selendra-sdk#readme",
+  "engines": {
+    "node": ">=16.0.0"
+  },
+  "files": [
+    "dist",
+    "src",
+    "README.md",
+    "LICENSE"
+  ],
+  "dependencies": {
+    "@polkadot/api": "^16.5.2",
+    "@polkadot/keyring": "^13.5.8",
+    "@polkadot/rpc-provider": "^16.5.2",
+    "@polkadot/types": "^16.5.2",
+    "@polkadot/util": "^13.5.8",
+    "@polkadot/util-crypto": "^13.5.8",
+    "axios": "^1.7.2",
+    "ethers": "^6.13.2",
+    "eventemitter3": "^5.0.1",
+    "react": ">=16.8.0"
+  },
+  "peerDependencies": {
+    "react": ">=16.8.0"
+  },
+  "peerDependenciesMeta": {
+    "react": {
+      "optional": false
+    }
+  },
+  "overrides": {
+    "js-yaml": "^4.1.1"
+  },
+  "devDependencies": {
+    "@ethersproject/abi": "^5.8.0",
+    "@ethersproject/keccak256": "^5.8.0",
+    "@types/jest": "^30.0.0",
+    "@types/node": "^24.10.1",
+    "@typescript-eslint/eslint-plugin": "^8.46.4",
+    "@typescript-eslint/parser": "^8.46.4",
+    "eslint": "^9.39.1",
+    "eslint-config-prettier": "^10.1.8",
+    "eslint-plugin-import": "^2.29.1",
+    "jest": "^30.2.0",
+    "jest-environment-node": "^30.2.0",
+    "prettier": "^3.3.2",
+    "rimraf": "^6.1.0",
+    "ts-jest": "^29.1.4",
+    "ts-node": "^10.9.2",
+    "tsconfig-paths": "^4.2.0",
+    "typescript": "^5.4.5"
+  },
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://registry.npmjs.org/"
+  }
+}
