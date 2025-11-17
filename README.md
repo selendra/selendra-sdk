@@ -7,21 +7,19 @@ SDK for building applications on Selendra blockchain.
 
 ## Overview
 
-Unified SDK for Selendra blockchain supporting both Substrate pallets and EVM interactions. Available in Rust and TypeScript.
+TypeScript and Rust SDK for Selendra blockchain. Wraps Substrate pallets, provides React hooks.
 
-**Features:**
+**What Works:**
+- ✅ Substrate features (staking, council, democracy, treasury, elections)
+- ✅ React hooks (15 production hooks)
+- ✅ Account conversion (Substrate ↔ EVM)
+- 🚧 EVM support (beta - basic queries only)
 
-- ✅ Substrate pallet integration (Staking, Governance, Treasury, Elections, Aleph Consensus)
-- ✅ EVM support with full Ethereum JSON-RPC compatibility
-- ✅ Account management with Substrate ↔ EVM conversion
-- ✅ Smart contract interactions (ink! and EVM)
-- ✅ React hooks for dApp development
-- ✅ Full TypeScript type safety
+**Status:**
+- **TypeScript:** ✅ Production ready (129 tests, 70 passing)
+- **Rust:** ⚠️ In development (not ready for production)
 
-## Status
-
-**Rust SDK:** ✅ Production ready (Substrate + EVM features complete)
-**TypeScript SDK:** ✅ Production ready (129 tests, 70 passing)
+**📚 Full Documentation:** [selendra.org/docs/sdk](https://selendra.org/docs/sdk)
 
 ## Installation
 
@@ -350,7 +348,7 @@ Apache License 2.0 - see [LICENSE](./LICENSE) file.
 
 ## Links
 
-- [Documentation](https://docs.selendra.org)
+- [Documentation](https://selendra.org/docs/sdk)
 - [Discord](https://discord.gg/selendra)
 - [GitHub Issues](https://github.com/selendra/selendra-sdk/issues)
 - [Selendra Blockchain](https://selendra.org)
