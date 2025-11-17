@@ -12,15 +12,15 @@ Unified SDK for Selendra blockchain supporting both Substrate pallets and EVM in
 **Features:**
 
 - ✅ Substrate pallet integration (Staking, Governance, Treasury, Elections, Aleph Consensus)
+- ✅ EVM support with full Ethereum JSON-RPC compatibility
 - ✅ Account management with Substrate ↔ EVM conversion
 - ✅ Smart contract interactions (ink! and EVM)
 - ✅ React hooks for dApp development
 - ✅ Full TypeScript type safety
-- 🔄 EVM support (in development)
 
 ## Status
 
-**Rust SDK:** ✅ Production ready (Core Substrate features complete)
+**Rust SDK:** ✅ Production ready (Substrate + EVM features complete)
 **TypeScript SDK:** ✅ Production ready (129 tests, 70 passing)
 
 ## Installation
@@ -319,14 +319,14 @@ selendra-sdk/
 ├── rust/           # Rust SDK
 │   ├── src/
 │   │   ├── substrate/  # Substrate client
-│   │   ├── evm/        # EVM client (in dev)
+│   │   ├── evm/        # EVM client
 │   │   ├── unified/    # Unified API
 │   │   └── types/      # Type definitions
 │   └── examples/
 ├── typescript/     # TypeScript SDK
 │   ├── src/
 │   │   ├── substrate/  # Substrate client
-│   │   ├── evm/        # EVM client (in dev)
+│   │   ├── evm/        # EVM client
 │   │   ├── unified/    # Unified API
 │   │   ├── react/      # React hooks
 │   │   └── types/      # Type definitions
