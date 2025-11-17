@@ -1,17 +1,17 @@
 //! # Selendra SDK - Rust
 //!
-//! A comprehensive SDK for interacting with the Selendra blockchain.
+//! SDK for interacting with the Selendra blockchain.
 //!
 //! This library provides a unified interface for interacting with both
 //! Substrate and EVM-based chains within the Selendra ecosystem.
 //!
 //! ## Features
 //!
-//! - **Enhanced Substrate client** (fully compatible with selendra_client)
-//! - **Comprehensive EVM client** using ethers-rs
+//! - **Substrate client** (fully compatible with selendra_client)
+//! - **EVM client** using ethers-rs
 //! - **Unified API** for both chain types
-//! - **Type-safe abstractions** with comprehensive error handling
-//! - **Async/await support** throughout
+//! - **Type-safe abstractions** with error handling
+//! - **Async/await support**
 //! - **Cross-chain bridge functionality**
 //! - **Contract interaction support**
 //! - **Production-ready** with extensive testing
@@ -25,6 +25,8 @@
 //!
 //! ### Substrate-only (selendra_client compatible)
 //! ```rust,no_run
+//! # #[cfg(feature = "substrate")]
+//! # {
 //! use selendra_sdk::substrate::{Connection, keypair_from_string};
 //!
 //! #[tokio::main]
@@ -38,52 +40,62 @@
 //!     println!("Account balance: {:?}", account_info.data.free);
 //!     Ok(())
 //! }
+//! # }
 //! ```
 //!
 //! ### EVM-only
 //! ```rust,no_run
+//! # #[cfg(feature = "evm")]
+//! # {
 //! use selendra_sdk::evm::{EVMClient, EVMConfig};
-//! use ethers_core::types::Address;
+//! use ethers::types::Address;
 //!
 //! #[tokio::main]
 //! async fn main() -> Result<(), Box<dyn std::error::Error>> {
 //!     let config = EVMConfig::new("https://eth-rpc.selendra.org");
 //!     let client = EVMClient::new(config).await?;
 //!
-//!     let balance = client.get_balance(Address::zero()).await?;
+//!     let balance = client.get_balance(Address::zero(), None).await?;
 //!     println!("Zero address balance: {} wei", balance);
 //!
 //!     Ok(())
 //! }
+//! # }
 //! ```
 //!
 //! ### Unified API (Both Substrate and EVM)
 //! ```rust,no_run
-//! use selendra_sdk::{SelendraSDK, Network, ChainType};
+//! # #[cfg(all(feature = "evm", feature = "substrate"))]
+//! # {
+//! use selendra_sdk::unified::{SelendraSDK, SDKBuilder};
+//! use selendra_sdk::types::{Network, ChainType};
 //!
 //! #[tokio::main]
 //! async fn main() -> Result<(), Box<dyn std::error::Error>> {
-//!     let mut sdk = SelendraSDK::builder()
+//!     let mut sdk = SDKBuilder::new()
 //!         .substrate_endpoint("wss://rpc.selendra.org")
 //!         .evm_endpoint("https://eth-rpc.selendra.org")
 //!         .network(Network::Selendra)
 //!         .build()
 //!         .await?;
 //!
-//!     // Substrate operations
-//!     let substrate_block = sdk.substrate().get_latest_block().await?;
-//!     println!("Substrate block: {}", substrate_block.block_number);
+//!     // Substrate operations (if substrate feature enabled)
+//!     #[cfg(feature = "substrate")]
+//!     {
+//!         let substrate_block = sdk.substrate().get_latest_block().await?;
+//!         println!("Substrate block: {:?}", substrate_block);
+//!     }
 //!
-//!     // EVM operations
-//!     let evm_block = sdk.evm().get_block_number().await?;
-//!     println!("EVM block: {}", evm_block);
-//!
-//!     // Unified account operations
-//!     let unified_balance = sdk.get_unified_balance("your_address").await?;
-//!     println!("Unified balance: {:?}", unified_balance);
+//!     // EVM operations (if evm feature enabled)
+//!     #[cfg(feature = "evm")]
+//!     {
+//!         let evm_block = sdk.evm().get_block_number().await?;
+//!         println!("EVM block: {}", evm_block);
+//!     }
 //!
 //!     Ok(())
 //! }
+//! # }
 //! ```
 
 #![cfg_attr(docsrs, feature(doc_cfg))]
@@ -91,24 +103,35 @@
 #![warn(unused_extern_crates)]
 #![warn(unused_imports)]
 
-// Re-export selendra_client for full backward compatibility
-pub use selendra_client;
-
-// Core SDK modules
-pub mod connection;
-pub mod evm;
-pub mod substrate;
 pub mod types;
-pub mod unified;
 pub mod utils;
+#[cfg(feature = "evm")]
+pub mod evm;
+
+#[cfg(feature = "substrate")]
+pub mod substrate;
+
+#[cfg(all(feature = "evm", feature = "substrate"))]
+pub mod connection;
+
+#[cfg(all(feature = "evm", feature = "substrate"))]
+pub mod unified;
 
 // Re-export main types for convenience
-pub use connection::*;
-pub use evm::*;
-pub use substrate::*;
 pub use types::*;
-pub use unified::*;
 pub use utils::*;
+
+#[cfg(feature = "evm")]
+pub use evm::*;
+
+#[cfg(feature = "substrate")]
+pub use substrate::*;
+
+#[cfg(all(feature = "evm", feature = "substrate"))]
+pub use connection::*;
+
+#[cfg(all(feature = "evm", feature = "substrate"))]
+pub use unified::*;
 
 /// Current version of the SDK
 pub const VERSION: &str = env!("CARGO_PKG_VERSION");
@@ -129,12 +152,14 @@ pub const DEFAULT_SELENDRA_EVM_ENDPOINT: &str = "https://eth-rpc.selendra.org";
 pub const DEFAULT_SELENDRA_EVM_TESTNET_ENDPOINT: &str = "https://testnet-eth-rpc.selendra.org";
 
 /// Create a new SDK builder instance
+#[cfg(all(feature = "evm", feature = "substrate"))]
 pub fn builder() -> crate::unified::SDKBuilder {
     crate::unified::SDKBuilder::new()
 }
 
 /// Quick-connect function for common use cases
-pub async fn quick_connect(substrate_url: Option<&str>, evm_url: Option<&str>) -> crate::types::Result<SelendraSDK> {
+#[cfg(all(feature = "evm", feature = "substrate"))]
+pub async fn quick_connect(substrate_url: Option<&str>, evm_url: Option<&str>) -> crate::types::Result<crate::unified::SelendraSDK> {
     let mut builder = builder();
 
     if let Some(url) = substrate_url {

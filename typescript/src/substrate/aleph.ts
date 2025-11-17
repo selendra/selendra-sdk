@@ -45,7 +45,7 @@ export interface BanInfo {
 }
 
 /**
- * Comprehensive validator performance metrics
+ * Validator performance metrics
  */
 export interface ValidatorPerformance {
   blocksProduced: number;

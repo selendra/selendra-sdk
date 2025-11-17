@@ -2,6 +2,8 @@
 
 Quick guide to building with Selendra SDK.
 
+** Current Status:** Substrate features are production-ready. EVM features are in beta (50% ). Rust SDK is under development (58% ).
+
 ## Installation
 
 ### TypeScript
@@ -12,15 +14,14 @@ npm install @selendrajs/sdk
 
 ### Rust
 
-```toml
-[dependencies]
-selendra-sdk = "0.1.0"
-tokio = { version = "1.0", features = ["full"] }
+```bash
+# Rust SDK currently under development - use TypeScript for production
+cargo add selendra-sdk
 ```
 
 ## First Connection
 
-### TypeScript
+### TypeScript (Recommended for Production)
 
 ```typescript
 import { SelendraSDK, Network } from "@selendrajs/sdk";
@@ -31,11 +32,11 @@ const sdk = new SelendraSDK()
 
 await sdk.connect();
 
-// Query balance
+// Query balance (Substrate -  Production Ready)
 const balance = await sdk.getBalance(address);
 ```
 
-### Rust
+### Rust (Development Only)
 
 ```rust
 use selendra_sdk::{builder};
@@ -69,7 +70,7 @@ Both HTTP endpoints support Substrate and EVM.
 
 ## Next Steps
 
-- [API Reference](../api/typescript.md) - Complete API documentation
+- [API Reference](../api/typescript.md) -  API documentation
 - [Quick Start](./quick-start.md) - Common operations
 - [Examples](../../typescript/examples/) - Working code samples
 
@@ -105,7 +106,7 @@ const balance = await sdk.getBalance(account.address);
 console.log('Balance:', balance);
 ````
 
-## 🛠 Setting Up Your Development Environment
+##  Setting Up Your Development Environment
 
 ### Prerequisites
 
@@ -150,7 +151,7 @@ DEFAULT_MNEMONIC=your development mnemonic here
 ETHERSCAN_API_KEY=your_etherscan_api_key
 ```
 
-## 🎯 Building Your First dApp
+##  Building Your First dApp
 
 Let's build a simple wallet application that demonstrates core SDK features.
 
@@ -347,7 +348,7 @@ function App() {
     <div className="App">
       <header className="App-header">
         <h1>Welcome to Selendra</h1>
-        <p>Build amazing decentralized applications</p>
+        <p>Build  decentralized applications</p>
       </header>
 
       <main>
@@ -415,7 +416,7 @@ try {
 const balance = sdk.getBalance(address);
 console.log(balance); // Returns a Promise!
 
-// ✅ Correct - using await
+//  Correct - using await
 const balance = await sdk.getBalance(address);
 console.log(balance); // Returns actual balance
 ```
@@ -423,7 +424,7 @@ console.log(balance); // Returns actual balance
 ### 4. Error Handling
 
 **Problem**: Not handling network errors properly
-**Solution**: Implement comprehensive error handling
+**Solution**: Implement  error handling
 
 ```typescript
 const robustOperation = async () => {
@@ -445,7 +446,7 @@ const robustOperation = async () => {
 };
 ```
 
-## 🎯 Next Steps
+##  Next Steps
 
 Congratulations! You've built your first Selendra dApp. Here's what to explore next:
 
@@ -455,20 +456,20 @@ Congratulations! You've built your first Selendra dApp. Here's what to explore n
 4. **Staking** - Participate in network validation
 5. **Cross-chain** - Build applications that bridge multiple networks
 
-## 📖 Additional Resources
+##  Additional Resources
 
-- [API Documentation](../api/) - Complete SDK reference
+- [API Documentation](../api/) -  SDK reference
 - [Examples](../../examples/) - Ready-to-use example projects
 - [Tutorials](../tutorials/) - Step-by-step guides
 - [Community Discord](https://discord.gg/selendra) - Get help from the community
 - [GitHub Discussions](https://github.com/selendra/selendra-sdk/discussions) - Feature requests and discussions
 
-## 🤝 Contributing
+##  Contributing
 
 We welcome contributions! Check out our [Contributing Guide](../../CONTRIBUTING.md) to learn how you can help improve the SDK.
 
 ---
 
-**Happy building!** 🚀
+**Happy building!** 
 
 If you get stuck or have questions, don't hesitate to reach out on our [Discord server](https://discord.gg/selendra) or [GitHub Discussions](https://github.com/selendra/selendra-sdk/discussions).

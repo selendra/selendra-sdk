@@ -2,6 +2,10 @@
 
 A comprehensive, production-ready Rust SDK for interacting with the Selendra blockchain ecosystem.
 
+## ⚠️ Security Notice
+
+**IMPORTANT:** Never commit private keys or sensitive data to version control. Use environment variables for secrets. See `.env.example` for configuration.
+
 ## Overview
 
 The Selendra SDK provides a unified interface for interacting with both Substrate and EVM chains within the Selendra ecosystem. It's built as an enhancement to the existing `selendra_client`, adding comprehensive EVM support while maintaining full backward compatibility.
@@ -57,7 +61,7 @@ Add to your `Cargo.toml`:
 
 ```toml
 [dependencies]
-selendra-sdk = { version = "0.2.0", features = ["std", "evm-full"] }
+selendra-sdk = { version = "1.0.0", features = ["std", "evm-full"] }
 tokio = { version = "1.0", features = ["full"] }
 ```
 

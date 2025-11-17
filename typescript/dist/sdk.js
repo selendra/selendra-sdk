@@ -7,12 +7,13 @@
  *
  * @author Selendra Team <team@selendra.org>
  * @license Apache-2.0
- * @version 0.1.0
+ * @version 1.0.0
  */
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.sdk = exports.ChainType = exports.Network = exports.SelendraSDK = void 0;
+exports.sdk = exports.SelendraSDK = void 0;
 exports.createSDK = createSDK;
 const api_1 = require("@polkadot/api");
+const keyring_1 = require("@polkadot/keyring");
 const eventemitter3_1 = require("eventemitter3");
 const types_1 = require("./types");
 const evm_1 = require("./evm");
@@ -59,7 +60,7 @@ class SelendraSDK extends eventemitter3_1.EventEmitter {
             timeout: 30000,
             retryAttempts: 3,
             retryDelay: 1000,
-            ...config
+            ...config,
         };
     }
     /**
@@ -111,6 +112,14 @@ class SelendraSDK extends eventemitter3_1.EventEmitter {
         }
     }
     /**
+     * Destroy SDK instance and cleanup resources
+     * Alias for disconnect()
+     */
+    async destroy() {
+        await this.disconnect();
+        this.removeAllListeners();
+    }
+    /**
      * Get connection information
      */
     getConnectionInfo() {
@@ -119,19 +128,39 @@ class SelendraSDK extends eventemitter3_1.EventEmitter {
             network: this.config.network,
             chainType: this.config.chainType,
             isConnected: this.isConnected,
-            isConnecting: this.isConnecting
+            isConnecting: this.isConnecting,
         };
     }
     /**
      * Get account information
      */
-    async getAccount() {
+    async getAccount(address) {
         this.ensureConnected();
         if (this.config.chainType === types_1.ChainType.EVM && this.evmClient) {
-            return await this.evmClient.getAccount();
+            if (!address) {
+                throw new Error('Address is required for EVM account info');
+            }
+            return await this.evmClient.getAccount(address);
         }
-        // Placeholder for Substrate account info
-        throw new Error('Account information not implemented for Substrate chains yet');
+        // Substrate account info
+        if (this.api && address) {
+            const account = await this.api.query.system.account(address);
+            const { nonce, data } = account;
+            return {
+                address,
+                nonce: nonce.toNumber(),
+                balance: data.free.toString(),
+                type: 'substrate',
+                isActive: !data.free.isZero(),
+                metadata: {
+                    data: {
+                        free: data.free.toString(),
+                        reserved: data.reserved.toString(),
+                    },
+                },
+            };
+        }
+        throw new Error('API not connected or address not provided');
     }
     /**
      * Get balance for an address
@@ -139,10 +168,21 @@ class SelendraSDK extends eventemitter3_1.EventEmitter {
     async getBalance(address, options = {}) {
         this.ensureConnected();
         if (this.config.chainType === types_1.ChainType.EVM && this.evmClient) {
-            return await this.evmClient.getBalance(address, options);
+            return await this.evmClient.getBalanceInfo(address, options);
         }
-        // Placeholder for Substrate balance
-        throw new Error('Balance query not implemented for Substrate chains yet');
+        // Substrate balance
+        if (this.api) {
+            const account = await this.api.query.system.account(address);
+            const { data } = account;
+            return {
+                total: data.free.add(data.reserved).toString(),
+                free: data.free.toString(),
+                reserved: data.reserved.toString(),
+                symbol: 'SEL',
+                decimals: 18,
+            };
+        }
+        throw new Error('API not connected');
     }
     /**
      * Submit a transaction
@@ -152,16 +192,45 @@ class SelendraSDK extends eventemitter3_1.EventEmitter {
         if (this.config.chainType === types_1.ChainType.EVM && this.evmClient) {
             return await this.evmClient.submitTransaction(transaction, options);
         }
-        // Placeholder for Substrate transaction
-        throw new Error('Transaction submission not implemented for Substrate chains yet');
+        // Substrate transaction (basic transfer)
+        if (this.api && transaction.signer && transaction.to && transaction.amount) {
+            const keyring = new keyring_1.Keyring({ type: 'sr25519' });
+            const sender = keyring.addFromUri(transaction.signer);
+            return new Promise((resolve, reject) => {
+                this.api.tx.balances
+                    .transferKeepAlive(transaction.to, transaction.amount)
+                    .signAndSend(sender, ({ status, txHash, events }) => {
+                    if (status.isFinalized) {
+                        resolve({
+                            hash: txHash.toString(),
+                            blockHash: status.asFinalized.toString(),
+                            from: sender.address,
+                            to: transaction.to,
+                            value: transaction.amount.toString(),
+                            fee: '0',
+                            nonce: 0,
+                            status: 'finalized',
+                            timestamp: Date.now(),
+                        });
+                    }
+                })
+                    .catch(reject);
+            });
+        }
+        throw new Error('Invalid transaction or API not connected');
     }
     /**
      * Get transaction history
      */
-    async getTransactionHistory(limit = 100) {
+    async getTransactionHistory(address, limit = 100) {
         this.ensureConnected();
         if (this.config.chainType === types_1.ChainType.EVM && this.evmClient) {
-            return await this.evmClient.getTransactionHistory(limit);
+            const history = await this.evmClient.getTransactionHistory(address, limit);
+            // Map to TransactionInfo format
+            return history.map((tx) => ({
+                ...tx,
+                fee: tx.fee || '0', // Ensure fee is always present
+            }));
         }
         // Placeholder for Substrate transaction history
         throw new Error('Transaction history not implemented for Substrate chains yet');
@@ -172,7 +241,20 @@ class SelendraSDK extends eventemitter3_1.EventEmitter {
     async getContract(address, options = {}) {
         this.ensureConnected();
         if (this.config.chainType === types_1.ChainType.EVM && this.evmClient) {
-            return await this.evmClient.getContract(address, options);
+            if (!options.abi) {
+                throw new Error('ABI is required for contract interaction');
+            }
+            const contract = this.evmClient.getContract(address, options.abi);
+            // Return contract info
+            return {
+                address,
+                name: options.metadata?.name || 'Unknown',
+                abi: options.abi,
+                bytecode: '', // Would need to fetch with getCode
+                creator: '', // Would need historical data
+                balance: '0', // Would need to fetch
+                metadata: options.metadata,
+            };
         }
         // Placeholder for Substrate contracts
         throw new Error('Contract interaction not implemented for Substrate chains yet');
@@ -226,7 +308,13 @@ class SelendraSDK extends eventemitter3_1.EventEmitter {
     async getCurrentBlock() {
         this.ensureConnected();
         if (this.config.chainType === types_1.ChainType.EVM && this.evmClient) {
-            return await this.evmClient.getCurrentBlock();
+            const block = await this.evmClient.getCurrentBlock();
+            // Add missing stateRoot field
+            return {
+                ...block,
+                stateRoot: '', // EVM blocks don't have stateRoot in the same way
+                author: '', // EVM blocks use miner instead
+            };
         }
         // Placeholder for Substrate block info
         throw new Error('Block query not implemented for Substrate chains yet');
@@ -258,11 +346,10 @@ class SelendraSDK extends eventemitter3_1.EventEmitter {
             throw new Error('EVM endpoint is required');
         }
         this.evmClient = new evm_1.SelendraEvmClient({
-            endpoint: this.config.endpoint,
-            network: this.config.network,
-            timeout: this.config.timeout,
-            retryAttempts: this.config.retryAttempts,
-            retryDelay: this.config.retryDelay
+            network: this.config.network || 'mainnet',
+            rpcUrls: {
+                http: [this.config.endpoint],
+            },
         });
         await this.evmClient.connect();
         // Forward events from EVM client
@@ -295,26 +382,7 @@ class SelendraSDK extends eventemitter3_1.EventEmitter {
 }
 exports.SelendraSDK = SelendraSDK;
 /**
- * Network enumeration
- */
-var Network;
-(function (Network) {
-    Network["Selendra"] = "selendra";
-    Network["SelendraTestnet"] = "selendra-testnet";
-    Network["Ethereum"] = "ethereum";
-    Network["Polygon"] = "polygon";
-    Network["BSC"] = "bsc";
-})(types_1.Network || (types_1.Network = {}));
 /**
- * Chain type enumeration
- */
-var ChainType;
-(function (ChainType) {
-    ChainType["Substrate"] = "substrate";
-    ChainType["EVM"] = "evm";
-})(types_1.ChainType || (types_1.ChainType = {}));
-/**
- * Create SDK instance with factory function
  */
 function createSDK(config) {
     return new SelendraSDK(config);

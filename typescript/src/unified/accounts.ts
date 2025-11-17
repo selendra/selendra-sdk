@@ -12,6 +12,7 @@ import { ApiPromise } from '@polkadot/api';
 import { decodeAddress, encodeAddress } from '@polkadot/util-crypto';
 import { u8aToHex, hexToU8a, isHex } from '@polkadot/util';
 import type { Address, Balance } from '../types/common';
+import type { EIP712TypedData } from '../types/signature';
 
 /**
  * Unified address that can represent both Substrate and EVM addresses
@@ -429,10 +430,8 @@ export class UnifiedAccountManager {
    */
   async buildSigningPayload(substrateAddress: string): Promise<string> {
     // This should match the Rust implementation's build_signing_payload
-    // For now, return a placeholder that indicates this needs EIP-712 structure
     const { keccak256 } = require('@ethersproject/keccak256');
     const { defaultAbiCoder } = require('@ethersproject/abi');
-    const { decodeAddress } = require('@polkadot/util-crypto');
 
     // EIP-712 Domain Separator (must match Rust implementation)
     const domain = {
@@ -476,6 +475,81 @@ export class UnifiedAccountManager {
     ]);
 
     return '0x' + keccak256(payload).slice(2);
+  }
+
+  /**
+   * Build EIP-712 typed data structure for Substrate extrinsic signing with EVM keys
+   * This allows MetaMask and other EVM wallets to sign Substrate transactions
+   *
+   * @param message - Message or extrinsic data to sign
+   * @param chainId - Optional chain ID (defaults to Selendra mainnet: 1961)
+   * @param verifyingContract - Optional verifying contract address
+   * @returns EIP-712 typed data structure for MetaMask signing
+   *
+   * @example
+   * ```typescript
+   * const manager = new UnifiedAccountManager(api);
+   * const typedData = manager.buildEIP712SigningPayload({
+   *   from: '0x1234...5678',
+   *   to: '0x8765...4321',
+   *   value: '1000000000000000000',
+   *   nonce: 0,
+   * });
+   *
+   * // Sign with MetaMask
+   * const signature = await ethereum.request({
+   *   method: 'eth_signTypedData_v4',
+   *   params: [address, JSON.stringify(typedData)],
+   * });
+   * ```
+   */
+  buildEIP712SigningPayload(
+    message: Record<string, unknown>,
+    chainId?: number,
+    verifyingContract?: string,
+  ): EIP712TypedData {
+    // EIP-712 Domain Separator
+    const domain = {
+      name: 'Selendra',
+      version: '1',
+      chainId: chainId || 1961, // Selendra mainnet chain ID
+      verifyingContract: verifyingContract || '0x0000000000000000000000000000000000000000',
+    };
+
+    // EIP-712 Type definitions
+    const types = {
+      EIP712Domain: [
+        { name: 'name', type: 'string' },
+        { name: 'version', type: 'string' },
+        { name: 'chainId', type: 'uint256' },
+        { name: 'verifyingContract', type: 'address' },
+      ],
+      // Selendra-specific message types for signing Substrate extrinsics with EVM keys
+      SelendraMessage: [
+        { name: 'from', type: 'address' },
+        { name: 'to', type: 'address' },
+        { name: 'value', type: 'uint256' },
+        { name: 'nonce', type: 'uint256' },
+        { name: 'data', type: 'bytes' },
+      ],
+    };
+
+    // Ensure message has required fields with defaults
+    const normalizedMessage = {
+      from: message.from || '0x0000000000000000000000000000000000000000',
+      to: message.to || '0x0000000000000000000000000000000000000000',
+      value: message.value || '0',
+      nonce: message.nonce || '0',
+      data: message.data || '0x',
+      ...message, // Allow additional fields to override
+    };
+
+    return {
+      domain,
+      types,
+      primaryType: 'SelendraMessage',
+      message: normalizedMessage,
+    };
   }
 }
 

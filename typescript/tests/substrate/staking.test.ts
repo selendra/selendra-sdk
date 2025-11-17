@@ -6,7 +6,7 @@ import { StakingClient } from '../../src/substrate/staking';
 import { ApiPromise } from '@polkadot/api';
 
 // Mock ApiPromise
-const createMockApi = (overrides: any = {}) => {
+const createMockApi = (overrides = {}) => {
   const mockApi = {
     query: {
       staking: {
@@ -33,10 +33,12 @@ const createMockApi = (overrides: any = {}) => {
         }),
         erasRewardPoints: jest.fn().mockResolvedValue({
           total: { toNumber: () => 10000 },
-          individual: [
-            ['validator1', { toNumber: () => 100 }],
-            ['validator2', { toNumber: () => 200 }],
-          ],
+          individual: {
+            entries: () => [
+              ['validator1', { toNumber: () => 100 }],
+              ['validator2', { toNumber: () => 200 }],
+            ],
+          },
         }),
         ledger: jest.fn().mockResolvedValue({
           unwrap: () => ({
@@ -58,19 +60,24 @@ const createMockApi = (overrides: any = {}) => {
           }),
           isSome: true,
         }),
+        payee: jest.fn().mockResolvedValue({
+          unwrap: () => 'Staked',
+          isSome: true,
+        }),
         ...overrides.staking,
       },
       session: {
         currentIndex: jest.fn().mockResolvedValue({
           toNumber: () => 500,
         }),
+        validators: jest.fn().mockResolvedValue(['validator1', 'validator2', 'validator3']),
         ...overrides.session,
       },
     },
     tx: {
       staking: {
         bond: jest.fn().mockReturnValue({
-          signAndSend: jest.fn().mockImplementation((_signer: any, callback: any) => {
+          signAndSend: jest.fn().mockImplementation((_signer, callback) => {
             if (callback) {
               callback({
                 status: {
@@ -84,9 +91,10 @@ const createMockApi = (overrides: any = {}) => {
             }
             return Promise.resolve('0xhash');
           }),
+          send: jest.fn().mockResolvedValue({ toHex: () => '0xhash' }),
         }),
         nominate: jest.fn().mockReturnValue({
-          signAndSend: jest.fn().mockImplementation((_signer: any, callback: any) => {
+          signAndSend: jest.fn().mockImplementation((_signer, callback) => {
             if (callback) {
               callback({
                 status: {
@@ -100,9 +108,10 @@ const createMockApi = (overrides: any = {}) => {
             }
             return Promise.resolve('0xhash');
           }),
+          send: jest.fn().mockResolvedValue({ toHex: () => '0xhash' }),
         }),
         unbond: jest.fn().mockReturnValue({
-          signAndSend: jest.fn().mockImplementation((_signer: any, callback: any) => {
+          signAndSend: jest.fn().mockImplementation((_signer, callback) => {
             if (callback) {
               callback({
                 status: {
@@ -116,19 +125,41 @@ const createMockApi = (overrides: any = {}) => {
             }
             return Promise.resolve('0xhash');
           }),
+          send: jest.fn().mockResolvedValue({ toHex: () => '0xhash' }),
         }),
         ...overrides.tx,
       },
     },
+    consts: {
+      session: {
+        period: { toNumber: () => 1000 },
+      },
+      staking: {
+        electionLookahead: { toNumber: () => 1000 },
+        bondingDuration: { toNumber: () => 28 },
+        slashRewardFraction: { toNumber: () => 1 },
+        ...overrides.consts?.staking,
+      },
+      ...overrides.consts,
+    },
+    rpc: {
+      chain: {
+        getHeader: jest.fn().mockResolvedValue({
+          number: { toNumber: () => 450000 },
+        }),
+        getBlockHash: jest.fn().mockResolvedValue('0xblockhash'),
+      },
+      ...overrides.rpc,
+    },
     ...overrides,
-  } as unknown as ApiPromise;
+  };
 
   return mockApi;
 };
 
 describe('StakingClient', () => {
-  let stakingClient: StakingClient;
-  let mockApi: ApiPromise;
+  let stakingClient;
+  let mockApi;
 
   beforeEach(() => {
     mockApi = createMockApi();
@@ -170,6 +201,7 @@ describe('StakingClient', () => {
         staking: {
           activeEra: jest.fn().mockResolvedValue({
             isNone: true,
+            unwrap: () => null,
           }),
         },
       });
@@ -213,11 +245,10 @@ describe('StakingClient', () => {
     it('should return era reward points', async () => {
       const points = await stakingClient.getEraRewardPoints(100);
       expect(points.total).toBe(10000);
-      expect(points.individual).toHaveLength(2);
-      expect(points.individual[0]).toEqual({
-        validator: 'validator1',
-        points: 100,
-      });
+      expect(points.individual).toBeInstanceOf(Map);
+      expect(points.individual.size).toBe(2);
+      expect(points.individual.get('validator1')).toBe(100);
+      expect(points.individual.get('validator2')).toBe(200);
     });
   });
 
@@ -232,7 +263,7 @@ describe('StakingClient', () => {
     it('should return null for non-staking account', async () => {
       mockApi = createMockApi({
         staking: {
-          bonded: jest.fn().mockResolvedValue({
+          ledger: jest.fn().mockResolvedValue({
             isNone: true,
           }),
         },
@@ -246,7 +277,7 @@ describe('StakingClient', () => {
 
   describe('bond', () => {
     it('should bond tokens successfully', async () => {
-      const mockSigner = {} as any;
+      const mockSigner = {};
       const result = await stakingClient.bond(mockSigner, '1000000000000000000', 'Staked');
       expect(result.hash).toBe('0xhash');
     });
@@ -254,17 +285,22 @@ describe('StakingClient', () => {
     it('should handle transaction errors', async () => {
       mockApi = createMockApi({
         tx: {
-          bond: jest.fn().mockReturnValue({
-            signAndSend: jest.fn(() => {
-              throw new Error('Transaction failed');
+          staking: {
+            bond: jest.fn().mockReturnValue({
+              signAndSend: jest.fn().mockImplementation(() => {
+                throw new Error('Transaction failed');
+              }),
+              send: jest.fn().mockImplementation(() => {
+                throw new Error('Transaction failed');
+              }),
             }),
-          }),
+          },
         },
       });
       stakingClient = new StakingClient(mockApi);
 
-      const mockSigner = {} as any;
-      await expect(stakingClient.bond(mockSigner, '1000000000000000000', 'Staked')).rejects.toThrow(
+      // Test with null signer to trigger send() path
+      await expect(stakingClient.bond(null, '1000000000000000000', 'Staked')).rejects.toThrow(
         'Transaction failed',
       );
     });
@@ -272,7 +308,7 @@ describe('StakingClient', () => {
 
   describe('nominate', () => {
     it('should nominate validators successfully', async () => {
-      const mockSigner = {} as any;
+      const mockSigner = {};
       const validators = ['validator1', 'validator2'];
       const result = await stakingClient.nominate(mockSigner, validators);
       expect(result.hash).toBe('0xhash');
@@ -281,7 +317,7 @@ describe('StakingClient', () => {
 
   describe('unbond', () => {
     it('should unbond tokens successfully', async () => {
-      const mockSigner = {} as any;
+      const mockSigner = {};
       const result = await stakingClient.unbond(mockSigner, '500000000000000000');
       expect(result.hash).toBe('0xhash');
     });

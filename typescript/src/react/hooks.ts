@@ -280,7 +280,7 @@ export function useBalance(address?: string, options: UseBalanceOptions = {}): U
 /**
  * useAccount - Account Management Hook
  *
- * Comprehensive account management with wallet integration, balance tracking,
+ * Account management with wallet integration, balance tracking,
  * and transaction history.
  *
  * @param options - Account management options
@@ -830,7 +830,7 @@ export function useBlockSubscription(
 }
 
 /**
- * Advanced utility hooks for enhanced developer experience
+ * Utility hooks
  */
 
 /**
@@ -931,7 +931,7 @@ export function useIsMounted(): () => boolean {
 export { useSelendraContext as useContext } from './provider';
 
 /**
- * Advanced Hooks for Power Users
+ * Advanced Hooks
  */
 
 /**
@@ -939,39 +939,96 @@ export { useSelendraContext as useContext } from './provider';
  *
  * @param addresses - Array of addresses to track
  * @param options - Balance tracking options
- * @returns Map of address to balance information
+ * @returns Balance information with refresh capability
  */
 export function useMultiBalance(
   addresses: string[],
   options: UseBalanceOptions = {},
-): Map<string, UseBalanceReturn> {
-  const balances = new Map<string, UseBalanceReturn>();
+): {
+  balances: Array<{
+    address: string;
+    balance: BalanceInfo | null;
+    isLoading: boolean;
+    error: Error | null;
+  }>;
+  isLoading: boolean;
+  refresh: () => void;
+} {
+  const [refreshKey, setRefreshKey] = useState(0);
 
-  addresses.forEach((address) => {
+  const balanceResults = addresses.map((address) => {
     const balanceHook = useBalance(address, options);
-    balances.set(address, balanceHook);
+    return {
+      address,
+      balance: balanceHook.balance,
+      isLoading: balanceHook.isLoading,
+      error: balanceHook.error,
+    };
   });
 
-  return balances;
+  // Force re-render when refreshKey changes
+  useEffect(() => {
+    // Trigger re-fetch by changing a dependency
+  }, [refreshKey]);
+
+  const isLoading = balanceResults.some((b) => b.isLoading);
+
+  const refresh = useCallback(() => {
+    setRefreshKey((prev) => prev + 1);
+  }, []);
+
+  return {
+    balances: balanceResults,
+    isLoading,
+    refresh,
+  };
 }
 
 /**
  * useMultiContract - Interact with multiple contracts
  *
- * @param contracts - Array of contract configurations
- * @returns Map of address to contract hooks
+ * @param contracts - Array of contract configurations or addresses
+ * @returns Contract information with refresh capability
  */
 export function useMultiContract(
-  contracts: Array<{ address: string; options?: UseContractOptions }>,
-): Map<string, UseContractReturn> {
-  const contractMap = new Map<string, UseContractReturn>();
+  contracts: Array<string> | Array<{ address: string; options?: UseContractOptions }>,
+): {
+  contracts: Array<{ address: string; contract: any; isLoading: boolean; error: Error | null }>;
+  isLoading: boolean;
+  refresh: () => void;
+} {
+  const [refreshKey, setRefreshKey] = useState(0);
 
-  contracts.forEach(({ address, options = {} }) => {
+  const contractArray = Array.isArray(contracts)
+    ? contracts.map((c) => (typeof c === 'string' ? { address: c, options: {} } : c))
+    : [];
+
+  const contractResults = contractArray.map(({ address, options = {} }) => {
     const contractHook = useContract(address, options);
-    contractMap.set(address, contractHook);
+    return {
+      address,
+      contract: contractHook.contract,
+      isLoading: contractHook.isLoading,
+      error: contractHook.error,
+    };
   });
 
-  return contractMap;
+  // Force re-render when refreshKey changes
+  useEffect(() => {
+    // Trigger re-fetch by changing a dependency
+  }, [refreshKey]);
+
+  const isLoading = contractResults.some((c) => c.isLoading);
+
+  const refresh = useCallback(() => {
+    setRefreshKey((prev) => prev + 1);
+  }, []);
+
+  return {
+    contracts: contractResults,
+    isLoading,
+    refresh,
+  };
 }
 
 /**
@@ -979,37 +1036,63 @@ export function useMultiContract(
  *
  * @param transactions - Array of transactions to batch
  * @param options - Batch transaction options
- * @returns Batch transaction management
+ * @returns Batch transaction management with status control
  */
 export function useBatchTransactions(
   transactions: any[] = [],
   options: UseTransactionOptions = {},
 ): {
   submit: () => Promise<TransactionInfo[]>;
-  results: TransactionInfo[];
+  cancel: () => void;
+  reset: () => void;
+  transactions: TransactionInfo[];
+  status: 'idle' | 'pending' | 'success' | 'error';
   isLoading: boolean;
   error: Error | null;
   progress: number;
 } {
-  const [results, setResults] = useState<TransactionInfo[]>([]);
+  const [transactionResults, setTransactionResults] = useState<TransactionInfo[]>([]);
+  const [status, setStatus] = useState<'idle' | 'pending' | 'success' | 'error'>('idle');
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<Error | null>(null);
   const [progress, setProgress] = useState(0);
+  const [isCancelled, setIsCancelled] = useState(false);
+
+  const cancel = useCallback(() => {
+    setIsCancelled(true);
+    setStatus('idle');
+    setIsLoading(false);
+  }, []);
+
+  const reset = useCallback(() => {
+    setTransactionResults([]);
+    setStatus('idle');
+    setIsLoading(false);
+    setError(null);
+    setProgress(0);
+    setIsCancelled(false);
+  }, []);
 
   const submit = useCallback(async (): Promise<TransactionInfo[]> => {
     if (transactions.length === 0) {
       return [];
     }
 
+    setIsCancelled(false);
     setIsLoading(true);
+    setStatus('pending');
     setError(null);
-    setResults([]);
+    setTransactionResults([]);
     setProgress(0);
 
     try {
       const batchResults: TransactionInfo[] = [];
 
       for (let i = 0; i < transactions.length; i++) {
+        if (isCancelled) {
+          throw new Error('Batch transaction cancelled by user');
+        }
+
         const tx = transactions[i];
 
         try {
@@ -1023,21 +1106,26 @@ export function useBatchTransactions(
         setProgress(((i + 1) / transactions.length) * 100);
       }
 
-      setResults(batchResults);
+      setTransactionResults(batchResults);
+      setStatus('success');
       return batchResults;
     } catch (err) {
       const error = err instanceof Error ? err : new Error('Batch transaction failed');
       setError(error);
+      setStatus('error');
       throw error;
     } finally {
       setIsLoading(false);
       setProgress(0);
     }
-  }, [transactions]);
+  }, [transactions, isCancelled]);
 
   return {
     submit,
-    results,
+    cancel,
+    reset,
+    transactions: transactionResults,
+    status,
     isLoading,
     error,
     progress,

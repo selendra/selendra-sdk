@@ -38,10 +38,17 @@ function isOptionSome(codec: Codec): boolean {
  * Helper to convert Codec to number
  */
 function codecToNumber(codec: Codec): number {
-  if ('toNumber' in codec) {
+  if (!codec) {
+    return 0;
+  }
+  if ('toNumber' in codec && typeof (codec as any).toNumber === 'function') {
     return (codec as any).toNumber();
   }
-  return Number(codec.toString());
+  if (typeof codec.toString === 'function') {
+    const str = codec.toString();
+    return isNaN(Number(str)) ? 0 : Number(str);
+  }
+  return 0;
 }
 
 /**
@@ -433,9 +440,18 @@ export class StakingClient {
    * Get active era information
    * @returns Active era index and start time
    */
-  async getActiveEra(): Promise<{ index: number; start: number }> {
+  async getActiveEra(): Promise<{ index: number; start: number } | null> {
     const activeEra = await this.api.query.staking.activeEra();
+
+    if (isOptionNone(activeEra)) {
+      return null;
+    }
+
     const data = unwrapOption(activeEra);
+    if (!data) {
+      return null;
+    }
+
     return {
       index: codecToNumber(data.index),
       start: codecToNumber(unwrapOption(data.start)),
@@ -485,6 +501,19 @@ export class StakingClient {
           .map(([validator, pts]: [any, any]) => [validator.toString(), pts.toNumber()]),
       ),
     };
+  }
+
+  /**
+   * Get current validator set
+   * @returns Array of validator addresses
+   */
+  async getValidators(): Promise<string[]> {
+    if (!this.api.query.session?.validators) {
+      return [];
+    }
+
+    const validators = await this.api.query.session.validators();
+    return Array.isArray(validators) ? validators.map((validator: any) => validator.toString()) : validators.toHuman() as string[];
   }
 
   /**

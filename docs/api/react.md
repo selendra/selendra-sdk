@@ -1,6 +1,6 @@
 # React Components Reference
 
-Complete reference for Selendra React components and hooks.
+Reference for Selendra React components and hooks.
 
 ## Table of Contents
 
@@ -714,7 +714,7 @@ interface TransactionConfirmationProps {
 
 ## Example Usage
 
-### Complete Wallet Component
+###  Wallet Component
 
 ```typescript
 import React, { useState } from 'react';

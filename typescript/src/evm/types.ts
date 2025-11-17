@@ -6,7 +6,7 @@
 // Re-export all EVM types from the main types file
 export * from '../types/evm';
 
-// Additional types specific to the EVM client implementation
+// Types specific to the EVM client implementation
 export type {
   ProviderType,
   Network,

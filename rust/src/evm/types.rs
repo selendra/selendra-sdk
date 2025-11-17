@@ -1,10 +1,10 @@
 //! EVM Type Definitions
 //!
-//! This module contains comprehensive type definitions for EVM operations,
-//! including network types, transaction types, and other EVM-specific data structures.
+//! Type definitions for EVM operations including networks, transactions,
+//! and other EVM-specific data structures.
 
 use crate::types::{Result, SDKError};
-use ethers_core::{
+use ethers::core::{
     types::{
         Address, U256, H256, Bytes, BlockNumber, BlockId, Chain, Transaction, TransactionReceipt,
         Log, Filter, TxHash, EIP1559TransactionRequest, TransactionRequest, AccessList,
@@ -162,7 +162,6 @@ impl FromStr for EVMChain {
     }
 }
 
-/// Enhanced transaction information
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct EnhancedTransaction {
     /// Transaction hash
@@ -203,7 +202,6 @@ pub struct EnhancedTransaction {
     pub status: Option<bool>,
 }
 
-/// Enhanced block information
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct EnhancedBlock {
     /// Block number
@@ -362,7 +360,7 @@ pub struct RPCParameter {
 
 /// Common EVM function signatures
 pub mod function_signatures {
-    use ethers_core::types::H256;
+    use ethers::types::H256;
 
     /// ERC20 Transfer function signature
     pub const ERC20_TRANSFER: [u8; 4] = [0xa9, 0x05, 0x9c, 0xbb];
@@ -420,7 +418,7 @@ pub mod function_signatures {
 
 /// Common event signatures
 pub mod event_signatures {
-    use ethers_core::types::H256;
+    use ethers::types::H256;
 
     /// ERC20 Transfer event signature
     pub const ERC20_TRANSFER: H256 = H256([
@@ -488,7 +486,7 @@ pub mod event_signatures {
 /// Utility functions for EVM types
 pub mod utils {
     use super::*;
-    use ethers_core::utils::{to_checksum, parse_ether};
+    use ethers::utils::{to_checksum, parse_ether};
 
     /// Calculate gas cost
     pub fn calculate_gas_cost(gas_used: U256, gas_price: U256) -> U256 {
@@ -497,7 +495,7 @@ pub mod utils {
 
     /// Format wei as ETH string
     pub fn format_wei_as_eth(wei: U256) -> String {
-        ethers_core::utils::format_ether(wei)
+        ethers::core::utils::format_ether(wei)
     }
 
     /// Parse ETH amount to wei

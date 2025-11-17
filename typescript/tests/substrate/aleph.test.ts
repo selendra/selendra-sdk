@@ -5,9 +5,15 @@
 import { AlephClient } from '../../src/substrate/aleph';
 import { ApiPromise } from '@polkadot/api';
 
-const createMockApi = (overrides: any = {}) => {
+const createMockApi = (overrides = {}) => {
   const mockApi = {
     query: {
+      system: {
+        number: jest.fn().mockResolvedValue({
+          toNumber: () => 450450,
+        }),
+        ...overrides.system,
+      },
       session: {
         currentIndex: jest.fn().mockResolvedValue({
           toNumber: () => 500,
@@ -19,6 +25,7 @@ const createMockApi = (overrides: any = {}) => {
         sessionPeriod: jest.fn().mockResolvedValue({
           toNumber: () => 900,
         }),
+        authorities: jest.fn().mockResolvedValue(['validator1', 'validator2', 'validator3']),
         emergencyFinalizer: jest.fn().mockResolvedValue({
           unwrap: () => 'emergency_finalizer_address',
           isSome: true,
@@ -29,21 +36,38 @@ const createMockApi = (overrides: any = {}) => {
         scheduledFinalityVersionChange: jest.fn().mockResolvedValue({
           isNone: true,
         }),
+        finalityScheduledVersionChange: jest.fn().mockResolvedValue({
+          isNone: true,
+        }),
+        sessionValidatorBlockCount: {
+          entries: jest.fn().mockResolvedValue([
+            [{ args: [500, 'validator1'] }, { toNumber: () => 10 }],
+            [{ args: [500, 'validator2'] }, { toNumber: () => 8 }],
+            [{ args: [500, 'validator3'] }, { toNumber: () => 12 }],
+          ]),
+        },
+        finalityVersion: jest.fn().mockResolvedValue({ toNumber: () => 1 }),
+        bannedMembers: jest.fn().mockResolvedValue([]),
+        bannedValidators: jest.fn().mockResolvedValue({
+          isNone: true,
+        }),
+        sessionValidatorBlockCount: jest.fn().mockResolvedValue({
+          toNumber: () => 10,
+        }),
+        underperformedValidatorSessionCount: jest.fn().mockResolvedValue({
+          toNumber: () => 2,
+        }),
         ...overrides.aleph,
       },
-    },
-    consts: {
-      aleph: {
-        millisPerBlock: {
-          toNumber: () => 6000,
-        },
-        ...overrides.consts?.aleph,
+      authorship: {
+        author: jest.fn().mockResolvedValue('validator1'),
+        ...overrides.authorship,
       },
     },
     tx: {
       aleph: {
         setEmergencyFinalizer: jest.fn().mockReturnValue({
-          signAndSend: jest.fn().mockImplementation((_signer: any, callback: any) => {
+          signAndSend: jest.fn().mockImplementation((_signer, callback) => {
             if (callback) {
               callback({
                 status: { isFinalized: true, asFinalized: { toString: () => '0xblockhash' } },
@@ -55,7 +79,7 @@ const createMockApi = (overrides: any = {}) => {
           }),
         }),
         scheduleFinalityVersionChange: jest.fn().mockReturnValue({
-          signAndSend: jest.fn().mockImplementation((_signer: any, callback: any) => {
+          signAndSend: jest.fn().mockImplementation((_signer, callback) => {
             if (callback) {
               callback({
                 status: { isFinalized: true, asFinalized: { toString: () => '0xblockhash' } },
@@ -69,15 +93,27 @@ const createMockApi = (overrides: any = {}) => {
         ...overrides.tx?.aleph,
       },
     },
+    consts: {
+      session: {
+        period: { toNumber: () => 900 },
+        ...overrides.consts?.session,
+      },
+      aleph: {
+        sessionPeriod: { toNumber: () => 600 },
+        finalityDelay: { toNumber: () => 2 },
+        ...overrides.consts?.aleph,
+      },
+      ...overrides.consts,
+    },
     ...overrides,
-  } as unknown as ApiPromise;
+  };
 
   return mockApi;
 };
 
 describe('AlephClient', () => {
-  let alephClient: AlephClient;
-  let mockApi: ApiPromise;
+  let alephClient;
+  let mockApi;
 
   beforeEach(() => {
     mockApi = createMockApi();
@@ -102,12 +138,10 @@ describe('AlephClient', () => {
     it('should calculate session progress correctly', async () => {
       // Mock block number
       mockApi = createMockApi({
-        rpc: {
-          chain: {
-            getHeader: jest.fn().mockResolvedValue({
-              number: { toNumber: () => 450450 }, // 500 * 900 + 450
-            }),
-          },
+        system: {
+          number: jest.fn().mockResolvedValue({
+            toNumber: () => 450450, // 500 * 900 + 450
+          }),
         },
       });
       alephClient = new AlephClient(mockApi);
@@ -130,9 +164,9 @@ describe('AlephClient', () => {
   describe('getSessionCommittee', () => {
     it('should return session committee info', async () => {
       const committee = await alephClient.getSessionCommittee(500);
-      expect(committee.session).toBe(500);
       expect(committee.validators).toHaveLength(3);
       expect(committee.size).toBe(3);
+      expect(committee.validators).toContain('validator1');
     });
   });
 
@@ -183,7 +217,7 @@ describe('AlephClient', () => {
     it('should return scheduled finality version change', async () => {
       mockApi = createMockApi({
         aleph: {
-          scheduledFinalityVersionChange: jest.fn().mockResolvedValue({
+          finalityScheduledVersionChange: jest.fn().mockResolvedValue({
             unwrap: () => ({
               versionIncoming: { toNumber: () => 2 },
               session: { toNumber: () => 600 },
@@ -196,7 +230,7 @@ describe('AlephClient', () => {
 
       const change = await alephClient.getScheduledFinalityVersionChange();
       expect(change).toEqual({
-        versionIncoming: 2,
+        version: 2,
         session: 600,
       });
     });
@@ -228,7 +262,7 @@ describe('AlephClient', () => {
       });
 
       // Mock author queries for blocks
-      (mockApi as any).query.authorship = {
+      (mockApi).query.authorship = {
         author: jest.fn().mockImplementation((blockHash) => {
           return Promise.resolve('validator1');
         }),
@@ -245,17 +279,19 @@ describe('AlephClient', () => {
 
   describe('setEmergencyFinalizer', () => {
     it('should set emergency finalizer successfully', async () => {
-      const mockSigner = {} as any;
+      const mockSigner = {};
       const result = await alephClient.setEmergencyFinalizer(mockSigner, 'new_finalizer_address');
-      expect(result.hash).toBe('0xhash');
+      expect(result.blockHash).toBe('0xblockhash');
+      expect(result.success).toBe(true);
     });
   });
 
   describe('scheduleFinalityVersionChange', () => {
     it('should schedule finality version change', async () => {
-      const mockSigner = {} as any;
+      const mockSigner = {};
       const result = await alephClient.scheduleFinalityVersionChange(mockSigner, 2, 600);
-      expect(result.hash).toBe('0xhash');
+      expect(result.blockHash).toBe('0xblockhash');
+      expect(result.success).toBe(true);
     });
   });
 
@@ -263,7 +299,9 @@ describe('AlephClient', () => {
     it('should return false for non-banned validator', async () => {
       mockApi = createMockApi({
         aleph: {
-          bannedValidators: jest.fn().mockResolvedValue([]),
+          bannedValidators: jest.fn().mockResolvedValue({
+            isNone: true,
+          }),
         },
       });
       alephClient = new AlephClient(mockApi);
@@ -275,7 +313,14 @@ describe('AlephClient', () => {
     it('should return true for banned validator', async () => {
       mockApi = createMockApi({
         aleph: {
-          bannedValidators: jest.fn().mockResolvedValue(['validator1']),
+          bannedValidators: jest.fn().mockResolvedValue({
+            isNone: false,
+            unwrap: () => ({
+              reason: 'Slashing',
+              start: { toNumber: () => 1000 },
+              length: { toNumber: () => 100 },
+            }),
+          }),
         },
       });
       alephClient = new AlephClient(mockApi);

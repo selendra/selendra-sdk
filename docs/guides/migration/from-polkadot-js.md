@@ -2,7 +2,7 @@
 
 This guide helps developers familiar with Polkadot.js transition to the Selendra SDK while preserving their Substrate knowledge and leveraging additional EVM capabilities.
 
-## 🎯 Quick Reference
+##  Quick Reference
 
 | Polkadot.js Concept | Selendra SDK Equivalent |
 |---------------------|------------------------|
@@ -246,7 +246,7 @@ const addressType = sdk.validateAddress('5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPc
 const isValid = addressType !== 'invalid';
 ```
 
-## 🚀 Advanced Patterns
+##  Advanced Patterns
 
 ### Batch Transactions
 
@@ -310,7 +310,7 @@ const tx = await sdk.tx('Proxy', 'Proxy')
   .signAndSend(proxyMnemonic);
 ```
 
-## 🎯 React Integration
+##  React Integration
 
 ### Polkadot.js with React
 
@@ -358,7 +358,7 @@ function MyComponent() {
 
 ## 🔄 Migration Checklist
 
-### ✅ Direct Replacements
+###  Direct Replacements
 
 - [ ] Replace `ApiPromise.create()` with `new SelendraSDK()`
 - [ ] Replace `api.query.*` with `sdk.query()`
@@ -382,7 +382,7 @@ function MyComponent() {
 - [ ] Implement cross-chain functionality
 - [ ] Utilize built-in caching and state management
 
-## 🛠 Code Migration Example
+##  Code Migration Example
 
 ### Before (Polkadot.js)
 
@@ -552,11 +552,11 @@ const { contract, call, send } = useContract({
 const { validators, nominations, rewards } = useStaking();
 ```
 
-## 🛠 Development Tools
+##  Development Tools
 
 ### Type Safety
 
-The Selendra SDK provides comprehensive TypeScript support:
+The Selendra SDK provides  TypeScript support:
 
 ```typescript
 // Fully typed transactions

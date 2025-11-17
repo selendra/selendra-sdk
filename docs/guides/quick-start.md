@@ -2,29 +2,32 @@
 
 Get up and running with Selendra SDK in minutes.
 
+** Production Notice:** Use TypeScript SDK for production applications. Rust SDK is in development.
+
 ## Prerequisites
 
-- Node.js >= 16 (TypeScript) or Rust >= 1.70
+- Node.js >= 16 (TypeScript -  Production Ready)
+- Rust >= 1.70 (Rust SDK -  Development Only)
 
 ## Installation
 
-### TypeScript
+### TypeScript (Production)
 
 ```bash
 npm install @selendrajs/sdk
 ```
 
-### Rust
+### Rust (Development)
 
 ```toml
 [dependencies]
-selendra-sdk = "0.1.0"
+selendra-sdk = "1.0.0"
 tokio = { version = "1.0", features = ["full"] }
 ```
 
 ## Basic Usage
 
-### TypeScript
+### TypeScript - Substrate ( Production Ready)
 
 ```typescript
 import { SelendraSDK, Network } from "@selendrajs/sdk";
@@ -35,30 +38,26 @@ const sdk = new SelendraSDK()
 
 await sdk.connect();
 
-// Get balance
+// Get balance (Substrate)
 const balance = await sdk.getBalance(address);
 
-// Transfer
+// Transfer (Substrate)
 await sdk.transfer(signer, recipient, amount);
 ```
 
-### Rust
+### TypeScript - EVM ( Beta - 50% )
 
-```rust
-use selendra_sdk::{builder};
+```typescript
+import { EvmClient } from "@selendrajs/sdk";
 
-#[tokio::main]
-async fn main() -> Result<(), Box<dyn std::error::Error>> {
-    let sdk = builder()
-        .substrate_endpoint("wss://rpc.selendra.org")
-        .build()
-        .await?;
+const evm = new EvmClient("https://rpc.selendra.org");
 
-    let block = sdk.substrate().get_latest_block().await?;
-    println!("Block: {}", block.number);
+// Basic EVM operations work
+const balance = await evm.getBalance(address);
+const blockNumber = await evm.getBlockNumber();
 
-    Ok(())
-}
+// Advanced EVM features in development
+// const contract = await evm.getContract(address); // TODO
 ```
 
 ## Common Operations
@@ -93,7 +92,7 @@ const subAddr = accounts.evmToSubstrate(evmAddr);
 ## Next Steps
 
 - [Getting Started Guide](./getting-started.md) - Detailed introduction
-- [API Reference](../api/typescript.md) - Complete API docs
+- [API Reference](../api/typescript.md) -  API docs
 - [Examples](../../typescript/examples/) - Working code samples
 
       // Get chain info
@@ -231,7 +230,7 @@ The SDK supports multiple networks:
 ## Next Steps
 
 - Read the [API Overview](../api/overview.md) for detailed API information
-- Check out the [Examples](../../examples/) for more comprehensive usage patterns
+- Check out the [Examples](../../examples/) for more  usage patterns
 - Learn about [Advanced Usage](./advanced-usage.md) for production-ready applications
 - Explore the [Architecture Guide](./architecture.md) for deep understanding of the SDK
 

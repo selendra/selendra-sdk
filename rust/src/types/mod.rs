@@ -1,10 +1,10 @@
-//! Comprehensive Type Definitions
+//! Type Definitions
 //!
-//! This module contains all the core type definitions used throughout the Selendra SDK,
-//! including error types, result types, and common data structures.
+//! Core type definitions used throughout the Selendra SDK.
 
 use std::fmt;
 use std::error::Error;
+use std::str::FromStr;
 use serde::{Serialize, Deserialize};
 
 /// Core result type used throughout the SDK
@@ -33,6 +33,8 @@ pub enum SDKError {
     SerializationError(String),
     /// Conversion errors
     ConversionError(String),
+    /// Conversion errors
+    Conversion(String),
     /// Invalid format
     InvalidFormat(String),
     /// Operation not implemented
@@ -57,33 +59,55 @@ pub enum SDKError {
     IOError(String),
     /// Unknown or unexpected errors
     Unknown(String),
+    /// Validation errors
+    Validation(String),
+    /// Cryptographic errors
+    Crypto(String),
+    /// Account-related errors
+    Account(String),
+    /// Connection errors
+    Connection(String),
+    /// Transaction errors
+    Transaction(String),
+    /// Contract errors
+    Contract(String),
+    /// Query errors
+    Query(String),
 }
 
 impl fmt::Display for SDKError {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         match self {
-            SDKError::ConnectionError(msg) => write!(f, "Connection error: {}", msg),
-            SDKError::InvalidEndpoint(msg) => write!(f, "Invalid endpoint: {}", msg),
-            SDKError::InvalidAddress(msg) => write!(f, "Invalid address: {}", msg),
-            SDKError::InvalidKey(msg) => write!(f, "Invalid key: {}", msg),
-            SDKError::InvalidChain(msg) => write!(f, "Invalid chain: {}", msg),
-            SDKError::TransactionError(msg) => write!(f, "Transaction error: {}", msg),
-            SDKError::ContractError(msg) => write!(f, "Contract error: {}", msg),
-            SDKError::SigningError(msg) => write!(f, "Signing error: {}", msg),
-            SDKError::SerializationError(msg) => write!(f, "Serialization error: {}", msg),
-            SDKError::ConversionError(msg) => write!(f, "Conversion error: {}", msg),
-            SDKError::InvalidFormat(msg) => write!(f, "Invalid format: {}", msg),
-            SDKError::NotImplemented(msg) => write!(f, "Not implemented: {}", msg),
-            SDKError::InvalidOperation(msg) => write!(f, "Invalid operation: {}", msg),
-            SDKError::NotFound(msg) => write!(f, "Not found: {}", msg),
-            SDKError::PermissionDenied(msg) => write!(f, "Permission denied: {}", msg),
-            SDKError::Timeout(msg) => write!(f, "Timeout: {}", msg),
-            SDKError::AlreadyRunning(msg) => write!(f, "Already running: {}", msg),
-            SDKError::NoWallet(msg) => write!(f, "No wallet: {}", msg),
-            SDKError::BridgeError(msg) => write!(f, "Bridge error: {}", msg),
-            SDKError::GasError(msg) => write!(f, "Gas error: {}", msg),
-            SDKError::IOError(msg) => write!(f, "IO error: {}", msg),
-            SDKError::Unknown(msg) => write!(f, "Unknown error: {}", msg),
+            SDKError::ConnectionError(msg) => write!(f, "Connection error: {msg}"),
+            SDKError::InvalidEndpoint(msg) => write!(f, "Invalid endpoint: {msg}"),
+            SDKError::InvalidAddress(msg) => write!(f, "Invalid address: {msg}"),
+            SDKError::InvalidKey(msg) => write!(f, "Invalid key: {msg}"),
+            SDKError::InvalidChain(msg) => write!(f, "Invalid chain: {msg}"),
+            SDKError::TransactionError(msg) => write!(f, "Transaction error: {msg}"),
+            SDKError::ContractError(msg) => write!(f, "Contract error: {msg}"),
+            SDKError::SigningError(msg) => write!(f, "Signing error: {msg}"),
+            SDKError::SerializationError(msg) => write!(f, "Serialization error: {msg}"),
+            SDKError::ConversionError(msg) => write!(f, "Conversion error: {msg}"),
+            SDKError::Conversion(msg) => write!(f, "Conversion error: {msg}"),
+            SDKError::InvalidFormat(msg) => write!(f, "Invalid format: {msg}"),
+            SDKError::NotImplemented(msg) => write!(f, "Not implemented: {msg}"),
+            SDKError::InvalidOperation(msg) => write!(f, "Invalid operation: {msg}"),
+            SDKError::NotFound(msg) => write!(f, "Not found: {msg}"),
+            SDKError::PermissionDenied(msg) => write!(f, "Permission denied: {msg}"),
+            SDKError::Timeout(msg) => write!(f, "Timeout: {msg}"),
+            SDKError::AlreadyRunning(msg) => write!(f, "Already running: {msg}"),
+            SDKError::NoWallet(msg) => write!(f, "No wallet: {msg}"),
+            SDKError::BridgeError(msg) => write!(f, "Bridge error: {msg}"),
+            SDKError::GasError(msg) => write!(f, "Gas error: {msg}"),
+            SDKError::IOError(msg) => write!(f, "IO error: {msg}"),
+            SDKError::Unknown(msg) => write!(f, "Unknown error: {msg}"),
+            SDKError::Validation(msg) => write!(f, "Validation error: {msg}"),
+            SDKError::Crypto(msg) => write!(f, "Crypto error: {msg}"),
+            SDKError::Account(msg) => write!(f, "Account error: {msg}"),
+            SDKError::Connection(msg) => write!(f, "Connection error: {msg}"),
+            SDKError::Transaction(msg) => write!(f, "Transaction error: {msg}"),
+            SDKError::Contract(msg) => write!(f, "Contract error: {msg}"),
+            SDKError::Query(msg) => write!(f, "Query error: {msg}"),
         }
     }
 }
@@ -106,6 +130,28 @@ impl From<url::ParseError> for SDKError {
     fn from(err: url::ParseError) -> Self {
         SDKError::InvalidEndpoint(err.to_string())
     }
+}
+
+/// Network type enumeration
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
+pub enum Network {
+    /// Selendra mainnet
+    Selendra,
+    /// Selendra testnet
+    SelendraTestnet,
+    /// Custom network
+    Custom,
+}
+
+/// Chain type enumeration
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
+pub enum ChainType {
+    /// Substrate-based chain
+    Substrate,
+    /// EVM-compatible chain
+    EVM,
+    /// Both Substrate and EVM
+    Hybrid,
 }
 
 /// Network configuration
@@ -433,7 +479,7 @@ pub mod utils {
     /// Convert hex string to bytes
     pub fn hex_to_bytes(hex: &str) -> Result<Vec<u8>> {
         hex::decode(hex.trim_start_matches("0x"))
-            .map_err(|e| SDKError::ConversionError(format!("Invalid hex: {}", e)))
+            .map_err(|e| SDKError::ConversionError(format!("Invalid hex: {e}")))
     }
 
     /// Convert bytes to hex string
@@ -442,14 +488,14 @@ pub mod utils {
     }
 
     /// Parse amount string to smallest unit (wei/planck)
-    pub fn parse_amount(amount: &str, decimals: u8) -> Result<String> {
+    pub fn parse_amount(_amount: &str, _decimals: u8) -> Result<String> {
         // This would require the rust_decimal crate for proper decimal handling
         // For now, return a placeholder
         Err(SDKError::NotImplemented("Amount parsing not yet implemented".to_string()))
     }
 
     /// Format amount from smallest unit to readable format
-    pub fn format_amount(amount: &str, decimals: u8) -> Result<String> {
+    pub fn format_amount(_amount: &str, _decimals: u8) -> Result<String> {
         // This would require the rust_decimal crate for proper decimal handling
         // For now, return a placeholder
         Err(SDKError::NotImplemented("Amount formatting not yet implemented".to_string()))
@@ -459,7 +505,7 @@ pub mod utils {
     pub fn calculate_fee(gas_used: u64, gas_price: &str) -> Result<String> {
         let gas_used_decimal = rust_decimal::Decimal::from(gas_used);
         let gas_price_decimal: rust_decimal::Decimal = gas_price.parse()
-            .map_err(|e| SDKError::ConversionError(format!("Invalid gas price: {}", e)))?;
+            .map_err(|e| SDKError::ConversionError(format!("Invalid gas price: {e}")))?;
 
         let fee = gas_used_decimal * gas_price_decimal;
         Ok(fee.to_string())
@@ -479,7 +525,7 @@ pub mod utils {
 
         // Check if it's valid hex
         hex::decode(clean_key)
-            .map_err(|e| SDKError::InvalidKey(format!("Invalid hex in private key: {}", e)))?;
+            .map_err(|e| SDKError::InvalidKey(format!("Invalid hex in private key: {e}")))?;
 
         Ok(())
     }

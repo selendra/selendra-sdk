@@ -1,50 +1,45 @@
 # Tutorial: Building Your First dApp on Selendra
 
-Welcome to your journey into blockchain development! This comprehensive tutorial will guide you through building a complete decentralized application (dApp) on the Selendra blockchain from scratch.
+This tutorial guides you through building a decentralized application (dApp) on the Selendra blockchain.
 
-## 🎯 What We'll Build
+## What We'll Build
 
-We'll create a **Decentralized Task Manager** - a simple but functional dApp where users can:
+We'll create a **Decentralized Task Manager** where users can:
+
 - Create and manage tasks on the blockchain
-- Mark tasks as completed
+- Mark tasks as d
 - Earn rewards for completing tasks
 - View all tasks on the network
 
-This project will teach you fundamental concepts while building something practical and fun!
+## Prerequisites
 
-## 🛠 Prerequisites
+Requirements:
 
-Before we start, make sure you have:
-
-1. **Node.js 18.0+** installed
-2. **Basic knowledge of**:
+1. Node.js 18.0+
+2. Basic knowledge of:
    - JavaScript/TypeScript
-   - React basics
-   - Command line usage
-3. **Development tools**:
-   - VS Code (recommended)
-   - Git installed
+   - React
+   - Command line
+3. Development tools:
+   - Code editor
+   - Git
 
-## 📚 What You'll Learn
+## What You'll Learn
 
-- ✅ Setting up a Selendra development environment
-- ✅ Connecting to the blockchain
-- ✅ Creating and managing user accounts
-- ✅ Building a React frontend with blockchain integration
-- ✅ Handling blockchain transactions
-- ✅ Reading and writing blockchain data
-- ✅ Building responsive UI components
-- ✅ Error handling and best practices
-
-Let's dive in! 🚀
-
----
+- Setting up a Selendra development environment
+- Connecting to the blockchain
+- Creating and managing user accounts
+- Building a React frontend with blockchain integration
+- Handling blockchain transactions
+- Reading and writing blockchain data
+- Building UI components
+- Error handling
 
 ## Step 1: Project Setup
 
 ### Initialize Your Project
 
-First, let's create a new React project with TypeScript:
+Create a new React project with TypeScript:
 
 ```bash
 # Create new React app with TypeScript
@@ -71,14 +66,12 @@ Update `tailwind.config.js`:
 ```javascript
 /** @type {import('tailwindcss').Config} */
 module.exports = {
-  content: [
-    "./src/**/*.{js,jsx,ts,tsx}",
-  ],
+  content: ["./src/**/*.{js,jsx,ts,tsx}"],
   theme: {
     extend: {},
   },
   plugins: [],
-}
+};
 ```
 
 Replace `src/index.css` with:
@@ -90,9 +83,9 @@ Replace `src/index.css` with:
 
 body {
   margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-    sans-serif;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto",
+    "Oxygen", "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans",
+    "Helvetica Neue", sans-serif;
 }
 ```
 
@@ -105,16 +98,16 @@ body {
 Replace `src/App.tsx` with:
 
 ```tsx
-import React from 'react';
-import { SelendraProvider } from '@selendrajs/sdk/react';
-import { TaskManager } from './components/TaskManager';
-import './App.css';
+import React from "react";
+import { SelendraProvider } from "@selendrajs/sdk/react";
+import { TaskManager } from "./components/TaskManager";
+import "./App.css";
 
 // Initialize SDK
 const sdk = new SelendraSDK({
-  network: 'testnet', // Use testnet for development
-  wsEndpoint: 'wss://testnet-rpc.selendra.org',
-  autoConnect: true
+  network: "testnet", // Use testnet for development
+  wsEndpoint: "wss://testnet-rpc.selendra.org",
+  autoConnect: true,
 });
 
 function App() {
@@ -135,17 +128,17 @@ export default App;
 Create `src/components/TaskManager.tsx`:
 
 ```tsx
-import React, { useState, useEffect } from 'react';
-import { useAccount, useBalance, SelendraSDK } from '@selendrajs/sdk/react';
-import { WalletConnect } from './WalletConnect';
-import { TaskList } from './TaskList';
-import { CreateTaskForm } from './CreateTaskForm';
+import React, { useState, useEffect } from "react";
+import { useAccount, useBalance, SelendraSDK } from "@selendrajs/sdk/react";
+import { WalletConnect } from "./WalletConnect";
+import { TaskList } from "./TaskList";
+import { CreateTaskForm } from "./CreateTaskForm";
 
 interface Task {
   id: string;
   title: string;
   description: string;
-  completed: boolean;
+  d: boolean;
   creator: string;
   assignee?: string;
   reward: bigint;
@@ -176,9 +169,7 @@ export const TaskManager: React.FC = () => {
   return (
     <div className="container mx-auto px-4 py-8">
       <header className="mb-8">
-        <h1 className="text-4xl font-bold text-gray-900 mb-2">
-          Task Manager
-        </h1>
+        <h1 className="text-4xl font-bold text-gray-900 mb-2">Task Manager</h1>
         <div className="flex items-center space-x-4 text-gray-600">
           <span>Balance: {balance?.free} SEL</span>
           <span>•</span>
@@ -188,15 +179,17 @@ export const TaskManager: React.FC = () => {
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
         <div>
-          <CreateTaskForm onTaskCreated={(task) => setTasks([task, ...tasks])} />
+          <CreateTaskForm
+            onTaskCreated={(task) => setTasks([task, ...tasks])}
+          />
         </div>
         <div>
           <TaskList
             tasks={tasks}
             onTaskUpdate={(updatedTask) => {
-              setTasks(tasks.map(t =>
-                t.id === updatedTask.id ? updatedTask : t
-              ));
+              setTasks(
+                tasks.map((t) => (t.id === updatedTask.id ? updatedTask : t))
+              );
             }}
           />
         </div>
@@ -213,23 +206,24 @@ export const TaskManager: React.FC = () => {
 Create `src/components/WalletConnect.tsx`:
 
 ```tsx
-import React, { useState } from 'react';
-import { useAccount } from '@selendrajs/sdk/react';
+import React, { useState } from "react";
+import { useAccount } from "@selendrajs/sdk/react";
 
 export const WalletConnect: React.FC = () => {
   const [isCreating, setIsCreating] = useState(false);
-  const { account, isConnected, connect, disconnect, createAccount } = useAccount();
+  const { account, isConnected, connect, disconnect, createAccount } =
+    useAccount();
 
   const handleCreateWallet = async () => {
     setIsCreating(true);
     try {
       await createAccount({
-        type: 'both', // Create both Substrate and EVM accounts
-        name: 'Task Manager Account'
+        type: "both", // Create both Substrate and EVM accounts
+        name: "Task Manager Account",
       });
     } catch (error) {
-      console.error('Failed to create account:', error);
-      alert('Failed to create wallet. Please try again.');
+      console.error("Failed to create account:", error);
+      alert("Failed to create wallet. Please try again.");
     } finally {
       setIsCreating(false);
     }
@@ -243,7 +237,7 @@ export const WalletConnect: React.FC = () => {
           disabled={isCreating}
           className="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 disabled:opacity-50 transition-colors"
         >
-          {isCreating ? 'Creating Wallet...' : 'Create New Wallet'}
+          {isCreating ? "Creating Wallet..." : "Create New Wallet"}
         </button>
         <p className="text-sm text-gray-600">
           This will create a new blockchain wallet for you
@@ -280,18 +274,20 @@ export const WalletConnect: React.FC = () => {
 Create `src/components/CreateTaskForm.tsx`:
 
 ```tsx
-import React, { useState } from 'react';
-import { useTransaction } from '@selendrajs/sdk/react';
-import { Task } from './TaskManager';
+import React, { useState } from "react";
+import { useTransaction } from "@selendrajs/sdk/react";
+import { Task } from "./TaskManager";
 
 interface CreateTaskFormProps {
   onTaskCreated: (task: Task) => void;
 }
 
-export const CreateTaskForm: React.FC<CreateTaskFormProps> = ({ onTaskCreated }) => {
-  const [title, setTitle] = useState('');
-  const [description, setDescription] = useState('');
-  const [reward, setReward] = useState('');
+export const CreateTaskForm: React.FC<CreateTaskFormProps> = ({
+  onTaskCreated,
+}) => {
+  const [title, setTitle] = useState("");
+  const [description, setDescription] = useState("");
+  const [reward, setReward] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const { send } = useTransaction();
 
@@ -299,7 +295,7 @@ export const CreateTaskForm: React.FC<CreateTaskFormProps> = ({ onTaskCreated })
     e.preventDefault();
 
     if (!title.trim() || !reward) {
-      alert('Please fill in all required fields');
+      alert("Please fill in all required fields");
       return;
     }
 
@@ -315,36 +311,35 @@ export const CreateTaskForm: React.FC<CreateTaskFormProps> = ({ onTaskCreated })
         title: title.trim(),
         description: description.trim(),
         reward: rewardAmount,
-        taskId
+        taskId,
       };
 
       // In a real app, this would interact with a smart contract
       // For now, we'll simulate blockchain storage
       const tx = await send({
         data: JSON.stringify(taskData),
-        value: rewardAmount // Stake reward amount
+        value: rewardAmount, // Stake reward amount
       });
 
       const newTask: Task = {
         id: taskId,
         title: title.trim(),
         description: description.trim(),
-        completed: false,
+        d: false,
         creator: tx.from, // Would be current account
         reward: rewardAmount,
-        createdAt: Date.now()
+        createdAt: Date.now(),
       };
 
       onTaskCreated(newTask);
 
       // Reset form
-      setTitle('');
-      setDescription('');
-      setReward('');
-
+      setTitle("");
+      setDescription("");
+      setReward("");
     } catch (error) {
-      console.error('Failed to create task:', error);
-      alert('Failed to create task. Please try again.');
+      console.error("Failed to create task:", error);
+      alert("Failed to create task. Please try again.");
     } finally {
       setIsLoading(false);
     }
@@ -406,7 +401,7 @@ export const CreateTaskForm: React.FC<CreateTaskFormProps> = ({ onTaskCreated })
           disabled={isLoading}
           className="w-full bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-700 disabled:opacity-50 transition-colors"
         >
-          {isLoading ? 'Creating Task...' : 'Create Task'}
+          {isLoading ? "Creating Task..." : "Create Task"}
         </button>
       </form>
     </div>
@@ -421,9 +416,9 @@ export const CreateTaskForm: React.FC<CreateTaskFormProps> = ({ onTaskCreated })
 Create `src/components/TaskList.tsx`:
 
 ```tsx
-import React, { useState } from 'react';
-import { Task } from './TaskManager';
-import { useTransaction } from '@selendrajs/sdk/react';
+import React, { useState } from "react";
+import { Task } from "./TaskManager";
+import { useTransaction } from "@selendrajs/sdk/react";
 
 interface TaskListProps {
   tasks: Task[];
@@ -434,29 +429,28 @@ export const TaskList: React.FC<TaskListProps> = ({ tasks, onTaskUpdate }) => {
   const [selectedTask, setSelectedTask] = useState<Task | null>(null);
   const { send } = useTransaction();
 
-  const handleCompleteTask = async (task: Task) => {
-    if (!confirm('Are you sure you want to mark this task as completed?')) {
+  const handleTask = async (task: Task) => {
+    if (!confirm("Are you sure you want to mark this task as d?")) {
       return;
     }
 
     try {
-      // Send transaction to complete task
+      // Send transaction to  task
       const tx = await send({
         data: JSON.stringify({
-          action: 'complete',
-          taskId: task.id
-        })
+          action: "",
+          taskId: task.id,
+        }),
       });
 
       // Update task locally
-      const updatedTask = { ...task, completed: true };
+      const updatedTask = { ...task, d: true };
       onTaskUpdate(updatedTask);
 
-      alert('Task completed successfully! Check your wallet for the reward.');
-
+      alert("Task d successfully! Check your wallet for the reward.");
     } catch (error) {
-      console.error('Failed to complete task:', error);
-      alert('Failed to complete task. Please try again.');
+      console.error("Failed to  task:", error);
+      alert("Failed to  task. Please try again.");
     }
   };
 
@@ -484,23 +478,25 @@ export const TaskList: React.FC<TaskListProps> = ({ tasks, onTaskUpdate }) => {
         <div
           key={task.id}
           className={`bg-white rounded-lg shadow-sm p-6 border-l-4 ${
-            task.completed
-              ? 'border-green-500 opacity-75'
-              : 'border-blue-500'
+            task.d ? "border-green-500 opacity-75" : "border-blue-500"
           }`}
         >
           <div className="flex items-start justify-between mb-3">
-            <h3 className={`text-lg font-medium ${
-              task.completed ? 'text-gray-500 line-through' : 'text-gray-900'
-            }`}>
+            <h3
+              className={`text-lg font-medium ${
+                task.d ? "text-gray-500 line-through" : "text-gray-900"
+              }`}
+            >
               {task.title}
             </h3>
-            <span className={`px-3 py-1 rounded-full text-sm font-medium ${
-              task.completed
-                ? 'bg-green-100 text-green-800'
-                : 'bg-blue-100 text-blue-800'
-            }`}>
-              {task.completed ? 'Completed' : 'Open'}
+            <span
+              className={`px-3 py-1 rounded-full text-sm font-medium ${
+                task.d
+                  ? "bg-green-100 text-green-800"
+                  : "bg-blue-100 text-blue-800"
+              }`}
+            >
+              {task.d ? "d" : "Open"}
             </span>
           </div>
 
@@ -517,12 +513,12 @@ export const TaskList: React.FC<TaskListProps> = ({ tasks, onTaskUpdate }) => {
               </span>
             </div>
 
-            {!task.completed && (
+            {!task.d && (
               <button
-                onClick={() => handleCompleteTask(task)}
+                onClick={() => handleTask(task)}
                 className="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 transition-colors text-sm"
               >
-                Complete Task
+                Task
               </button>
             )}
           </div>
@@ -555,7 +551,7 @@ Open http://localhost:3000 in your browser.
    - Description: "Create a reusable button component"
    - Reward: "10"
 3. **View Your Task** - See it appear in the task list
-4. **Complete the Task** - Click "Complete Task" to simulate completion
+4. ** the Task** - Click " Task" to simulate completion
 5. **Check Balance** - Observe how your balance changes
 
 ---
@@ -569,11 +565,11 @@ Let's make our tasks persist on the blockchain by creating a simple contract:
 Create `src/contracts/taskContract.ts`:
 
 ```tsx
-import { SelendraSDK } from '@selendrajs/sdk';
+import { SelendraSDK } from "@selendrajs/sdk";
 
 export class TaskContract {
   private sdk: SelendraSDK;
-  private storageKey = 'selendra_tasks';
+  private storageKey = "selendra_tasks";
 
   constructor(sdk: SelendraSDK) {
     this.sdk = sdk;
@@ -584,9 +580,9 @@ export class TaskContract {
     // For this tutorial, we'll use blockchain storage
     const tx = await this.sdk.sendTransaction({
       data: JSON.stringify({
-        action: 'save_task',
-        task
-      })
+        action: "save_task",
+        task,
+      }),
     });
 
     // Save to localStorage for demo purposes
@@ -600,19 +596,19 @@ export class TaskContract {
     return this.getLocalTasks();
   }
 
-  async completeTask(taskId: string): Promise<void> {
+  async Task(taskId: string): Promise<void> {
     const tx = await this.sdk.sendTransaction({
       data: JSON.stringify({
-        action: 'complete_task',
-        taskId
-      })
+        action: "_task",
+        taskId,
+      }),
     });
 
     // Update local storage
     const tasks = this.getLocalTasks();
-    const taskIndex = tasks.findIndex(t => t.id === taskId);
+    const taskIndex = tasks.findIndex((t) => t.id === taskId);
     if (taskIndex !== -1) {
-      tasks[taskIndex].completed = true;
+      tasks[taskIndex].d = true;
       localStorage.setItem(this.storageKey, JSON.stringify(tasks));
     }
   }
@@ -629,8 +625,8 @@ export class TaskContract {
 Modify `src/components/TaskManager.tsx` to use the contract:
 
 ```tsx
-import { TaskContract } from '../contracts/taskContract';
-import { useSelendra } from '@selendrajs/sdk/react';
+import { TaskContract } from "../contracts/taskContract";
+import { useSelendra } from "@selendrajs/sdk/react";
 
 // Add to component
 const sdk = useSelendra();
@@ -681,7 +677,7 @@ interface Task {
     placeholder="Enter wallet address"
     className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
   />
-</div>
+</div>;
 ```
 
 ### Task Filtering
@@ -689,32 +685,35 @@ interface Task {
 Add filtering capabilities:
 
 ```tsx
-const [filter, setFilter] = useState<'all' | 'open' | 'completed'>('all');
+const [filter, setFilter] = useState<"all" | "open" | "d">("all");
 
-const filteredTasks = tasks.filter(task => {
+const filteredTasks = tasks.filter((task) => {
   switch (filter) {
-    case 'open': return !task.completed;
-    case 'completed': return task.completed;
-    default: return true;
+    case "open":
+      return !task.d;
+    case "d":
+      return task.d;
+    default:
+      return true;
   }
 });
 
 // Add filter buttons
 <div className="flex space-x-2 mb-4">
-  {['all', 'open', 'completed'].map((filterType) => (
+  {["all", "open", "d"].map((filterType) => (
     <button
       key={filterType}
       onClick={() => setFilter(filterType as any)}
       className={`px-4 py-2 rounded-lg ${
         filter === filterType
-          ? 'bg-blue-600 text-white'
-          : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+          ? "bg-blue-600 text-white"
+          : "bg-gray-100 text-gray-700 hover:bg-gray-200"
       }`}
     >
       {filterType.charAt(0).toUpperCase() + filterType.slice(1)}
     </button>
   ))}
-</div>
+</div>;
 ```
 
 ---
@@ -777,7 +776,7 @@ Congratulations! 🎉 You've built your first dApp on Selendra. Here are ways to
 ### Production Considerations
 
 1. **Security** - Add input validation and sanitization
-2. **Error Handling** - Implement comprehensive error management
+2. **Error Handling** - Implement error management
 3. **Loading States** - Better UX for async operations
 4. **Mobile Responsive** - Optimize for mobile devices
 5. **Testing** - Add unit and integration tests
@@ -794,36 +793,39 @@ Congratulations! 🎉 You've built your first dApp on Selendra. Here are ways to
 
 ## 🎓 What You've Learned
 
-✅ **Blockchain Integration**: Connected React app to Selendra blockchain
-✅ **Account Management**: Created and managed blockchain wallets
-✅ **Transactions**: Handled sending and receiving blockchain transactions
-✅ **State Management**: Managed app state with blockchain data
-✅ **UI/UX**: Built responsive, user-friendly interfaces
-✅ **Error Handling**: Implemented proper error management
-✅ **Deployment**: Published your dApp to the web
+**Blockchain Integration**: Connected React app to Selendra blockchain
+**Account Management**: Created and managed blockchain wallets
+**Transactions**: Handled sending and receiving blockchain transactions
+**State Management**: Managed app state with blockchain data
+**UI/UX**: Built responsive, user-friendly interfaces
+**Error Handling**: Implemented proper error management
+**Deployment**: Published your dApp to the web
 
 ---
 
-## 🛠 Additional Resources
+## Additional Resources
 
 ### Documentation
+
 - [Selendra SDK Documentation](../../api/)
 - [React Integration Guide](../../api/react.md)
 - [Error Handling Guide](../guides/error-handling.md)
 
 ### Community
+
 - [Discord Server](https://discord.gg/selendra)
 - [GitHub Discussions](https://github.com/selendra/selendra-sdk/discussions)
 - [Developer Forum](https://forum.selendra.org)
 
 ### Examples
+
 - [Simple Wallet Example](../../examples/simple-wallet/)
 - [DeFi Swap App](../../examples/defi-swap-app/)
 - [NFT Marketplace](../../examples/nft-marketplace/)
 
 ---
 
-## 🚀 Continue Your Journey
+## Continue Your Journey
 
 You're now ready to explore more advanced topics:
 

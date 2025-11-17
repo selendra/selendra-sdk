@@ -6,7 +6,7 @@ import { SelendraSDK } from '../src';
 import { testUtils } from '../src/test/setup';
 
 describe('SelendraSDK', () => {
-  let sdk: SelendraSDK;
+  let sdk;
 
   beforeEach(() => {
     sdk = new SelendraSDK({

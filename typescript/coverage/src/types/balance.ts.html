@@ -25,28 +25,28 @@
             <div class='fl pad1y space-right2'>
                 <span class="strong">0% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>0/73</span>
+                <span class='fraction'>0/60</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
                 <span class="strong">0% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>0/49</span>
+                <span class='fraction'>0/47</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
                 <span class="strong">0% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>0/11</span>
+                <span class='fraction'>0/10</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
                 <span class="strong">0% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>0/73</span>
+                <span class='fraction'>0/60</span>
             </div>
         
             
@@ -448,18 +448,6 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -583,7 +571,19 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -805,18 +805,18 @@ export type { Balance };
 /**
  * Balance unit enumeration
  */
-<span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >export enum B</span>alanceUnit {</span>
-<span class="cstat-no" title="statement not covered" >  WEI = 'wei',</span>
-<span class="cstat-no" title="statement not covered" >  KWEI = 'kwei',</span>
-<span class="cstat-no" title="statement not covered" >  MWEI = 'mwei',</span>
-<span class="cstat-no" title="statement not covered" >  GWEI = 'gwei',</span>
-<span class="cstat-no" title="statement not covered" >  MICRO = 'micro',</span>
-<span class="cstat-no" title="statement not covered" >  MILLI = 'milli',</span>
-<span class="cstat-no" title="statement not covered" >  ETH = 'eth',</span>
-<span class="cstat-no" title="statement not covered" >  KETH = 'keth',</span>
-<span class="cstat-no" title="statement not covered" >  METH = 'meth',</span>
-<span class="cstat-no" title="statement not covered" >  PLANCK = 'planck',</span>
-<span class="cstat-no" title="statement not covered" >  ATTO = 'atto',</span>
+export enum BalanceUnit {
+  WEI = 'wei',
+  KWEI = 'kwei',
+  MWEI = 'mwei',
+  GWEI = 'gwei',
+  MICRO = 'micro',
+  MILLI = 'milli',
+  ETH = 'eth',
+  KETH = 'keth',
+  METH = 'meth',
+  PLANCK = 'planck',
+  ATTO = 'atto',
 }
 &nbsp;
 /**
@@ -940,9 +940,9 @@ export interface BalanceConversionRates {
 /**
  * Balance utility functions
  */
-<span class="cstat-no" title="statement not covered" >export class B</span>alanceUtils {
+export class BalanceUtils {
   /** Decimal places for different units */
-  private static readonly <span class="cstat-no" title="statement not covered" >UNIT_DECIMALS: Record&lt;BalanceUnit, number&gt; = {</span>
+  private static readonly UNIT_DECIMALS: Record&lt;BalanceUnit, number&gt; = <span class="cstat-no" title="statement not covered" >{</span>
     [BalanceUnit.WEI]: 0,
     [BalanceUnit.KWEI]: 3,
     [BalanceUnit.MWEI]: 6,
@@ -959,7 +959,7 @@ export interface BalanceConversionRates {
   /**
    * Convert balance to different unit
    */
-<span class="fstat-no" title="function not covered" >  static </span>convert(balance: Balance, fromUnit: BalanceUnit, toUnit: BalanceUnit): BalanceCalculation {
+<span class="fstat-no" title="function not covered" >  st</span>atic convert(balance: Balance, fromUnit: BalanceUnit, toUnit: BalanceUnit): BalanceCalculation {
     const fromDecimals = <span class="cstat-no" title="statement not covered" >this.UNIT_DECIMALS[fromUnit];</span>
     const toDecimals = <span class="cstat-no" title="statement not covered" >this.UNIT_DECIMALS[toUnit];</span>
     const decimalDifference = <span class="cstat-no" title="statement not covered" >toDecimals - fromDecimals;</span>
@@ -990,7 +990,7 @@ export interface BalanceConversionRates {
   /**
    * Format balance for display
    */
-<span class="fstat-no" title="function not covered" >  static </span>format(balance: Balance, options: BalanceFormatOptions = <span class="branch-0 cbranch-no" title="branch not covered" >{})</span>: string {
+<span class="fstat-no" title="function not covered" >  st</span>atic format(balance: Balance, options: BalanceFormatOptions = <span class="branch-0 cbranch-no" title="branch not covered" >{})</span>: string {
     const {
       unit = <span class="branch-0 cbranch-no" title="branch not covered" >BalanceUnit.ETH,</span>
       decimals = <span class="branch-0 cbranch-no" title="branch not covered" >6,</span>
@@ -1029,7 +1029,7 @@ export interface BalanceConversionRates {
   /**
    * Parse formatted balance string
    */
-<span class="fstat-no" title="function not covered" >  static </span>parse(formatted: string, unit: BalanceUnit = <span class="branch-0 cbranch-no" title="branch not covered" >BalanceUnit.ETH)</span>: Balance {
+<span class="fstat-no" title="function not covered" >  st</span>atic parse(formatted: string, unit: BalanceUnit = <span class="branch-0 cbranch-no" title="branch not covered" >BalanceUnit.ETH)</span>: Balance {
     // Remove unit suffix and whitespace
     const numeric = <span class="cstat-no" title="statement not covered" >formatted.replace(/[a-zA-Z]/g, '').trim();</span>
 &nbsp;
@@ -1049,7 +1049,7 @@ export interface BalanceConversionRates {
   /**
    * Calculate transaction fee
    */
-<span class="fstat-no" title="function not covered" >  static </span>calculateFee(
+<span class="fstat-no" title="function not covered" >  st</span>atic calculateFee(
     weight: number,
     weightPrice: Balance,
     length: number,
@@ -1075,7 +1075,7 @@ export interface BalanceConversionRates {
   /**
    * Compare two balances
    */
-<span class="fstat-no" title="function not covered" >  static </span>compare(balance1: Balance, balance2: Balance): -1 | 0 | 1 {
+<span class="fstat-no" title="function not covered" >  st</span>atic compare(balance1: Balance, balance2: Balance): -1 | 0 | 1 {
     const b1 = <span class="cstat-no" title="statement not covered" >typeof balance1 === 'string' ? BigInt(balance1) : balance1;</span>
     const b2 = <span class="cstat-no" title="statement not covered" >typeof balance2 === 'string' ? BigInt(balance2) : balance2;</span>
 &nbsp;
@@ -1091,7 +1091,7 @@ export interface BalanceConversionRates {
   /**
    * Check if balance is sufficient for transaction
    */
-<span class="fstat-no" title="function not covered" >  static </span>isSufficient(balance: Balance, requiredAmount: Balance, fee: Balance = <span class="branch-0 cbranch-no" title="branch not covered" >'0')</span>: boolean {
+<span class="fstat-no" title="function not covered" >  st</span>atic isSufficient(balance: Balance, requiredAmount: Balance, fee: Balance = <span class="branch-0 cbranch-no" title="branch not covered" >'0')</span>: boolean {
     const balanceBigInt = <span class="cstat-no" title="statement not covered" >typeof balance === 'string' ? BigInt(balance) : balance;</span>
     const amountBigInt =
 <span class="cstat-no" title="statement not covered" >      typeof requiredAmount === 'string' ? BigInt(requiredAmount) : requiredAmount;</span>
@@ -1103,7 +1103,7 @@ export interface BalanceConversionRates {
   /**
    * Add two balances
    */
-<span class="fstat-no" title="function not covered" >  static </span>add(balance1: Balance, balance2: Balance): Balance {
+<span class="fstat-no" title="function not covered" >  st</span>atic add(balance1: Balance, balance2: Balance): Balance {
     const b1 = <span class="cstat-no" title="statement not covered" >typeof balance1 === 'string' ? BigInt(balance1) : balance1;</span>
     const b2 = <span class="cstat-no" title="statement not covered" >typeof balance2 === 'string' ? BigInt(balance2) : balance2;</span>
 <span class="cstat-no" title="statement not covered" >    return (b1 + b2).toString();</span>
@@ -1112,7 +1112,7 @@ export interface BalanceConversionRates {
   /**
    * Subtract one balance from another
    */
-<span class="fstat-no" title="function not covered" >  static </span>subtract(balance1: Balance, balance2: Balance): Balance {
+<span class="fstat-no" title="function not covered" >  st</span>atic subtract(balance1: Balance, balance2: Balance): Balance {
     const b1 = <span class="cstat-no" title="statement not covered" >typeof balance1 === 'string' ? BigInt(balance1) : balance1;</span>
     const b2 = <span class="cstat-no" title="statement not covered" >typeof balance2 === 'string' ? BigInt(balance2) : balance2;</span>
 <span class="cstat-no" title="statement not covered" >    return (b1 - b2).toString();</span>
@@ -1121,7 +1121,7 @@ export interface BalanceConversionRates {
   /**
    * Multiply balance by a number
    */
-<span class="fstat-no" title="function not covered" >  static </span>multiply(balance: Balance, multiplier: number): Balance {
+<span class="fstat-no" title="function not covered" >  st</span>atic multiply(balance: Balance, multiplier: number): Balance {
     const b = <span class="cstat-no" title="statement not covered" >typeof balance === 'string' ? BigInt(balance) : balance;</span>
 <span class="cstat-no" title="statement not covered" >    return ((b * BigInt(Math.floor(multiplier * 1000000))) / BigInt(1000000)).toString();</span>
   }
@@ -1129,7 +1129,7 @@ export interface BalanceConversionRates {
   /**
    * Divide balance by a number
    */
-<span class="fstat-no" title="function not covered" >  static </span>divide(balance: Balance, divisor: number): Balance {
+<span class="fstat-no" title="function not covered" >  st</span>atic divide(balance: Balance, divisor: number): Balance {
     const b = <span class="cstat-no" title="statement not covered" >typeof balance === 'string' ? BigInt(balance) : balance;</span>
 <span class="cstat-no" title="statement not covered" >    return ((b * BigInt(1000000)) / BigInt(Math.floor(divisor * 1000000))).toString();</span>
   }
@@ -1141,7 +1141,7 @@ export interface BalanceConversionRates {
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2025-11-16T13:35:36.268Z
+                at 2025-11-16T16:15:54.838Z
             </div>
         <script src="../../prettify.js"></script>
         <script>

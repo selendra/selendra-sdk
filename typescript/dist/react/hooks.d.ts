@@ -304,29 +304,50 @@ export { useSelendraContext as useContext } from './provider';
  *
  * @param addresses - Array of addresses to track
  * @param options - Balance tracking options
- * @returns Map of address to balance information
+ * @returns Balance information with refresh capability
  */
-export declare function useMultiBalance(addresses: string[], options?: UseBalanceOptions): Map<string, UseBalanceReturn>;
+export declare function useMultiBalance(addresses: string[], options?: UseBalanceOptions): {
+    balances: Array<{
+        address: string;
+        balance: BalanceInfo | null;
+        isLoading: boolean;
+        error: Error | null;
+    }>;
+    isLoading: boolean;
+    refresh: () => void;
+};
 /**
  * useMultiContract - Interact with multiple contracts
  *
- * @param contracts - Array of contract configurations
- * @returns Map of address to contract hooks
+ * @param contracts - Array of contract configurations or addresses
+ * @returns Contract information with refresh capability
  */
-export declare function useMultiContract(contracts: Array<{
+export declare function useMultiContract(contracts: Array<string> | Array<{
     address: string;
     options?: UseContractOptions;
-}>): Map<string, UseContractReturn>;
+}>): {
+    contracts: Array<{
+        address: string;
+        contract: any;
+        isLoading: boolean;
+        error: Error | null;
+    }>;
+    isLoading: boolean;
+    refresh: () => void;
+};
 /**
  * useBatchTransactions - Batch multiple transactions
  *
  * @param transactions - Array of transactions to batch
  * @param options - Batch transaction options
- * @returns Batch transaction management
+ * @returns Batch transaction management with status control
  */
 export declare function useBatchTransactions(transactions?: any[], options?: UseTransactionOptions): {
     submit: () => Promise<TransactionInfo[]>;
-    results: TransactionInfo[];
+    cancel: () => void;
+    reset: () => void;
+    transactions: TransactionInfo[];
+    status: 'idle' | 'pending' | 'success' | 'error';
     isLoading: boolean;
     error: Error | null;
     progress: number;

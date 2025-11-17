@@ -1,6 +1,6 @@
 # Build Web3 Applications on Selendra
 
-The official **Selendra SDK** is your gateway to building powerful decentralized applications on the Selendra blockchain. Whether you're creating simple wallets or complex enterprise solutions, our SDK provides everything you need to bring your Web3 vision to life.
+The official **Selendra SDK** is your gateway to building  decentralized applications on the Selendra blockchain. Whether you're creating simple wallets or complex enterprise solutions, our SDK provides everything you need to bring your Web3 vision to life.
 
 ## Why Build on Selendra?
 
@@ -35,7 +35,7 @@ const balance = await sdk.getBalance(account.address);
 ### DeFi & Financial Services
 Transform traditional finance with blockchain technology.
 
-- **Digital Banks** - Complete banking with accounts, transfers, payments
+- **Digital Banks** -  banking with accounts, transfers, payments
 - **Payment Gateways** - Merchant processing and online payments
 - **Lending Platforms** - DeFi lending, borrowing, and yield farming
 - **Insurance** - Decentralized insurance and risk management
@@ -102,7 +102,7 @@ Create, trade, and manage unique digital assets.
 ### Governance & DAOs
 Build transparent, community-governed organizations.
 
-- **DAO Platforms** - Complete decentralized organization frameworks
+- **DAO Platforms** -  decentralized organization frameworks
 - **Voting Systems** - Secure and transparent voting
 - **Treasury Management** - Collective fund management
 - **Proposal Systems** - Community governance tools
@@ -226,7 +226,7 @@ cd selendra-sdk/examples/defi-swap-app
 ```
 
 ### Prerequisites
-- **Node.js 16+** - Modern JavaScript runtime
+- **Node.js 16+** -  JavaScript runtime
 - **TypeScript** - For type-safe development
 - **React** - For web applications (optional)
 - **Basic Blockchain Knowledge** - Understanding of wallets, transactions
@@ -243,8 +243,8 @@ cd selendra-sdk/examples/defi-swap-app
 ## Developer Resources
 
 ### Learning & Documentation
-- [Official Documentation](https://docs.selendra.org) - Comprehensive guides
-- [API Reference](https://api.selendra.org) - Complete API docs
+- [Official Documentation](https://docs.selendra.org) -  guides
+- [API Reference](https://api.selendra.org) -  API docs
 - [Tutorials](https://tutorials.selendra.org) - Step-by-step guides
 - [Developer Courses](https://learn.selendra.org) - Structured learning
 
@@ -267,7 +267,7 @@ cd selendra-sdk/examples/defi-swap-app
 As the **official SDK for Selendra blockchain**, we provide:
 
 - **Production-Ready Infrastructure** - Battle-tested by enterprise applications
-- **Comprehensive Tooling** - Everything needed for Web3 development
+- ** Tooling** - Everything needed for Web3 development
 - **Professional Support** - Enterprise-grade assistance and consulting
 - **Active Community** - Thriving developer ecosystem
 - **Continuous Innovation** - Regular updates and new features

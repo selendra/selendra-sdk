@@ -23,9 +23,9 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">2.34% </span>
+                <span class="strong">0% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>8/341</span>
+                <span class='fraction'>0/333</span>
             </div>
         
             
@@ -44,9 +44,9 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">2.59% </span>
+                <span class="strong">0% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>8/308</span>
+                <span class='fraction'>0/300</span>
             </div>
         
             
@@ -998,8 +998,6 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -1011,7 +1009,6 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -1083,7 +1080,10 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
@@ -1256,7 +1256,7 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
@@ -1346,6 +1346,7 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -1410,7 +1411,6 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
@@ -1555,7 +1555,7 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
@@ -1635,6 +1635,7 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -1730,7 +1731,6 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
@@ -2019,24 +2019,24 @@ export function <span class="fstat-no" title="function not covered" >useStaking(
   const [isLoading, setIsLoading] = <span class="cstat-no" title="statement not covered" >useState(false);</span>
   const [error, setError] = <span class="cstat-no" title="statement not covered" >useState&lt;Error | null&gt;(null);</span>
 &nbsp;
-  const refresh = <span class="cstat-no" title="statement not covered" >useCallback(<span class="fstat-no" title="function not covered" >async </span>() =&gt; {</span>
+  const refresh = <span class="cstat-no" title="statement not covered" >useCallback(<span class="fstat-no" title="function not covered" >as</span>ync () =&gt; {</span>
 <span class="cstat-no" title="statement not covered" >    if (!sdk || !isConnected) <span class="cstat-no" title="statement not covered" >return;</span></span>
 &nbsp;
 <span class="cstat-no" title="statement not covered" >    try {</span>
 <span class="cstat-no" title="statement not covered" >      setIsLoading(true);</span>
 <span class="cstat-no" title="statement not covered" >      setError(null);</span>
 &nbsp;
-      const substrate = (<span class="cstat-no" title="statement not covered" >sdk as any).substrate;</span>
+      const substrate = <span class="cstat-no" title="statement not covered" >(sdk as any).substrate;</span>
 <span class="cstat-no" title="statement not covered" >      if (!substrate?.staking) {</span>
 <span class="cstat-no" title="statement not covered" >        throw new Error('Staking client not available');</span>
       }
 &nbsp;
       const [era, active, staked, count, minStake] = <span class="cstat-no" title="statement not covered" >await Promise.all([</span>
-        substrate.staking.getCurrentEra().catch(<span class="fstat-no" title="function not covered" >() =</span>&gt; <span class="cstat-no" title="statement not covered" >null)</span>,
-        substrate.staking.getActiveEra().catch(<span class="fstat-no" title="function not covered" >() =</span>&gt; <span class="cstat-no" title="statement not covered" >null)</span>,
-        substrate.staking.getTotalStaked().catch(<span class="fstat-no" title="function not covered" >() =</span>&gt; <span class="cstat-no" title="statement not covered" >null)</span>,
-        substrate.staking.getValidatorCount().catch(<span class="fstat-no" title="function not covered" >() =</span>&gt; <span class="cstat-no" title="statement not covered" >null)</span>,
-        substrate.staking.getMinimumValidatorBond().catch(<span class="fstat-no" title="function not covered" >() =</span>&gt; <span class="cstat-no" title="statement not covered" >null)</span>,
+        substrate.staking.getCurrentEra().catch(<span class="fstat-no" title="function not covered" >()</span> =&gt; <span class="cstat-no" title="statement not covered" >null)</span>,
+        substrate.staking.getActiveEra().catch(<span class="fstat-no" title="function not covered" >()</span> =&gt; <span class="cstat-no" title="statement not covered" >null)</span>,
+        substrate.staking.getTotalStaked().catch(<span class="fstat-no" title="function not covered" >()</span> =&gt; <span class="cstat-no" title="statement not covered" >null)</span>,
+        substrate.staking.getValidatorCount().catch(<span class="fstat-no" title="function not covered" >()</span> =&gt; <span class="cstat-no" title="statement not covered" >null)</span>,
+        substrate.staking.getMinimumValidatorBond().catch(<span class="fstat-no" title="function not covered" >()</span> =&gt; <span class="cstat-no" title="statement not covered" >null)</span>,
       ]);
 &nbsp;
 <span class="cstat-no" title="statement not covered" >      setCurrentEra(era);</span>
@@ -2052,23 +2052,23 @@ export function <span class="fstat-no" title="function not covered" >useStaking(
     }
   }, [sdk, isConnected]);
 &nbsp;
-<span class="cstat-no" title="statement not covered" >  useEffect(<span class="fstat-no" title="function not covered" >() =</span>&gt; {</span>
+<span class="cstat-no" title="statement not covered" >  useEffect(<span class="fstat-no" title="function not covered" >()</span> =&gt; {</span>
 <span class="cstat-no" title="statement not covered" >    if (options.autoRefresh !== false) {</span>
 <span class="cstat-no" title="statement not covered" >      refresh();</span>
     }
   }, [refresh, options.autoRefresh]);
 &nbsp;
-<span class="cstat-no" title="statement not covered" >  useEffect(<span class="fstat-no" title="function not covered" >() =</span>&gt; {</span>
+<span class="cstat-no" title="statement not covered" >  useEffect(<span class="fstat-no" title="function not covered" >()</span> =&gt; {</span>
 <span class="cstat-no" title="statement not covered" >    if (options.refreshInterval &amp;&amp; isConnected) {</span>
       const interval = <span class="cstat-no" title="statement not covered" >setInterval(refresh, options.refreshInterval);</span>
-<span class="cstat-no" title="statement not covered" >      return <span class="fstat-no" title="function not covered" >() =</span>&gt; <span class="cstat-no" title="statement not covered" >clearInterval(interval);</span></span>
+<span class="cstat-no" title="statement not covered" >      return <span class="fstat-no" title="function not covered" >()</span> =&gt; <span class="cstat-no" title="statement not covered" >clearInterval(interval);</span></span>
     }
   }, [refresh, options.refreshInterval, isConnected]);
 &nbsp;
   const bond = <span class="cstat-no" title="statement not covered" >useCallback(</span>
-<span class="fstat-no" title="function not covered" >    async </span>(amount: string, payee: string): Promise&lt;string&gt; =&gt; {
+<span class="fstat-no" title="function not covered" >    as</span>ync (amount: string, payee: string): Promise&lt;string&gt; =&gt; {
 <span class="cstat-no" title="statement not covered" >      if (!sdk || !isConnected) <span class="cstat-no" title="statement not covered" >throw new Error('Not connected');</span></span>
-      const substrate = (<span class="cstat-no" title="statement not covered" >sdk as any).substrate;</span>
+      const substrate = <span class="cstat-no" title="statement not covered" >(sdk as any).substrate;</span>
       const result = <span class="cstat-no" title="statement not covered" >await substrate.staking.bond(amount, payee);</span>
 <span class="cstat-no" title="statement not covered" >      await refresh();</span>
 <span class="cstat-no" title="statement not covered" >      return result.hash;</span>
@@ -2077,9 +2077,9 @@ export function <span class="fstat-no" title="function not covered" >useStaking(
   );
 &nbsp;
   const nominate = <span class="cstat-no" title="statement not covered" >useCallback(</span>
-<span class="fstat-no" title="function not covered" >    async </span>(targets: string[]): Promise&lt;string&gt; =&gt; {
+<span class="fstat-no" title="function not covered" >    as</span>ync (targets: string[]): Promise&lt;string&gt; =&gt; {
 <span class="cstat-no" title="statement not covered" >      if (!sdk || !isConnected) <span class="cstat-no" title="statement not covered" >throw new Error('Not connected');</span></span>
-      const substrate = (<span class="cstat-no" title="statement not covered" >sdk as any).substrate;</span>
+      const substrate = <span class="cstat-no" title="statement not covered" >(sdk as any).substrate;</span>
       const result = <span class="cstat-no" title="statement not covered" >await substrate.staking.nominate(targets);</span>
 <span class="cstat-no" title="statement not covered" >      await refresh();</span>
 <span class="cstat-no" title="statement not covered" >      return result.hash;</span>
@@ -2087,18 +2087,18 @@ export function <span class="fstat-no" title="function not covered" >useStaking(
     [sdk, isConnected, refresh],
   );
 &nbsp;
-  const chill = <span class="cstat-no" title="statement not covered" >useCallback(<span class="fstat-no" title="function not covered" >async </span>(): Promise&lt;string&gt; =&gt; {</span>
+  const chill = <span class="cstat-no" title="statement not covered" >useCallback(<span class="fstat-no" title="function not covered" >as</span>ync (): Promise&lt;string&gt; =&gt; {</span>
 <span class="cstat-no" title="statement not covered" >    if (!sdk || !isConnected) <span class="cstat-no" title="statement not covered" >throw new Error('Not connected');</span></span>
-    const substrate = (<span class="cstat-no" title="statement not covered" >sdk as any).substrate;</span>
+    const substrate = <span class="cstat-no" title="statement not covered" >(sdk as any).substrate;</span>
     const result = <span class="cstat-no" title="statement not covered" >await substrate.staking.chill();</span>
 <span class="cstat-no" title="statement not covered" >    await refresh();</span>
 <span class="cstat-no" title="statement not covered" >    return result.hash;</span>
   }, [sdk, isConnected, refresh]);
 &nbsp;
   const unbond = <span class="cstat-no" title="statement not covered" >useCallback(</span>
-<span class="fstat-no" title="function not covered" >    async </span>(amount: string): Promise&lt;string&gt; =&gt; {
+<span class="fstat-no" title="function not covered" >    as</span>ync (amount: string): Promise&lt;string&gt; =&gt; {
 <span class="cstat-no" title="statement not covered" >      if (!sdk || !isConnected) <span class="cstat-no" title="statement not covered" >throw new Error('Not connected');</span></span>
-      const substrate = (<span class="cstat-no" title="statement not covered" >sdk as any).substrate;</span>
+      const substrate = <span class="cstat-no" title="statement not covered" >(sdk as any).substrate;</span>
       const result = <span class="cstat-no" title="statement not covered" >await substrate.staking.unbond(amount);</span>
 <span class="cstat-no" title="statement not covered" >      await refresh();</span>
 <span class="cstat-no" title="statement not covered" >      return result.hash;</span>
@@ -2106,9 +2106,9 @@ export function <span class="fstat-no" title="function not covered" >useStaking(
     [sdk, isConnected, refresh],
   );
 &nbsp;
-  const withdrawUnbonded = <span class="cstat-no" title="statement not covered" >useCallback(<span class="fstat-no" title="function not covered" >async </span>(): Promise&lt;string&gt; =&gt; {</span>
+  const withdrawUnbonded = <span class="cstat-no" title="statement not covered" >useCallback(<span class="fstat-no" title="function not covered" >as</span>ync (): Promise&lt;string&gt; =&gt; {</span>
 <span class="cstat-no" title="statement not covered" >    if (!sdk || !isConnected) <span class="cstat-no" title="statement not covered" >throw new Error('Not connected');</span></span>
-    const substrate = (<span class="cstat-no" title="statement not covered" >sdk as any).substrate;</span>
+    const substrate = <span class="cstat-no" title="statement not covered" >(sdk as any).substrate;</span>
     const result = <span class="cstat-no" title="statement not covered" >await substrate.staking.withdrawUnbonded();</span>
 <span class="cstat-no" title="statement not covered" >    await refresh();</span>
 <span class="cstat-no" title="statement not covered" >    return result.hash;</span>
@@ -2196,26 +2196,26 @@ export function <span class="fstat-no" title="function not covered" >useAleph(</
   const [isLoading, setIsLoading] = <span class="cstat-no" title="statement not covered" >useState(false);</span>
   const [error, setError] = <span class="cstat-no" title="statement not covered" >useState&lt;Error | null&gt;(null);</span>
 &nbsp;
-  const refresh = <span class="cstat-no" title="statement not covered" >useCallback(<span class="fstat-no" title="function not covered" >async </span>() =&gt; {</span>
+  const refresh = <span class="cstat-no" title="statement not covered" >useCallback(<span class="fstat-no" title="function not covered" >as</span>ync () =&gt; {</span>
 <span class="cstat-no" title="statement not covered" >    if (!sdk || !isConnected) <span class="cstat-no" title="statement not covered" >return;</span></span>
 &nbsp;
 <span class="cstat-no" title="statement not covered" >    try {</span>
 <span class="cstat-no" title="statement not covered" >      setIsLoading(true);</span>
 <span class="cstat-no" title="statement not covered" >      setError(null);</span>
 &nbsp;
-      const substrate = (<span class="cstat-no" title="statement not covered" >sdk as any).substrate;</span>
+      const substrate = <span class="cstat-no" title="statement not covered" >(sdk as any).substrate;</span>
 <span class="cstat-no" title="statement not covered" >      if (!substrate?.aleph) {</span>
 <span class="cstat-no" title="statement not covered" >        throw new Error('Aleph client not available');</span>
       }
 &nbsp;
       const [session, validators, comm, length, progress] = <span class="cstat-no" title="statement not covered" >await Promise.all([</span>
-        substrate.aleph.getCurrentSession().catch(<span class="fstat-no" title="function not covered" >() =</span>&gt; <span class="cstat-no" title="statement not covered" >null)</span>,
-        substrate.aleph.getActiveValidators().catch(<span class="fstat-no" title="function not covered" >() =</span>&gt; <span class="cstat-no" title="statement not covered" >[])</span>,
+        substrate.aleph.getCurrentSession().catch(<span class="fstat-no" title="function not covered" >()</span> =&gt; <span class="cstat-no" title="statement not covered" >null)</span>,
+        substrate.aleph.getActiveValidators().catch(<span class="fstat-no" title="function not covered" >()</span> =&gt; <span class="cstat-no" title="statement not covered" >[])</span>,
         substrate.aleph
           .getSessionCommittee(await substrate.aleph.getCurrentSession())
-          .catch(<span class="fstat-no" title="function not covered" >() =</span>&gt; <span class="cstat-no" title="statement not covered" >null)</span>,
-        substrate.aleph.getSessionLength().catch(<span class="fstat-no" title="function not covered" >() =</span>&gt; <span class="cstat-no" title="statement not covered" >null)</span>,
-        substrate.aleph.getSessionProgress().catch(<span class="fstat-no" title="function not covered" >() =</span>&gt; <span class="cstat-no" title="statement not covered" >null)</span>,
+          .catch(<span class="fstat-no" title="function not covered" >()</span> =&gt; <span class="cstat-no" title="statement not covered" >null)</span>,
+        substrate.aleph.getSessionLength().catch(<span class="fstat-no" title="function not covered" >()</span> =&gt; <span class="cstat-no" title="statement not covered" >null)</span>,
+        substrate.aleph.getSessionProgress().catch(<span class="fstat-no" title="function not covered" >()</span> =&gt; <span class="cstat-no" title="statement not covered" >null)</span>,
       ]);
 &nbsp;
 <span class="cstat-no" title="statement not covered" >      setCurrentSession(session);</span>
@@ -2231,41 +2231,41 @@ export function <span class="fstat-no" title="function not covered" >useAleph(</
     }
   }, [sdk, isConnected]);
 &nbsp;
-<span class="cstat-no" title="statement not covered" >  useEffect(<span class="fstat-no" title="function not covered" >() =</span>&gt; {</span>
+<span class="cstat-no" title="statement not covered" >  useEffect(<span class="fstat-no" title="function not covered" >()</span> =&gt; {</span>
 <span class="cstat-no" title="statement not covered" >    if (options.autoRefresh !== false) {</span>
 <span class="cstat-no" title="statement not covered" >      refresh();</span>
     }
   }, [refresh, options.autoRefresh]);
 &nbsp;
-<span class="cstat-no" title="statement not covered" >  useEffect(<span class="fstat-no" title="function not covered" >() =</span>&gt; {</span>
+<span class="cstat-no" title="statement not covered" >  useEffect(<span class="fstat-no" title="function not covered" >()</span> =&gt; {</span>
 <span class="cstat-no" title="statement not covered" >    if (options.refreshInterval &amp;&amp; isConnected) {</span>
       const interval = <span class="cstat-no" title="statement not covered" >setInterval(refresh, options.refreshInterval);</span>
-<span class="cstat-no" title="statement not covered" >      return <span class="fstat-no" title="function not covered" >() =</span>&gt; <span class="cstat-no" title="statement not covered" >clearInterval(interval);</span></span>
+<span class="cstat-no" title="statement not covered" >      return <span class="fstat-no" title="function not covered" >()</span> =&gt; <span class="cstat-no" title="statement not covered" >clearInterval(interval);</span></span>
     }
   }, [refresh, options.refreshInterval, isConnected]);
 &nbsp;
   const getValidatorPerformance = <span class="cstat-no" title="statement not covered" >useCallback(</span>
-<span class="fstat-no" title="function not covered" >    async </span>(address: string): Promise&lt;ValidatorPerformance | null&gt; =&gt; {
+<span class="fstat-no" title="function not covered" >    as</span>ync (address: string): Promise&lt;ValidatorPerformance | null&gt; =&gt; {
 <span class="cstat-no" title="statement not covered" >      if (!sdk || !isConnected) <span class="cstat-no" title="statement not covered" >throw new Error('Not connected');</span></span>
-      const substrate = (<span class="cstat-no" title="statement not covered" >sdk as any).substrate;</span>
+      const substrate = <span class="cstat-no" title="statement not covered" >(sdk as any).substrate;</span>
 <span class="cstat-no" title="statement not covered" >      return await substrate.aleph.getValidatorPerformance(address);</span>
     },
     [sdk, isConnected],
   );
 &nbsp;
   const getValidatorHistory = <span class="cstat-no" title="statement not covered" >useCallback(</span>
-<span class="fstat-no" title="function not covered" >    async </span>(address: string, sessions: number = <span class="branch-0 cbranch-no" title="branch not covered" >10)</span>: Promise&lt;AbftScore[]&gt; =&gt; {
+<span class="fstat-no" title="function not covered" >    as</span>ync (address: string, sessions: number = <span class="branch-0 cbranch-no" title="branch not covered" >10)</span>: Promise&lt;AbftScore[]&gt; =&gt; {
 <span class="cstat-no" title="statement not covered" >      if (!sdk || !isConnected) <span class="cstat-no" title="statement not covered" >throw new Error('Not connected');</span></span>
-      const substrate = (<span class="cstat-no" title="statement not covered" >sdk as any).substrate;</span>
+      const substrate = <span class="cstat-no" title="statement not covered" >(sdk as any).substrate;</span>
 <span class="cstat-no" title="statement not covered" >      return await substrate.aleph.getValidatorHistory(address, sessions);</span>
     },
     [sdk, isConnected],
   );
 &nbsp;
   const isValidatorBanned = <span class="cstat-no" title="statement not covered" >useCallback(</span>
-<span class="fstat-no" title="function not covered" >    async </span>(address: string): Promise&lt;boolean&gt; =&gt; {
+<span class="fstat-no" title="function not covered" >    as</span>ync (address: string): Promise&lt;boolean&gt; =&gt; {
 <span class="cstat-no" title="statement not covered" >      if (!sdk || !isConnected) <span class="cstat-no" title="statement not covered" >throw new Error('Not connected');</span></span>
-      const substrate = (<span class="cstat-no" title="statement not covered" >sdk as any).substrate;</span>
+      const substrate = <span class="cstat-no" title="statement not covered" >(sdk as any).substrate;</span>
 <span class="cstat-no" title="statement not covered" >      return await substrate.aleph.isValidatorBanned(address);</span>
     },
     [sdk, isConnected],
@@ -2346,24 +2346,24 @@ export function <span class="fstat-no" title="function not covered" >useElection
   const [isLoading, setIsLoading] = <span class="cstat-no" title="statement not covered" >useState(false);</span>
   const [error, setError] = <span class="cstat-no" title="statement not covered" >useState&lt;Error | null&gt;(null);</span>
 &nbsp;
-  const refresh = <span class="cstat-no" title="statement not covered" >useCallback(<span class="fstat-no" title="function not covered" >async </span>() =&gt; {</span>
+  const refresh = <span class="cstat-no" title="statement not covered" >useCallback(<span class="fstat-no" title="function not covered" >as</span>ync () =&gt; {</span>
 <span class="cstat-no" title="statement not covered" >    if (!sdk || !isConnected) <span class="cstat-no" title="statement not covered" >return;</span></span>
 &nbsp;
 <span class="cstat-no" title="statement not covered" >    try {</span>
 <span class="cstat-no" title="statement not covered" >      setIsLoading(true);</span>
 <span class="cstat-no" title="statement not covered" >      setError(null);</span>
 &nbsp;
-      const substrate = (<span class="cstat-no" title="statement not covered" >sdk as any).substrate;</span>
+      const substrate = <span class="cstat-no" title="statement not covered" >(sdk as any).substrate;</span>
 <span class="cstat-no" title="statement not covered" >      if (!substrate?.elections) {</span>
 <span class="cstat-no" title="statement not covered" >        throw new Error('Elections client not available');</span>
       }
 &nbsp;
       const [seats, validators, openness, count, era] = <span class="cstat-no" title="statement not covered" >await Promise.all([</span>
-        substrate.elections.getCommitteeSeats().catch(<span class="fstat-no" title="function not covered" >() =</span>&gt; <span class="cstat-no" title="statement not covered" >null)</span>,
-        substrate.elections.getNextEraValidators().catch(<span class="fstat-no" title="function not covered" >() =</span>&gt; <span class="cstat-no" title="statement not covered" >null)</span>,
-        substrate.elections.getElectionOpenness().catch(<span class="fstat-no" title="function not covered" >() =</span>&gt; <span class="cstat-no" title="statement not covered" >null)</span>,
-        substrate.elections.getTotalValidatorCount().catch(<span class="fstat-no" title="function not covered" >() =</span>&gt; <span class="cstat-no" title="statement not covered" >null)</span>,
-        substrate.elections.getCurrentEra().catch(<span class="fstat-no" title="function not covered" >() =</span>&gt; <span class="cstat-no" title="statement not covered" >null)</span>,
+        substrate.elections.getCommitteeSeats().catch(<span class="fstat-no" title="function not covered" >()</span> =&gt; <span class="cstat-no" title="statement not covered" >null)</span>,
+        substrate.elections.getNextEraValidators().catch(<span class="fstat-no" title="function not covered" >()</span> =&gt; <span class="cstat-no" title="statement not covered" >null)</span>,
+        substrate.elections.getElectionOpenness().catch(<span class="fstat-no" title="function not covered" >()</span> =&gt; <span class="cstat-no" title="statement not covered" >null)</span>,
+        substrate.elections.getTotalValidatorCount().catch(<span class="fstat-no" title="function not covered" >()</span> =&gt; <span class="cstat-no" title="statement not covered" >null)</span>,
+        substrate.elections.getCurrentEra().catch(<span class="fstat-no" title="function not covered" >()</span> =&gt; <span class="cstat-no" title="statement not covered" >null)</span>,
       ]);
 &nbsp;
 <span class="cstat-no" title="statement not covered" >      setCommitteeSeats(seats);</span>
@@ -2379,40 +2379,40 @@ export function <span class="fstat-no" title="function not covered" >useElection
     }
   }, [sdk, isConnected]);
 &nbsp;
-<span class="cstat-no" title="statement not covered" >  useEffect(<span class="fstat-no" title="function not covered" >() =</span>&gt; {</span>
+<span class="cstat-no" title="statement not covered" >  useEffect(<span class="fstat-no" title="function not covered" >()</span> =&gt; {</span>
 <span class="cstat-no" title="statement not covered" >    if (options.autoRefresh !== false) {</span>
 <span class="cstat-no" title="statement not covered" >      refresh();</span>
     }
   }, [refresh, options.autoRefresh]);
 &nbsp;
-<span class="cstat-no" title="statement not covered" >  useEffect(<span class="fstat-no" title="function not covered" >() =</span>&gt; {</span>
+<span class="cstat-no" title="statement not covered" >  useEffect(<span class="fstat-no" title="function not covered" >()</span> =&gt; {</span>
 <span class="cstat-no" title="statement not covered" >    if (options.refreshInterval &amp;&amp; isConnected) {</span>
       const interval = <span class="cstat-no" title="statement not covered" >setInterval(refresh, options.refreshInterval);</span>
-<span class="cstat-no" title="statement not covered" >      return <span class="fstat-no" title="function not covered" >() =</span>&gt; <span class="cstat-no" title="statement not covered" >clearInterval(interval);</span></span>
+<span class="cstat-no" title="statement not covered" >      return <span class="fstat-no" title="function not covered" >()</span> =&gt; <span class="cstat-no" title="statement not covered" >clearInterval(interval);</span></span>
     }
   }, [refresh, options.refreshInterval, isConnected]);
 &nbsp;
   const isReservedValidator = <span class="cstat-no" title="statement not covered" >useCallback(</span>
-<span class="fstat-no" title="function not covered" >    async </span>(address: string): Promise&lt;boolean&gt; =&gt; {
+<span class="fstat-no" title="function not covered" >    as</span>ync (address: string): Promise&lt;boolean&gt; =&gt; {
 <span class="cstat-no" title="statement not covered" >      if (!sdk || !isConnected) <span class="cstat-no" title="statement not covered" >throw new Error('Not connected');</span></span>
-      const substrate = (<span class="cstat-no" title="statement not covered" >sdk as any).substrate;</span>
+      const substrate = <span class="cstat-no" title="statement not covered" >(sdk as any).substrate;</span>
 <span class="cstat-no" title="statement not covered" >      return await substrate.elections.isReservedValidator(address);</span>
     },
     [sdk, isConnected],
   );
 &nbsp;
   const isNonReservedValidator = <span class="cstat-no" title="statement not covered" >useCallback(</span>
-<span class="fstat-no" title="function not covered" >    async </span>(address: string): Promise&lt;boolean&gt; =&gt; {
+<span class="fstat-no" title="function not covered" >    as</span>ync (address: string): Promise&lt;boolean&gt; =&gt; {
 <span class="cstat-no" title="statement not covered" >      if (!sdk || !isConnected) <span class="cstat-no" title="statement not covered" >throw new Error('Not connected');</span></span>
-      const substrate = (<span class="cstat-no" title="statement not covered" >sdk as any).substrate;</span>
+      const substrate = <span class="cstat-no" title="statement not covered" >(sdk as any).substrate;</span>
 <span class="cstat-no" title="statement not covered" >      return await substrate.elections.isNonReservedValidator(address);</span>
     },
     [sdk, isConnected],
   );
 &nbsp;
-  const getValidatorStats = <span class="cstat-no" title="statement not covered" >useCallback(<span class="fstat-no" title="function not covered" >async </span>() =&gt; {</span>
+  const getValidatorStats = <span class="cstat-no" title="statement not covered" >useCallback(<span class="fstat-no" title="function not covered" >as</span>ync () =&gt; {</span>
 <span class="cstat-no" title="statement not covered" >    if (!sdk || !isConnected) <span class="cstat-no" title="statement not covered" >throw new Error('Not connected');</span></span>
-    const substrate = (<span class="cstat-no" title="statement not covered" >sdk as any).substrate;</span>
+    const substrate = <span class="cstat-no" title="statement not covered" >(sdk as any).substrate;</span>
 <span class="cstat-no" title="statement not covered" >    return await substrate.elections.getValidatorStats();</span>
   }, [sdk, isConnected]);
 &nbsp;
@@ -2489,7 +2489,7 @@ export function <span class="fstat-no" title="function not covered" >useUnifiedA
   const substrateToEvm = <span class="cstat-no" title="statement not covered" >useCallback(</span>
 <span class="fstat-no" title="function not covered" >    (a</span>ddress: string): string =&gt; {
 <span class="cstat-no" title="statement not covered" >      if (!sdk) <span class="cstat-no" title="statement not covered" >throw new Error('SDK not initialized');</span></span>
-      const substrate = (<span class="cstat-no" title="statement not covered" >sdk as any).substrate;</span>
+      const substrate = <span class="cstat-no" title="statement not covered" >(sdk as any).substrate;</span>
 <span class="cstat-no" title="statement not covered" >      if (!substrate?.unifiedAccounts) {</span>
 <span class="cstat-no" title="statement not covered" >        throw new Error('Unified accounts not available');</span>
       }
@@ -2501,7 +2501,7 @@ export function <span class="fstat-no" title="function not covered" >useUnifiedA
   const evmToSubstrate = <span class="cstat-no" title="statement not covered" >useCallback(</span>
 <span class="fstat-no" title="function not covered" >    (a</span>ddress: string): string =&gt; {
 <span class="cstat-no" title="statement not covered" >      if (!sdk) <span class="cstat-no" title="statement not covered" >throw new Error('SDK not initialized');</span></span>
-      const substrate = (<span class="cstat-no" title="statement not covered" >sdk as any).substrate;</span>
+      const substrate = <span class="cstat-no" title="statement not covered" >(sdk as any).substrate;</span>
 <span class="cstat-no" title="statement not covered" >      if (!substrate?.unifiedAccounts) {</span>
 <span class="cstat-no" title="statement not covered" >        throw new Error('Unified accounts not available');</span>
       }
@@ -2511,14 +2511,14 @@ export function <span class="fstat-no" title="function not covered" >useUnifiedA
   );
 &nbsp;
   const getUnifiedBalance = <span class="cstat-no" title="statement not covered" >useCallback(</span>
-<span class="fstat-no" title="function not covered" >    async </span>(address: string) =&gt; {
+<span class="fstat-no" title="function not covered" >    as</span>ync (address: string) =&gt; {
 <span class="cstat-no" title="statement not covered" >      if (!sdk || !isConnected) <span class="cstat-no" title="statement not covered" >throw new Error('Not connected');</span></span>
 &nbsp;
 <span class="cstat-no" title="statement not covered" >      try {</span>
 <span class="cstat-no" title="statement not covered" >        setIsLoading(true);</span>
 <span class="cstat-no" title="statement not covered" >        setError(null);</span>
 &nbsp;
-        const substrate = (<span class="cstat-no" title="statement not covered" >sdk as any).substrate;</span>
+        const substrate = <span class="cstat-no" title="statement not covered" >(sdk as any).substrate;</span>
 <span class="cstat-no" title="statement not covered" >        if (!substrate?.unifiedAccounts) {</span>
 <span class="cstat-no" title="statement not covered" >          throw new Error('Unified accounts not available');</span>
         }
@@ -2539,7 +2539,7 @@ export function <span class="fstat-no" title="function not covered" >useUnifiedA
   const validateAddress = <span class="cstat-no" title="statement not covered" >useCallback(</span>
 <span class="fstat-no" title="function not covered" >    (a</span>ddress: string) =&gt; {
 <span class="cstat-no" title="statement not covered" >      if (!sdk) <span class="cstat-no" title="statement not covered" >throw new Error('SDK not initialized');</span></span>
-      const substrate = (<span class="cstat-no" title="statement not covered" >sdk as any).substrate;</span>
+      const substrate = <span class="cstat-no" title="statement not covered" >(sdk as any).substrate;</span>
 <span class="cstat-no" title="statement not covered" >      if (!substrate?.unifiedAccounts) {</span>
 <span class="cstat-no" title="statement not covered" >        throw new Error('Unified accounts not available');</span>
       }
@@ -2551,7 +2551,7 @@ export function <span class="fstat-no" title="function not covered" >useUnifiedA
   const batchConvert = <span class="cstat-no" title="statement not covered" >useCallback(</span>
 <span class="fstat-no" title="function not covered" >    (a</span>ddresses: string[], targetFormat: 'substrate' | 'evm'): string[] =&gt; {
 <span class="cstat-no" title="statement not covered" >      if (!sdk) <span class="cstat-no" title="statement not covered" >throw new Error('SDK not initialized');</span></span>
-      const substrate = (<span class="cstat-no" title="statement not covered" >sdk as any).substrate;</span>
+      const substrate = <span class="cstat-no" title="statement not covered" >(sdk as any).substrate;</span>
 <span class="cstat-no" title="statement not covered" >      if (!substrate?.unifiedAccounts) {</span>
 <span class="cstat-no" title="statement not covered" >        throw new Error('Unified accounts not available');</span>
       }
@@ -2667,24 +2667,24 @@ export function <span class="fstat-no" title="function not covered" >useGovernan
   const [isLoading, setIsLoading] = <span class="cstat-no" title="statement not covered" >useState(false);</span>
   const [error, setError] = <span class="cstat-no" title="statement not covered" >useState&lt;Error | null&gt;(null);</span>
 &nbsp;
-  const refresh = <span class="cstat-no" title="statement not covered" >useCallback(<span class="fstat-no" title="function not covered" >async </span>() =&gt; {</span>
+  const refresh = <span class="cstat-no" title="statement not covered" >useCallback(<span class="fstat-no" title="function not covered" >as</span>ync () =&gt; {</span>
 <span class="cstat-no" title="statement not covered" >    if (!sdk || !isConnected) <span class="cstat-no" title="statement not covered" >return;</span></span>
 &nbsp;
 <span class="cstat-no" title="statement not covered" >    try {</span>
 <span class="cstat-no" title="statement not covered" >      setIsLoading(true);</span>
 <span class="cstat-no" title="statement not covered" >      setError(null);</span>
 &nbsp;
-      const substrate = (<span class="cstat-no" title="statement not covered" >sdk as any).substrate;</span>
+      const substrate = <span class="cstat-no" title="statement not covered" >(sdk as any).substrate;</span>
 <span class="cstat-no" title="statement not covered" >      if (!substrate?.democracy) {</span>
 <span class="cstat-no" title="statement not covered" >        throw new Error('Democracy client not available');</span>
       }
 &nbsp;
       const [count, proposals, minDeposit, votePeriod, enactPeriod] = <span class="cstat-no" title="statement not covered" >await Promise.all([</span>
-        substrate.democracy.getReferendumCount().catch(<span class="fstat-no" title="function not covered" >() =</span>&gt; <span class="cstat-no" title="statement not covered" >null)</span>,
-        substrate.democracy.getPublicProposals().catch(<span class="fstat-no" title="function not covered" >() =</span>&gt; <span class="cstat-no" title="statement not covered" >[])</span>,
-        substrate.democracy.getMinimumDeposit().catch(<span class="fstat-no" title="function not covered" >() =</span>&gt; <span class="cstat-no" title="statement not covered" >null)</span>,
-        substrate.democracy.getVotingPeriod().catch(<span class="fstat-no" title="function not covered" >() =</span>&gt; <span class="cstat-no" title="statement not covered" >null)</span>,
-        substrate.democracy.getEnactmentPeriod().catch(<span class="fstat-no" title="function not covered" >() =</span>&gt; <span class="cstat-no" title="statement not covered" >null)</span>,
+        substrate.democracy.getReferendumCount().catch(<span class="fstat-no" title="function not covered" >()</span> =&gt; <span class="cstat-no" title="statement not covered" >null)</span>,
+        substrate.democracy.getPublicProposals().catch(<span class="fstat-no" title="function not covered" >()</span> =&gt; <span class="cstat-no" title="statement not covered" >[])</span>,
+        substrate.democracy.getMinimumDeposit().catch(<span class="fstat-no" title="function not covered" >()</span> =&gt; <span class="cstat-no" title="statement not covered" >null)</span>,
+        substrate.democracy.getVotingPeriod().catch(<span class="fstat-no" title="function not covered" >()</span> =&gt; <span class="cstat-no" title="statement not covered" >null)</span>,
+        substrate.democracy.getEnactmentPeriod().catch(<span class="fstat-no" title="function not covered" >()</span> =&gt; <span class="cstat-no" title="statement not covered" >null)</span>,
       ]);
 &nbsp;
 <span class="cstat-no" title="statement not covered" >      setReferendumCount(count);</span>
@@ -2712,41 +2712,41 @@ export function <span class="fstat-no" title="function not covered" >useGovernan
     }
   }, [sdk, isConnected]);
 &nbsp;
-<span class="cstat-no" title="statement not covered" >  useEffect(<span class="fstat-no" title="function not covered" >() =</span>&gt; {</span>
+<span class="cstat-no" title="statement not covered" >  useEffect(<span class="fstat-no" title="function not covered" >()</span> =&gt; {</span>
 <span class="cstat-no" title="statement not covered" >    if (options.autoRefresh !== false) {</span>
 <span class="cstat-no" title="statement not covered" >      refresh();</span>
     }
   }, [refresh, options.autoRefresh]);
 &nbsp;
-<span class="cstat-no" title="statement not covered" >  useEffect(<span class="fstat-no" title="function not covered" >() =</span>&gt; {</span>
+<span class="cstat-no" title="statement not covered" >  useEffect(<span class="fstat-no" title="function not covered" >()</span> =&gt; {</span>
 <span class="cstat-no" title="statement not covered" >    if (options.refreshInterval &amp;&amp; isConnected) {</span>
       const interval = <span class="cstat-no" title="statement not covered" >setInterval(refresh, options.refreshInterval);</span>
-<span class="cstat-no" title="statement not covered" >      return <span class="fstat-no" title="function not covered" >() =</span>&gt; <span class="cstat-no" title="statement not covered" >clearInterval(interval);</span></span>
+<span class="cstat-no" title="statement not covered" >      return <span class="fstat-no" title="function not covered" >()</span> =&gt; <span class="cstat-no" title="statement not covered" >clearInterval(interval);</span></span>
     }
   }, [refresh, options.refreshInterval, isConnected]);
 &nbsp;
   const getReferendum = <span class="cstat-no" title="statement not covered" >useCallback(</span>
-<span class="fstat-no" title="function not covered" >    async </span>(index: number): Promise&lt;ReferendumInfo&gt; =&gt; {
+<span class="fstat-no" title="function not covered" >    as</span>ync (index: number): Promise&lt;ReferendumInfo&gt; =&gt; {
 <span class="cstat-no" title="statement not covered" >      if (!sdk || !isConnected) <span class="cstat-no" title="statement not covered" >throw new Error('Not connected');</span></span>
-      const substrate = (<span class="cstat-no" title="statement not covered" >sdk as any).substrate;</span>
+      const substrate = <span class="cstat-no" title="statement not covered" >(sdk as any).substrate;</span>
 <span class="cstat-no" title="statement not covered" >      return await substrate.democracy.getReferendum(index);</span>
     },
     [sdk, isConnected],
   );
 &nbsp;
   const getVotingOf = <span class="cstat-no" title="statement not covered" >useCallback(</span>
-<span class="fstat-no" title="function not covered" >    async </span>(referendumIndex: number, account: string): Promise&lt;VoteInfo | null&gt; =&gt; {
+<span class="fstat-no" title="function not covered" >    as</span>ync (referendumIndex: number, account: string): Promise&lt;VoteInfo | null&gt; =&gt; {
 <span class="cstat-no" title="statement not covered" >      if (!sdk || !isConnected) <span class="cstat-no" title="statement not covered" >throw new Error('Not connected');</span></span>
-      const substrate = (<span class="cstat-no" title="statement not covered" >sdk as any).substrate;</span>
+      const substrate = <span class="cstat-no" title="statement not covered" >(sdk as any).substrate;</span>
 <span class="cstat-no" title="statement not covered" >      return await substrate.democracy.getVotingOf(referendumIndex, account);</span>
     },
     [sdk, isConnected],
   );
 &nbsp;
   const propose = <span class="cstat-no" title="statement not covered" >useCallback(</span>
-<span class="fstat-no" title="function not covered" >    async </span>(signer: any, proposalHash: string, value: string) =&gt; {
+<span class="fstat-no" title="function not covered" >    as</span>ync (signer: any, proposalHash: string, value: string) =&gt; {
 <span class="cstat-no" title="statement not covered" >      if (!sdk || !isConnected) <span class="cstat-no" title="statement not covered" >throw new Error('Not connected');</span></span>
-      const substrate = (<span class="cstat-no" title="statement not covered" >sdk as any).substrate;</span>
+      const substrate = <span class="cstat-no" title="statement not covered" >(sdk as any).substrate;</span>
       const result = <span class="cstat-no" title="statement not covered" >await substrate.democracy.propose(signer, proposalHash, value);</span>
 <span class="cstat-no" title="statement not covered" >      await refresh();</span>
 <span class="cstat-no" title="statement not covered" >      return result;</span>
@@ -2755,9 +2755,9 @@ export function <span class="fstat-no" title="function not covered" >useGovernan
   );
 &nbsp;
   const second = <span class="cstat-no" title="statement not covered" >useCallback(</span>
-<span class="fstat-no" title="function not covered" >    async </span>(signer: any, proposalIndex: number) =&gt; {
+<span class="fstat-no" title="function not covered" >    as</span>ync (signer: any, proposalIndex: number) =&gt; {
 <span class="cstat-no" title="statement not covered" >      if (!sdk || !isConnected) <span class="cstat-no" title="statement not covered" >throw new Error('Not connected');</span></span>
-      const substrate = (<span class="cstat-no" title="statement not covered" >sdk as any).substrate;</span>
+      const substrate = <span class="cstat-no" title="statement not covered" >(sdk as any).substrate;</span>
       const result = <span class="cstat-no" title="statement not covered" >await substrate.democracy.second(signer, proposalIndex);</span>
 <span class="cstat-no" title="statement not covered" >      await refresh();</span>
 <span class="cstat-no" title="statement not covered" >      return result;</span>
@@ -2766,7 +2766,7 @@ export function <span class="fstat-no" title="function not covered" >useGovernan
   );
 &nbsp;
   const vote = <span class="cstat-no" title="statement not covered" >useCallback(</span>
-<span class="fstat-no" title="function not covered" >    async </span>(
+<span class="fstat-no" title="function not covered" >    as</span>ync (
       signer: any,
       referendumIndex: number,
       aye: boolean,
@@ -2774,7 +2774,7 @@ export function <span class="fstat-no" title="function not covered" >useGovernan
       conviction: Conviction = <span class="branch-0 cbranch-no" title="branch not covered" >Conviction.None,</span>
     ) =&gt; {
 <span class="cstat-no" title="statement not covered" >      if (!sdk || !isConnected) <span class="cstat-no" title="statement not covered" >throw new Error('Not connected');</span></span>
-      const substrate = (<span class="cstat-no" title="statement not covered" >sdk as any).substrate;</span>
+      const substrate = <span class="cstat-no" title="statement not covered" >(sdk as any).substrate;</span>
       const result = <span class="cstat-no" title="statement not covered" >await substrate.democracy.vote(</span>
         signer,
         referendumIndex,
@@ -2789,9 +2789,9 @@ export function <span class="fstat-no" title="function not covered" >useGovernan
   );
 &nbsp;
   const removeVote = <span class="cstat-no" title="statement not covered" >useCallback(</span>
-<span class="fstat-no" title="function not covered" >    async </span>(signer: any, referendumIndex: number) =&gt; {
+<span class="fstat-no" title="function not covered" >    as</span>ync (signer: any, referendumIndex: number) =&gt; {
 <span class="cstat-no" title="statement not covered" >      if (!sdk || !isConnected) <span class="cstat-no" title="statement not covered" >throw new Error('Not connected');</span></span>
-      const substrate = (<span class="cstat-no" title="statement not covered" >sdk as any).substrate;</span>
+      const substrate = <span class="cstat-no" title="statement not covered" >(sdk as any).substrate;</span>
       const result = <span class="cstat-no" title="statement not covered" >await substrate.democracy.removeVote(signer, referendumIndex);</span>
 <span class="cstat-no" title="statement not covered" >      await refresh();</span>
 <span class="cstat-no" title="statement not covered" >      return result;</span>
@@ -2800,9 +2800,9 @@ export function <span class="fstat-no" title="function not covered" >useGovernan
   );
 &nbsp;
   const delegate = <span class="cstat-no" title="statement not covered" >useCallback(</span>
-<span class="fstat-no" title="function not covered" >    async </span>(signer: any, target: string, conviction: Conviction, balance: string) =&gt; {
+<span class="fstat-no" title="function not covered" >    as</span>ync (signer: any, target: string, conviction: Conviction, balance: string) =&gt; {
 <span class="cstat-no" title="statement not covered" >      if (!sdk || !isConnected) <span class="cstat-no" title="statement not covered" >throw new Error('Not connected');</span></span>
-      const substrate = (<span class="cstat-no" title="statement not covered" >sdk as any).substrate;</span>
+      const substrate = <span class="cstat-no" title="statement not covered" >(sdk as any).substrate;</span>
       const result = <span class="cstat-no" title="statement not covered" >await substrate.democracy.delegate(signer, target, conviction, balance);</span>
 <span class="cstat-no" title="statement not covered" >      await refresh();</span>
 <span class="cstat-no" title="statement not covered" >      return result;</span>
@@ -2811,9 +2811,9 @@ export function <span class="fstat-no" title="function not covered" >useGovernan
   );
 &nbsp;
   const undelegate = <span class="cstat-no" title="statement not covered" >useCallback(</span>
-<span class="fstat-no" title="function not covered" >    async </span>(signer: any) =&gt; {
+<span class="fstat-no" title="function not covered" >    as</span>ync (signer: any) =&gt; {
 <span class="cstat-no" title="statement not covered" >      if (!sdk || !isConnected) <span class="cstat-no" title="statement not covered" >throw new Error('Not connected');</span></span>
-      const substrate = (<span class="cstat-no" title="statement not covered" >sdk as any).substrate;</span>
+      const substrate = <span class="cstat-no" title="statement not covered" >(sdk as any).substrate;</span>
       const result = <span class="cstat-no" title="statement not covered" >await substrate.democracy.undelegate(signer);</span>
 <span class="cstat-no" title="statement not covered" >      await refresh();</span>
 <span class="cstat-no" title="statement not covered" >      return result;</span>
@@ -2848,7 +2848,7 @@ export function <span class="fstat-no" title="function not covered" >useGovernan
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2025-11-16T13:35:36.268Z
+                at 2025-11-16T16:15:54.838Z
             </div>
         <script src="../../prettify.js"></script>
         <script>

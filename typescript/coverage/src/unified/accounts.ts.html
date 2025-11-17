@@ -23,9 +23,9 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">63.75% </span>
+                <span class="strong">61.84% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>102/160</span>
+                <span class='fraction'>94/152</span>
             </div>
         
             
@@ -44,9 +44,9 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">63.75% </span>
+                <span class="strong">61.84% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>102/160</span>
+                <span class='fraction'>94/152</span>
             </div>
         
             
@@ -604,16 +604,16 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">2x</span>
-<span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">2x</span>
-<span class="cline-any cline-yes">12x</span>
-<span class="cline-any cline-yes">12x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">12x</span>
@@ -716,9 +716,9 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">2x</span>
-<span class="cline-any cline-yes">28x</span>
-<span class="cline-any cline-yes">28x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">28x</span>
@@ -1077,7 +1077,7 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -1181,7 +1181,7 @@ export class UnifiedAddress {
    * Convert EVM H160 address to Substrate SS58 address
    * Pads EVM address to 32 bytes (AccountId32)
    */
-  private <span class="fstat-no" title="function not covered" >evmToSubstrate(</span>evmAddress: string, ss58Prefix: number): string {
+<span class="fstat-no" title="function not covered" >  pr</span>ivate evmToSubstrate(evmAddress: string, ss58Prefix: number): string {
 <span class="cstat-no" title="statement not covered" >    try {</span>
 <span class="cstat-no" title="statement not covered" >      if (!isHex(evmAddress) || evmAddress.length !== 42) {</span>
 <span class="cstat-no" title="statement not covered" >        throw new Error('Invalid EVM address format');</span>
@@ -1220,7 +1220,7 @@ export class UnifiedAddress {
   /**
    * Get both addresses
    */
-<span class="fstat-no" title="function not covered" >  getBoth(</span>): { substrate: string; evm: string } {
+<span class="fstat-no" title="function not covered" >  ge</span>tBoth(): { substrate: string; evm: string } {
 <span class="cstat-no" title="statement not covered" >    return {</span>
       substrate: this.substrateAddress,
       evm: this.evmAddress,
@@ -1230,14 +1230,14 @@ export class UnifiedAddress {
   /**
    * Check if two unified addresses are equal
    */
-<span class="fstat-no" title="function not covered" >  equals(</span>other: UnifiedAddress): boolean {
+<span class="fstat-no" title="function not covered" >  eq</span>uals(other: UnifiedAddress): boolean {
 <span class="cstat-no" title="statement not covered" >    return this.evmAddress === other.evmAddress;</span>
   }
 &nbsp;
   /**
    * String representation
    */
-<span class="fstat-no" title="function not covered" >  toString(</span>): string {
+<span class="fstat-no" title="function not covered" >  to</span>String(): string {
 <span class="cstat-no" title="statement not covered" >    return `UnifiedAddress(substrate: ${this.substrateAddress}, evm: ${this.evmAddress})`;</span>
   }
 }
@@ -1258,7 +1258,7 @@ export class UnifiedAccountManager {
   /**
    * Create a unified address from any format
    */
-<span class="fstat-no" title="function not covered" >  createAddress(</span>address: string): UnifiedAddress {
+<span class="fstat-no" title="function not covered" >  cr</span>eateAddress(address: string): UnifiedAddress {
 <span class="cstat-no" title="statement not covered" >    return new UnifiedAddress(address, this.ss58Prefix);</span>
   }
 &nbsp;
@@ -1331,7 +1331,7 @@ export class UnifiedAccountManager {
   /**
    * Check if an address has both Substrate and EVM balances
    */
-<span class="fstat-no" title="function not covered" >  async </span>hasUnifiedBalance(address: string): Promise&lt;boolean&gt; {
+<span class="fstat-no" title="function not covered" >  as</span>ync hasUnifiedBalance(address: string): Promise&lt;boolean&gt; {
     const balances = <span class="cstat-no" title="statement not covered" >await this.getUnifiedBalance(address);</span>
     const { BN } = <span class="cstat-no" title="statement not covered" >require('@polkadot/util');</span>
 &nbsp;
@@ -1611,28 +1611,28 @@ export const UnifiedAccountUtils = {
   /**
    * Quick conversion from Substrate to EVM
    */
-<span class="fstat-no" title="function not covered" >  toEvm(</span>substrateAddress: string, ss58Prefix: number = <span class="branch-0 cbranch-no" title="branch not covered" >204)</span>: string {
+<span class="fstat-no" title="function not covered" >  to</span>Evm(substrateAddress: string, ss58Prefix: number = <span class="branch-0 cbranch-no" title="branch not covered" >204)</span>: string {
 <span class="cstat-no" title="statement not covered" >    return new UnifiedAddress(substrateAddress, ss58Prefix).toEvm();</span>
   },
 &nbsp;
   /**
    * Quick conversion from EVM to Substrate
    */
-<span class="fstat-no" title="function not covered" >  toSubstrate(</span>evmAddress: string, ss58Prefix: number = <span class="branch-0 cbranch-no" title="branch not covered" >204)</span>: string {
+<span class="fstat-no" title="function not covered" >  to</span>Substrate(evmAddress: string, ss58Prefix: number = <span class="branch-0 cbranch-no" title="branch not covered" >204)</span>: string {
 <span class="cstat-no" title="statement not covered" >    return new UnifiedAddress(evmAddress, ss58Prefix).toSubstrate();</span>
   },
 &nbsp;
   /**
    * Check if address is EVM format
    */
-<span class="fstat-no" title="function not covered" >  isEvmAddress(</span>address: string): boolean {
+<span class="fstat-no" title="function not covered" >  is</span>EvmAddress(address: string): boolean {
 <span class="cstat-no" title="statement not covered" >    return /^0x[0-9a-fA-F]{40}$/.test(address);</span>
   },
 &nbsp;
   /**
    * Check if address is Substrate format
    */
-<span class="fstat-no" title="function not covered" >  isSubstrateAddress(</span>address: string): boolean {
+<span class="fstat-no" title="function not covered" >  is</span>SubstrateAddress(address: string): boolean {
 <span class="cstat-no" title="statement not covered" >    try {</span>
 <span class="cstat-no" title="statement not covered" >      decodeAddress(address);</span>
 <span class="cstat-no" title="statement not covered" >      return true;</span>
@@ -1644,7 +1644,7 @@ export const UnifiedAccountUtils = {
   /**
    * Normalize address to checksummed format
    */
-<span class="fstat-no" title="function not covered" >  normalizeAddress(</span>address: string, ss58Prefix: number = <span class="branch-0 cbranch-no" title="branch not covered" >204)</span>: string {
+<span class="fstat-no" title="function not covered" >  no</span>rmalizeAddress(address: string, ss58Prefix: number = <span class="branch-0 cbranch-no" title="branch not covered" >204)</span>: string {
 <span class="cstat-no" title="statement not covered" >    if (UnifiedAccountUtils.isEvmAddress(address)) {</span>
 <span class="cstat-no" title="statement not covered" >      return address.toLowerCase();</span>
     }
@@ -1660,7 +1660,7 @@ export const UnifiedAccountUtils = {
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2025-11-16T13:35:36.268Z
+                at 2025-11-16T16:15:54.838Z
             </div>
         <script src="../../prettify.js"></script>
         <script>

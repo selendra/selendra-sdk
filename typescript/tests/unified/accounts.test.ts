@@ -8,7 +8,7 @@ import { ApiPromise } from '@polkadot/api';
 import * as utilCrypto from '@polkadot/util-crypto';
 import * as util from '@polkadot/util';
 
-const createMockApi = (overrides: any = {}) => {
+const createMockApi = (overrides = {}) => {
   const mockApi = {
     query: {
       system: {
@@ -62,7 +62,7 @@ const createMockApi = (overrides: any = {}) => {
     tx: {
       unifiedAccounts: {
         claimDefaultEvmAddress: jest.fn().mockReturnValue({
-          signAndSend: jest.fn().mockImplementation((_signer: any, callback: any) => {
+          signAndSend: jest.fn().mockImplementation((_signer, callback) => {
             if (callback)
               callback({
                 status: { isFinalized: true, asFinalized: { toString: () => '0xblockhash' } },
@@ -84,7 +84,7 @@ const createMockApi = (overrides: any = {}) => {
           }),
         }),
         claimEvmAddress: jest.fn().mockReturnValue({
-          signAndSend: jest.fn().mockImplementation((_signer: any, callback: any) => {
+          signAndSend: jest.fn().mockImplementation((_signer, callback) => {
             if (callback)
               callback({
                 status: { isFinalized: true, asFinalized: { toString: () => '0xblockhash' } },
@@ -109,13 +109,13 @@ const createMockApi = (overrides: any = {}) => {
       },
       evmAccounts: {
         claimAccount: jest.fn().mockReturnValue({
-          signAndSend: jest.fn((signer: any, callback: any) => {
+          signAndSend: jest.fn((signer, callback) => {
             callback({ status: { isInBlock: true }, events: [] });
             return Promise.resolve('0xhash');
           }),
         }),
         claimDefaultAccount: jest.fn().mockReturnValue({
-          signAndSend: jest.fn((signer: any, callback: any) => {
+          signAndSend: jest.fn((signer, callback) => {
             callback({ status: { isInBlock: true }, events: [] });
             return Promise.resolve('0xhash');
           }),
@@ -131,18 +131,18 @@ const createMockApi = (overrides: any = {}) => {
       }),
     },
     ...overrides,
-  } as unknown as ApiPromise;
+  };
 
   return mockApi;
 };
 
 describe('UnifiedAccountManager', () => {
-  let accountManager: UnifiedAccountManager;
-  let mockApi: ApiPromise;
+  let accountManager;
+  let mockApi;
 
   beforeEach(() => {
     // Setup mocks for @polkadot/util-crypto
-  jest.spyOn(utilCrypto, 'encodeAddress').mockImplementation((publicKey: any, ss58Format?: number) => {
+  jest.spyOn(utilCrypto, 'encodeAddress').mockImplementation((publicKey, ss58Format) => {
       // For EVM addresses converted to substrate, return a fixed substrate address
       if (publicKey && typeof publicKey === 'object' && publicKey.length === 20) {
         return 'substrate_address';
@@ -154,7 +154,7 @@ describe('UnifiedAccountManager', () => {
       return 'substrate_address';
     });
 
-    jest.spyOn(utilCrypto, 'decodeAddress').mockImplementation((address: string) => {
+    jest.spyOn(utilCrypto, 'decodeAddress').mockImplementation((address) => {
       // Throw error for invalid addresses
       if (address === 'invalid_address' || address === '0xinvalid') {
         throw new Error('Invalid address');
@@ -168,7 +168,7 @@ describe('UnifiedAccountManager', () => {
       return arr;
     });
 
-    jest.spyOn(utilCrypto, 'blake2AsU8a').mockImplementation((input: any) => {
+    jest.spyOn(utilCrypto, 'blake2AsU8a').mockImplementation((input) => {
       // Return a valid 32-byte Uint8Array (default blake2 output)
       const arr = new Uint8Array(32);
       if (input && typeof input === 'object' && input.length) {
@@ -181,7 +181,7 @@ describe('UnifiedAccountManager', () => {
     });
 
     // Setup mocks for @polkadot/util
-    jest.spyOn(util, 'u8aToHex').mockImplementation((bytes: Uint8Array) => {
+    jest.spyOn(util, 'u8aToHex').mockImplementation((bytes) => {
       if (!bytes || !bytes.length) return '0x';
       return (
         '0x' +
@@ -191,7 +191,7 @@ describe('UnifiedAccountManager', () => {
       );
     });
 
-    jest.spyOn(util, 'hexToU8a').mockImplementation((hex: string) => {
+    jest.spyOn(util, 'hexToU8a').mockImplementation((hex) => {
       const cleanHex = hex.startsWith('0x') ? hex.slice(2) : hex;
       const arr = new Uint8Array(cleanHex.length / 2);
       for (let i = 0; i < cleanHex.length; i += 2) {
@@ -200,7 +200,7 @@ describe('UnifiedAccountManager', () => {
       return arr;
     });
 
-    jest.spyOn(util, 'isHex').mockImplementation((value: any) => {
+    jest.spyOn(util, 'isHex').mockImplementation((value) => {
       return /^0x[0-9a-fA-F]+$/.test(value);
     });
 
@@ -385,7 +385,7 @@ describe('UnifiedAccountManager', () => {
 
   describe('claimDefaultEvmAddress', () => {
     it('should claim default EVM address successfully', async () => {
-      const mockSigner = {} as any;
+      const mockSigner = {};
       const result = await accountManager.claimDefaultEvmAddress(mockSigner);
       expect(result).toBeDefined();
       expect(result.accountId).toBeDefined();
@@ -396,7 +396,7 @@ describe('UnifiedAccountManager', () => {
 
   describe('claimEvmAddress', () => {
     it('should claim specific EVM address with signature', async () => {
-      const mockSigner = {} as any;
+      const mockSigner = {};
       const evmAddress = '0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb';
       // Valid 65-byte signature (130 hex chars)
       const signature = '0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef12';
@@ -425,11 +425,11 @@ describe('UnifiedAccountManager', () => {
 
     it('should handle null/undefined gracefully', () => {
       expect(() => {
-        accountManager.validateAddress(null as any);
+        accountManager.validateAddress(null);
       }).not.toThrow();
 
       expect(() => {
-        accountManager.validateAddress(undefined as any);
+        accountManager.validateAddress(undefined);
       }).not.toThrow();
     });
 

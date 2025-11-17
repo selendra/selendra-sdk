@@ -5,7 +5,8 @@
  */
 import { EventEmitter } from 'events';
 import type { Address, Balance, BlockNumber, BlockHash, NetworkStatus } from '../types/common';
-import type { EvmTransaction, EvmTransactionReceipt, EvmBlock, EvmLog, EvmFilter, EvmCallOptions, EvmEstimateGasOptions } from '../types/evm';
+import type { TransactionInfo } from '../types/sdk-types';
+import type { EvmTransaction, EvmTransactionRequest, EvmTransactionReceipt, EvmBlock, EvmLog, EvmFilter, EvmCallOptions, EvmEstimateGasOptions } from '../types/evm';
 import { TransactionManager } from './transaction';
 import { Contract, ERC20Contract, ERC721Contract, ContractFactory } from './contract';
 import { EvmClientConfig } from './config';
@@ -63,7 +64,7 @@ export interface ProviderOptions {
  * EVM client implementation with ethers.js v6 compatibility
  */
 export declare class SelendraEvmClient extends EventEmitter {
-    private readonly config;
+    protected readonly config: EvmClientConfig;
     private readonly transactionManager;
     private network?;
     private blockNumber?;
@@ -199,11 +200,154 @@ export declare class SelendraEvmClient extends EventEmitter {
     /**
      * Check if client is ready
      */
-    isReady(): boolean;
+    getIsReady(): boolean;
     /**
      * Reset connection state
      */
     reset(): void;
+    /**
+     * Connect to the EVM network
+     * @returns Promise that resolves when connected
+     */
+    connect(): Promise<void>;
+    /**
+     * Disconnect from the EVM network
+     */
+    disconnect(): Promise<void>;
+    /**
+     * Get account information for a given address
+     * @param address - The account address
+     * @returns Account information including balance and nonce
+     */
+    getAccount(address: Address): Promise<{
+        address: Address;
+        balance: Balance;
+        nonce: number;
+        type: 'evm';
+        isActive: boolean;
+    }>;
+    /**
+     * Get Selendra price from oracles
+     * Auto-activates when Selendra lists on price oracles
+     * @returns Price in USD or null if not listed on oracles
+     * @private
+     */
+    private getSelendraPrice;
+    /**
+     * Fetch price from CoinGecko API
+     * @param tokenId - CoinGecko token ID
+     * @returns Price in USD or null
+     * @private
+     */
+    private fetchFromCoinGecko;
+    /**
+     * Fetch price from CoinMarketCap API
+     * @param symbol - Token symbol
+     * @returns Price in USD or null
+     * @private
+     */
+    private fetchFromCoinMarketCap;
+    /**
+     * Fetch price from Chainlink oracle
+     * @param pair - Trading pair (e.g., 'SEL/USD')
+     * @returns Price in USD or null
+     * @private
+     */
+    private fetchFromChainlink;
+    /**
+     * Get balance information for an address
+     * @param address - The account address
+     * @param options - Additional options for balance retrieval
+     * @returns Detailed balance information
+     */
+    getBalanceInfo(address: Address, options?: {
+        includeUSD?: boolean;
+        includeMetadata?: boolean;
+    }): Promise<{
+        total: Balance;
+        free: Balance;
+        reserved: Balance;
+        frozen: Balance;
+        symbol: string;
+        decimals: number;
+        usd?: number;
+        metadata?: Record<string, any>;
+    }>;
+    /**
+     * Submit a transaction to the network
+     * @param transaction - Transaction request or signed transaction string
+     * @param options - Transaction options
+     * @returns Transaction information
+     */
+    submitTransaction(transaction: EvmTransactionRequest | string, options?: {
+        autoSign?: boolean;
+        waitForInclusion?: boolean;
+        waitForFinality?: boolean;
+        timeout?: number;
+    }): Promise<TransactionInfo>;
+    /**
+     * Get transaction history for an address
+     * @param address - The account address
+     * @param limit - Maximum number of transactions to return
+     * @returns Array of transaction information
+     */
+    getTransactionHistory(address: Address, limit?: number): Promise<Array<{
+        hash: string;
+        blockNumber?: number;
+        from: string;
+        to?: string;
+        value: string;
+        fee?: string;
+        nonce: number;
+        status: string;
+        timestamp: number;
+    }>>;
+    /**
+     * Get contract instance
+     * @param address - Contract address
+     * @param options - Contract options including ABI
+     * @returns Contract instance
+     */
+    getContractInstance(address: Address, options?: {
+        abi?: any;
+        metadata?: any;
+    }): Promise<Contract>;
+    /**
+     * Subscribe to balance changes for an address
+     * @param address - The account address
+     * @param callback - Callback function when balance changes
+     * @returns Unsubscribe function
+     */
+    subscribeToBalanceChanges(address: Address, callback: (balance: any) => void): () => void;
+    /**
+     * Subscribe to events
+     * @param options - Event subscription options
+     * @returns Unsubscribe function
+     */
+    subscribeToEvents(options: {
+        callback: (event: any) => void;
+        filter?: EvmFilter;
+    }): () => void;
+    /**
+     * Subscribe to new blocks
+     * @param options - Block subscription options
+     * @returns Unsubscribe function
+     */
+    subscribeToBlocks(options: {
+        callback: (block: any) => void;
+        includeTransactions?: boolean;
+    }): () => void;
+    /**
+     * Get current block information
+     * @returns Current block information
+     */
+    getCurrentBlock(): Promise<{
+        number: number;
+        hash: string;
+        parentHash: string;
+        timestamp: number;
+        transactionCount: number;
+    }>;
     /**
      * Destroy client and cleanup resources
      */
@@ -239,7 +383,7 @@ export declare class WebSocketProvider extends SelendraEvmClient {
     /**
      * Connect to WebSocket endpoint
      */
-    private connect;
+    private connectWebSocket;
     /**
      * Handle WebSocket message
      */
@@ -255,7 +399,7 @@ export declare class WebSocketProvider extends SelendraEvmClient {
     /**
      * Disconnect WebSocket
      */
-    disconnect(): void;
+    disconnect(): Promise<void>;
     /**
      * Destroy WebSocket provider
      */

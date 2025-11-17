@@ -1,12 +1,11 @@
 //! EVM Contract Interaction
 //!
-//! This module provides comprehensive tools for interacting with smart contracts
-//! on EVM-compatible chains within the Selendra ecosystem.
+//! Tools for interacting with smart contracts on EVM-compatible chains.
 
 use crate::types::{Result, SDKError};
 use crate::evm::client::EVMClient;
 use crate::evm::transaction::TransactionBuilder;
-use ethers_core::{
+use ethers::core::{
     types::{
         Address, U256, Bytes, H256, TransactionRequest, Log, Filter, Token,
         Uint, BlockNumber, BlockId, Function, FunctionExt, I256,
@@ -15,9 +14,9 @@ use ethers_core::{
     utils::keccak256,
     abi::{Abi, ParamType as EthParamType},
 };
-use ethers_providers::Middleware;
-use ethers_contract::{BaseContract, ContractFactory};
-use ethers_signers::Signer;
+use ethers::providers::Middleware;
+use ethers::contract::{BaseContract, ContractFactory};
+use ethers::signers::Signer;
 use serde::{Serialize, Deserialize};
 use std::collections::HashMap;
 use std::str::FromStr;
@@ -81,7 +80,6 @@ pub struct EventFilter {
     pub topics: Option<Vec<H256>>,
 }
 
-/// Enhanced contract client
 #[derive(Clone)]
 pub struct ContractClient {
     client: EVMClient,
@@ -499,7 +497,7 @@ impl ERC20Client {
 /// Utility functions for contract interactions
 pub mod utils {
     use super::*;
-    use ethers_core::abi::{HumanReadableParser, ParamType};
+    use ethers::abi::{HumanReadableParser, ParamType};
 
     /// Parse ABI from JSON string
     pub fn parse_abi_json(abi_json: &str) -> Result<EthAbi> {

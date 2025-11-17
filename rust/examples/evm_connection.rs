@@ -38,8 +38,11 @@ async fn main() -> Result<()> {
     println!("   Latest Block: {}", block_number);
 
     // Create wallet for operations
-    let private_key = "0x0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef";
-    let wallet = EVMWallet::from_private_key(private_key, Some(chain_id))?;
+    // IMPORTANT: This is a placeholder private key for example only
+    // NEVER use hardcoded private keys in production code
+    let private_key = std::env::var("EXAMPLE_PRIVATE_KEY")
+        .unwrap_or_else(|_| "0x0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef".to_string());
+    let wallet = EVMWallet::from_private_key(&private_key, Some(chain_id))?;
     println!("🔑 Created wallet:");
     println!("   Address: {:#x}", wallet.address());
     println!("   Checksum: {}", wallet.checksum_address());

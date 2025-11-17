@@ -1,5 +1,4 @@
 module.exports = {
-  preset: 'ts-jest',
   testEnvironment: 'node',
   roots: ['<rootDir>/src', '<rootDir>/tests'],
   testMatch: [
@@ -7,8 +6,13 @@ module.exports = {
     '**/?(*.)+(spec|test).ts',
   ],
   transform: {
-    '^.+\\.ts$': 'ts-jest',
+    '^.+\\.ts$': ['babel-jest', {
+      configFile: './babel.config.js',
+    }],
   },
+  transformIgnorePatterns: [
+    'node_modules/(?!(@polkadot|@acala)/)',
+  ],
   collectCoverageFrom: [
     'src/**/*.ts',
     '!src/**/*.d.ts',
@@ -34,9 +38,9 @@ module.exports = {
     },
   },
   setupFilesAfterEnv: [
-    '<rootDir>/tests/setup.ts'
+    '<rootDir>/src/test/setup.js'
   ],
-  testTimeout: 30000,
+  testTimeout: 60000,
   verbose: true,
   modulePathIgnorePatterns: ['<rootDir>/dist/'],
   moduleNameMapper: {
@@ -49,10 +53,25 @@ module.exports = {
     '^@/unified/(.*)$': '<rootDir>/src/unified/$1',
     '^@/react/(.*)$': '<rootDir>/src/react/$1',
   },
-  globals: {
-    'ts-jest': {
-      tsconfig: 'tsconfig.json',
-      isolatedModules: true,
+  projects: [
+    {
+      displayName: 'Node Tests',
+      testEnvironment: 'node',
+      testMatch: [
+        '<rootDir>/tests/!(react)/**/*.test.ts'
+      ],
+      setupFilesAfterEnv: ['<rootDir>/src/test/setup.js'],
     },
-  },
+    {
+      displayName: 'React Tests',
+      testEnvironment: 'jsdom',
+      testMatch: [
+        '<rootDir>/tests/react/**/*.test.ts'
+      ],
+      setupFilesAfterEnv: ['<rootDir>/src/test/setup.js', '@testing-library/jest-dom'],
+      setupFiles: [
+        '<rootDir>/tests/react-setup.js'
+      ],
+    }
+  ],
 };

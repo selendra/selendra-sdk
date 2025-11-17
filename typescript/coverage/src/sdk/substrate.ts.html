@@ -25,7 +25,7 @@
             <div class='fl pad1y space-right2'>
                 <span class="strong">0% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>0/102</span>
+                <span class='fraction'>0/89</span>
             </div>
         
             
@@ -46,7 +46,7 @@
             <div class='fl pad1y space-right2'>
                 <span class="strong">0% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>0/100</span>
+                <span class='fraction'>0/87</span>
             </div>
         
             
@@ -468,7 +468,6 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -476,22 +475,23 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
@@ -864,7 +864,7 @@
  * This is a standard practice when working with @polkadot/api.
  */
 &nbsp;
-<span class="cstat-no" title="statement not covered" >import { ApiPromise, Keyring } from '@polkadot/api';</span>
+import { ApiPromise, Keyring } from '@polkadot/api';
 import type { Codec } from '@polkadot/types/types';
 import { BN, BN_ZERO } from '@polkadot/util';
 import type { SubstrateAddress } from '../types/common';
@@ -872,24 +872,24 @@ import type { SubstrateTransaction } from '../types/substrate';
 import type { ChainInfo } from '../types/chain-info';
 import type { Balance } from '../types/common';
 import type { SDKConfig } from './index';
-<span class="cstat-no" title="statement not covered" >import { StakingClient } from '../substrate/staking';</span>
-<span class="cstat-no" title="statement not covered" >import { UnifiedAccountManager } from '../unified/accounts';</span>
-<span class="cstat-no" title="statement not covered" >import { AlephClient } from '../substrate/aleph';</span>
-<span class="cstat-no" title="statement not covered" >import { ElectionsClient } from '../substrate/elections';</span>
+import { StakingClient } from '../substrate/staking';
+import { UnifiedAccountManager } from '../unified/accounts';
+import { AlephClient } from '../substrate/aleph';
+import { ElectionsClient } from '../substrate/elections';
 &nbsp;
 /**
  * Client for Substrate-specific operations
  */
-<span class="cstat-no" title="statement not covered" >export class S</span>ubstrateClient {
-  private <span class="cstat-no" title="statement not covered" >api: ApiPromise;</span>
-  private <span class="cstat-no" title="statement not covered" >config: SDKConfig;</span>
-  private <span class="cstat-no" title="statement not covered" >keyring: Keyring;</span>
-  private <span class="cstat-no" title="statement not covered" >_staking?: StakingClient;</span>
-  private <span class="cstat-no" title="statement not covered" >_unifiedAccounts?: UnifiedAccountManager;</span>
-  private <span class="cstat-no" title="statement not covered" >_aleph?: AlephClient;</span>
-  private <span class="cstat-no" title="statement not covered" >_elections?: ElectionsClient;</span>
+export class SubstrateClient {
+  private api: ApiPromise;
+  private config: SDKConfig;
+  private keyring: Keyring;
+  private _staking?: StakingClient;
+  private _unifiedAccounts?: UnifiedAccountManager;
+  private _aleph?: AlephClient;
+  private _elections?: ElectionsClient;
 &nbsp;
-<span class="fstat-no" title="function not covered" >  constructor(a</span>pi: ApiPromise, config: SDKConfig) {
+<span class="fstat-no" title="function not covered" >  co</span>nstructor(api: ApiPromise, config: SDKConfig) {
 <span class="cstat-no" title="statement not covered" >    this.api = api;</span>
 <span class="cstat-no" title="statement not covered" >    this.config = config;</span>
 <span class="cstat-no" title="statement not covered" >    this.keyring = new Keyring({</span>
@@ -901,7 +901,7 @@ import type { SDKConfig } from './index';
   /**
    * Get staking client instance
    */
-<span class="fstat-no" title="function not covered" >  get s</span>taking(): StakingClient {
+<span class="fstat-no" title="function not covered" >  ge</span>t staking(): StakingClient {
 <span class="cstat-no" title="statement not covered" >    if (!this._staking) {</span>
 <span class="cstat-no" title="statement not covered" >      this._staking = new StakingClient(this.api);</span>
     }
@@ -911,7 +911,7 @@ import type { SDKConfig } from './index';
   /**
    * Get unified accounts manager instance
    */
-<span class="fstat-no" title="function not covered" >  get u</span>nifiedAccounts(): UnifiedAccountManager {
+<span class="fstat-no" title="function not covered" >  ge</span>t unifiedAccounts(): UnifiedAccountManager {
 <span class="cstat-no" title="statement not covered" >    if (!this._unifiedAccounts) {</span>
 <span class="cstat-no" title="statement not covered" >      this._unifiedAccounts = new UnifiedAccountManager(this.api, this.config.ss58Format || 204);</span>
     }
@@ -921,7 +921,7 @@ import type { SDKConfig } from './index';
   /**
    * Get Aleph BFT consensus client instance
    */
-<span class="fstat-no" title="function not covered" >  get a</span>leph(): AlephClient {
+<span class="fstat-no" title="function not covered" >  ge</span>t aleph(): AlephClient {
 <span class="cstat-no" title="statement not covered" >    if (!this._aleph) {</span>
 <span class="cstat-no" title="statement not covered" >      this._aleph = new AlephClient(this.api);</span>
     }
@@ -931,7 +931,7 @@ import type { SDKConfig } from './index';
   /**
    * Get Elections pallet client instance
    */
-<span class="fstat-no" title="function not covered" >  get e</span>lections(): ElectionsClient {
+<span class="fstat-no" title="function not covered" >  ge</span>t elections(): ElectionsClient {
 <span class="cstat-no" title="statement not covered" >    if (!this._elections) {</span>
 <span class="cstat-no" title="statement not covered" >      this._elections = new ElectionsClient(this.api);</span>
     }
@@ -941,7 +941,7 @@ import type { SDKConfig } from './index';
   /**
    * Get chain information from Substrate
    */
-<span class="fstat-no" title="function not covered" >  async </span>getChainInfo(): Promise&lt;Partial&lt;ChainInfo&gt;&gt; {
+<span class="fstat-no" title="function not covered" >  as</span>ync getChainInfo(): Promise&lt;Partial&lt;ChainInfo&gt;&gt; {
     const [chain, version, properties] = <span class="cstat-no" title="statement not covered" >await Promise.all([</span>
       this.api.rpc.system.chain(),
       this.api.rpc.system.version(),
@@ -968,7 +968,7 @@ import type { SDKConfig } from './index';
   /**
    * Get balance for a Substrate address
    */
-<span class="fstat-no" title="function not covered" >  async </span>getBalance(address: SubstrateAddress): Promise&lt;any&gt; {
+<span class="fstat-no" title="function not covered" >  as</span>ync getBalance(address: SubstrateAddress): Promise&lt;any&gt; {
 <span class="cstat-no" title="statement not covered" >    try {</span>
       const account: any = <span class="cstat-no" title="statement not covered" >await this.api.query.system.account(address);</span>
       const { data } = <span class="cstat-no" title="statement not covered" >account;</span>
@@ -988,7 +988,7 @@ import type { SDKConfig } from './index';
   /**
    * Transfer tokens between Substrate addresses
    */
-<span class="fstat-no" title="function not covered" >  async </span>transfer(
+<span class="fstat-no" title="function not covered" >  as</span>ync transfer(
     from: SubstrateAddress,
     to: SubstrateAddress,
     amount: string | number | BN,
@@ -1039,7 +1039,7 @@ import type { SDKConfig } from './index';
   /**
    * Get transaction status
    */
-<span class="fstat-no" title="function not covered" >  async </span>getTransactionStatus(txHash: string): Promise&lt;{
+<span class="fstat-no" title="function not covered" >  as</span>ync getTransactionStatus(txHash: string): Promise&lt;{
     status: 'pending' | 'success' | 'failed';
     blockNumber?: number;
     blockHash?: string;
@@ -1087,7 +1087,7 @@ import type { SDKConfig } from './index';
   /**
    * Wait for transaction confirmation
    */
-<span class="fstat-no" title="function not covered" >  async </span>waitForTransaction(
+<span class="fstat-no" title="function not covered" >  as</span>ync waitForTransaction(
     txHash: string,
     confirmations = <span class="branch-0 cbranch-no" title="branch not covered" >1,</span>
   ): Promise&lt;{
@@ -1100,7 +1100,7 @@ import type { SDKConfig } from './index';
       let currentBlock = <span class="cstat-no" title="statement not covered" >0;</span>
       let targetBlock = <span class="cstat-no" title="statement not covered" >0;</span>
 &nbsp;
-      const unsub = <span class="cstat-no" title="statement not covered" >this.api.rpc.chain.subscribeNewHeads(<span class="fstat-no" title="function not covered" >async </span>(header) =&gt; {</span>
+      const unsub = <span class="cstat-no" title="statement not covered" >this.api.rpc.chain.subscribeNewHeads(<span class="fstat-no" title="function not covered" >as</span>ync (header) =&gt; {</span>
 <span class="cstat-no" title="statement not covered" >        currentBlock = header.number.toNumber();</span>
 &nbsp;
 <span class="cstat-no" title="statement not covered" >        if (currentBlock === 0) <span class="cstat-no" title="statement not covered" >return;</span></span>
@@ -1135,7 +1135,7 @@ import type { SDKConfig } from './index';
   /**
    * Get current block number
    */
-<span class="fstat-no" title="function not covered" >  async </span>getBlockNumber(): Promise&lt;number&gt; {
+<span class="fstat-no" title="function not covered" >  as</span>ync getBlockNumber(): Promise&lt;number&gt; {
     const header = <span class="cstat-no" title="statement not covered" >await this.api.rpc.chain.getHeader();</span>
 <span class="cstat-no" title="statement not covered" >    return header.number.toNumber();</span>
   }
@@ -1143,7 +1143,7 @@ import type { SDKConfig } from './index';
   /**
    * Get block information
    */
-<span class="fstat-no" title="function not covered" >  async </span>getBlock(blockNumber: number | 'latest'): Promise&lt;{
+<span class="fstat-no" title="function not covered" >  as</span>ync getBlock(blockNumber: number | 'latest'): Promise&lt;{
     number: number;
     hash: string;
     parentHash: string;
@@ -1172,7 +1172,7 @@ import type { SDKConfig } from './index';
   /**
    * Get account information
    */
-<span class="fstat-no" title="function not covered" >  async </span>getAccountInfo(address: SubstrateAddress): Promise&lt;{
+<span class="fstat-no" title="function not covered" >  as</span>ync getAccountInfo(address: SubstrateAddress): Promise&lt;{
     nonce: number;
     refCount: number;
     free: string;
@@ -1193,7 +1193,7 @@ import type { SDKConfig } from './index';
   /**
    * Get staking information
    */
-<span class="fstat-no" title="function not covered" >  async </span>getStakingInfo(address: SubstrateAddress): Promise&lt;{
+<span class="fstat-no" title="function not covered" >  as</span>ync getStakingInfo(address: SubstrateAddress): Promise&lt;{
     active: string;
     unlocking: Array&lt;{ amount: string; era: number }&gt;;
   }&gt; {
@@ -1218,7 +1218,7 @@ import type { SDKConfig } from './index';
   /**
    * Get governance information
    */
-<span class="fstat-no" title="function not covered" >  async </span>getGovernanceInfo(): Promise&lt;{
+<span class="fstat-no" title="function not covered" >  as</span>ync getGovernanceInfo(): Promise&lt;{
     referendumCount: number;
     proposalCount: number;
     activeProposals: Array&lt;{ index: number; hash: string; title?: string }&gt;;
@@ -1247,7 +1247,7 @@ import type { SDKConfig } from './index';
   /**
    * Get the underlying API instance
    */
-<span class="fstat-no" title="function not covered" >  getApi(</span>): ApiPromise {
+<span class="fstat-no" title="function not covered" >  ge</span>tApi(): ApiPromise {
 <span class="cstat-no" title="statement not covered" >    return this.api;</span>
   }
 }
@@ -1258,7 +1258,7 @@ import type { SDKConfig } from './index';
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2025-11-16T13:35:36.268Z
+                at 2025-11-16T16:15:54.838Z
             </div>
         <script src="../../prettify.js"></script>
         <script>

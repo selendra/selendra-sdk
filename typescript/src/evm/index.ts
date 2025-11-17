@@ -1,6 +1,6 @@
 /**
  * EVM client implementation for the Selendra SDK
- * Comprehensive ethers.js v6 compatible EVM interface for Selendra network
+ * Ethers.js v6 compatible EVM interface for Selendra network
  */
 
 // Main client classes

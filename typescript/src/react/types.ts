@@ -1,8 +1,8 @@
 /**
  * React Integration Types for Selendra SDK
  *
- * Comprehensive type definitions for React hooks, components, and utilities
- * that provide premium developer experience for building dApps on Selendra.
+ * Type definitions for React hooks, components, and utilities
+ * for building dApps on Selendra.
  *
  * @author Selendra Development Team
  * @version 1.0.0

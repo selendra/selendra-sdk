@@ -5,7 +5,7 @@
 import { DemocracyClient, Conviction } from '../../src/substrate/democracy';
 import { ApiPromise } from '@polkadot/api';
 
-const createMockApi = (overrides: any = {}) => {
+const createMockApi = (overrides = {}) => {
   const mockApi = {
     query: {
       democracy: {
@@ -71,7 +71,7 @@ const createMockApi = (overrides: any = {}) => {
     tx: {
       democracy: {
         propose: jest.fn().mockReturnValue({
-          signAndSend: jest.fn().mockImplementation((_signer: any, callback: any) => {
+          signAndSend: jest.fn().mockImplementation((_signer, callback) => {
             if (callback)
               callback({
                 status: { isFinalized: true, asFinalized: { toString: () => '0xblockhash' } },
@@ -82,7 +82,7 @@ const createMockApi = (overrides: any = {}) => {
           }),
         }),
         second: jest.fn().mockReturnValue({
-          signAndSend: jest.fn().mockImplementation((_signer: any, callback: any) => {
+          signAndSend: jest.fn().mockImplementation((_signer, callback) => {
             if (callback)
               callback({
                 status: { isFinalized: true, asFinalized: { toString: () => '0xblockhash' } },
@@ -92,7 +92,7 @@ const createMockApi = (overrides: any = {}) => {
           }),
         }),
         vote: jest.fn().mockReturnValue({
-          signAndSend: jest.fn().mockImplementation((_signer: any, callback: any) => {
+          signAndSend: jest.fn().mockImplementation((_signer, callback) => {
             if (callback)
               callback({
                 status: { isFinalized: true, asFinalized: { toString: () => '0xblockhash' } },
@@ -102,7 +102,7 @@ const createMockApi = (overrides: any = {}) => {
           }),
         }),
         removeVote: jest.fn().mockReturnValue({
-          signAndSend: jest.fn().mockImplementation((_signer: any, callback: any) => {
+          signAndSend: jest.fn().mockImplementation((_signer, callback) => {
             if (callback)
               callback({
                 status: { isFinalized: true, asFinalized: { toString: () => '0xblockhash' } },
@@ -112,7 +112,7 @@ const createMockApi = (overrides: any = {}) => {
           }),
         }),
         delegate: jest.fn().mockReturnValue({
-          signAndSend: jest.fn().mockImplementation((_signer: any, callback: any) => {
+          signAndSend: jest.fn().mockImplementation((_signer, callback) => {
             if (callback)
               callback({
                 status: { isFinalized: true, asFinalized: { toString: () => '0xblockhash' } },
@@ -122,7 +122,7 @@ const createMockApi = (overrides: any = {}) => {
           }),
         }),
         undelegate: jest.fn().mockReturnValue({
-          signAndSend: jest.fn().mockImplementation((_signer: any, callback: any) => {
+          signAndSend: jest.fn().mockImplementation((_signer, callback) => {
             if (callback)
               callback({
                 status: { isFinalized: true, asFinalized: { toString: () => '0xblockhash' } },
@@ -135,14 +135,14 @@ const createMockApi = (overrides: any = {}) => {
       },
     },
     ...overrides,
-  } as unknown as ApiPromise;
+  };
 
   return mockApi;
 };
 
 describe('DemocracyClient', () => {
-  let democracyClient: DemocracyClient;
-  let mockApi: ApiPromise;
+  let democracyClient;
+  let mockApi;
 
   beforeEach(() => {
     mockApi = createMockApi();
@@ -269,7 +269,7 @@ describe('DemocracyClient', () => {
 
   describe('propose', () => {
     it('should submit a proposal successfully', async () => {
-      const mockSigner = {} as any;
+      const mockSigner = {};
       const result = await democracyClient.propose(
         mockSigner,
         '0xproposalhash',
@@ -282,7 +282,7 @@ describe('DemocracyClient', () => {
 
   describe('second', () => {
     it('should second a proposal successfully', async () => {
-      const mockSigner = {} as any;
+      const mockSigner = {};
       const result = await democracyClient.second(mockSigner, 0);
       expect(result.blockHash).toBe('0xblockhash');
       expect(result.success).toBe(true);
@@ -291,7 +291,7 @@ describe('DemocracyClient', () => {
 
   describe('vote', () => {
     it('should vote on referendum successfully', async () => {
-      const mockSigner = {} as any;
+      const mockSigner = {};
       const result = await democracyClient.vote(
         mockSigner,
         0,
@@ -304,7 +304,7 @@ describe('DemocracyClient', () => {
     });
 
     it('should handle all conviction types', async () => {
-      const mockSigner = {} as any;
+      const mockSigner = {};
       const convictions = [
         Conviction.None,
         Conviction.Locked1x,
@@ -331,7 +331,7 @@ describe('DemocracyClient', () => {
 
   describe('removeVote', () => {
     it('should remove vote successfully', async () => {
-      const mockSigner = {} as any;
+      const mockSigner = {};
       const result = await democracyClient.removeVote(mockSigner, 0);
       expect(result.blockHash).toBe('0xblockhash');
       expect(result.success).toBe(true);
@@ -340,7 +340,7 @@ describe('DemocracyClient', () => {
 
   describe('delegate', () => {
     it('should delegate vote successfully', async () => {
-      const mockSigner = {} as any;
+      const mockSigner = {};
       const result = await democracyClient.delegate(
         mockSigner,
         'delegate_address',
@@ -354,7 +354,7 @@ describe('DemocracyClient', () => {
 
   describe('undelegate', () => {
     it('should remove delegation successfully', async () => {
-      const mockSigner = {} as any;
+      const mockSigner = {};
       const result = await democracyClient.undelegate(mockSigner);
       expect(result.blockHash).toBe('0xblockhash');
       expect(result.success).toBe(true);

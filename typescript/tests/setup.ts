@@ -6,7 +6,7 @@
 import { testUtils } from '../src/test/setup';
 
 // Make test utils available globally
-(global as any).testUtils = testUtils;
+(global).testUtils = testUtils;
 
 // Setup global test configuration
 beforeAll(() => {

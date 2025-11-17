@@ -26,7 +26,7 @@ const localStorageMock = {
   removeItem: jest.fn(),
   clear: jest.fn(),
 };
-(global as any).localStorage = localStorageMock;
+(global).localStorage = localStorageMock;
 
 // Mock sessionStorage
 const sessionStorageMock = {
@@ -35,7 +35,7 @@ const sessionStorageMock = {
   removeItem: jest.fn(),
   clear: jest.fn(),
 };
-(global as any).sessionStorage = sessionStorageMock;
+(global).sessionStorage = sessionStorageMock;
 
 // Mock fetch
 global.fetch = jest.fn();
@@ -78,4 +78,4 @@ class MockWebSocket {
   }
 }
 
-(global as any).WebSocket = MockWebSocket;
+(global).WebSocket = MockWebSocket;

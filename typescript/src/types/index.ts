@@ -54,6 +54,13 @@ export * from './signature';
 export * from './error';
 export * from './chain-info';
 
+// Utility exports
+export { AddressUtils } from './address';
+export { BalanceUtils } from './balance';
+export { HashUtils } from './hash';
+export { SignatureUtils } from './signature';
+export { ErrorFactory, ErrorCode } from './error';
+
 // Balance types (selective export to avoid conflicts)
 export type {
   BalanceUnit,

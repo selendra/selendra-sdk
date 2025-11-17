@@ -14,6 +14,10 @@ TypeScript SDK for Selendra blockchain with full Substrate and EVM support.
 - **Type Safety**: Full TypeScript support with zero compilation errors
 - **Well Tested**: 129 tests with 54% pass rate (improving)
 
+## ⚠️ Security Notice
+
+**IMPORTANT:** Never commit private keys or sensitive data to version control. Use environment variables for secrets. See `.env.example` for configuration.
+
 ## Installation
 
 ```bash

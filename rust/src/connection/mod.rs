@@ -1,7 +1,6 @@
-//! Enhanced Connection Management
+//! Connection Management
 //!
-//! This module provides unified connection handling for both Substrate and EVM chains,
-//! building on the existing selendra_client with enhanced EVM support.
+//! Unified connection handling for both Substrate and EVM chains.
 
 use crate::types::{Result, SDKError};
 use crate::evm::{EVMClient, EVMConfig};
@@ -62,7 +61,6 @@ impl Default for ConnectionConfig {
     }
 }
 
-/// Enhanced connection manager that handles both Substrate and EVM connections
 #[derive(Clone)]
 pub struct ConnectionManager {
     config: ConnectionConfig,

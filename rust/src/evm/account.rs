@@ -1,10 +1,10 @@
 //! EVM Account Management
 //!
-//! This module provides comprehensive account management functionality for EVM operations,
-//! including wallet creation, signing, and account utilities.
+//! Account management functionality for EVM operations including wallet creation,
+//! signing, and account utilities.
 
 use crate::types::{Result, SDKError};
-use ethers_core::{
+use ethers::core::{
     types::{
         Address, U256, H256, Bytes, TransactionRequest, Signature,
         hash_message, keccak256,
@@ -12,11 +12,11 @@ use ethers_core::{
     utils::{to_checksum, hex},
     rand::thread_rng,
 };
-use ethers_signers::{
+use ethers::signers::{
     Signer, Wallet, MnemonicBuilder, coins_bip39::{Mnemonic, English},
     SignerMiddleware, LocalWallet,
 };
-use ethers_providers::{Provider, Http, Middleware};
+use ethers::providers::{Provider, Http, Middleware};
 use std::convert::TryFrom;
 use std::str::FromStr;
 use std::path::Path;
@@ -49,8 +49,6 @@ pub enum WalletType {
     Keystore { keystore_path: String, password: String },
 }
 
-/// Enhanced wallet wrapper
-#[derive(Clone)]
 pub struct EVMWallet {
     wallet: LocalWallet,
     chain_id: Option<u64>,
@@ -103,7 +101,7 @@ impl EVMWallet {
         let keystore = fs::read_to_string(keystore_path)
             .map_err(|e| SDKError::IOError(format!("Failed to read keystore: {}", e)))?;
 
-        let mut wallet = ethers_signers::encryptor::Kdf::keystore(&keystore, password)
+        let mut wallet = ethers::signers::encryptor::Kdf::keystore(&keystore, password)
             .and_then(|key| LocalWallet::from_key(&key))
             .map_err(|e| SDKError::InvalidKey(format!("Failed to decrypt keystore: {}", e)))?;
 
@@ -234,7 +232,7 @@ impl AccountManager {
     /// Get account balance in ETH
     pub async fn get_balance_eth(&self, address: Address) -> Result<f64> {
         let balance_wei = self.get_balance(address).await?;
-        let balance_eth = ethers_core::utils::format_ether(balance_wei);
+        let balance_eth = ethers::core::utils::format_ether(balance_wei);
         balance_eth.parse::<f64>()
             .map_err(|_| SDKError::ConversionError("Failed to convert balance to ETH".to_string()))
     }
@@ -415,7 +413,7 @@ pub mod hardware {
 /// Utility functions for account operations
 pub mod utils {
     use super::*;
-    use ethers_core::k256::ecdsa::SigningKey;
+    use ethers::core::k256::ecdsa::SigningKey;
     use std::fs::File;
     use std::io::Write;
 
@@ -432,12 +430,12 @@ pub mod utils {
 
     /// Convert wei to ETH string
     pub fn wei_to_eth(wei: U256) -> String {
-        ethers_core::utils::format_ether(wei)
+        ethers::core::utils::format_ether(wei)
     }
 
     /// Convert ETH string to wei
     pub fn eth_to_wei(eth: &str) -> Result<U256> {
-        ethers_core::utils::parse_ether(eth)
+        ethers::core::utils::parse_ether(eth)
             .map_err(|e| SDKError::ConversionError(format!("Invalid ETH amount: {}", e)))
     }
 
@@ -565,6 +563,7 @@ mod tests {
 
     #[test]
     fn test_wallet_from_private_key() {
+        // Test private key - this is a known test key for deterministic testing
         let private_key = "0x0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef";
         let wallet = EVMWallet::from_private_key(private_key, Some(1)).unwrap();
 
@@ -605,6 +604,7 @@ mod tests {
 
     #[test]
     fn test_private_key_validation() {
+        // Test valid private key - this is a known test key format for validation testing
         let valid_key = "0x0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef";
         assert!(utils::validate_private_key(valid_key).is_ok());
 

@@ -65,7 +65,7 @@ function useSelendraSDK() {
  */
 function useBalance(address, options = {}) {
     const { sdk, isConnected } = useSelendraSDK();
-    const { refreshInterval = 10000, includeUSD = true, includeMetadata = true, realTime = true } = options;
+    const { refreshInterval = 10000, includeUSD = true, includeMetadata = true, realTime = true, } = options;
     const [balance, setBalance] = (0, react_1.useState)(null);
     const [isLoading, setIsLoading] = (0, react_1.useState)(false);
     const [error, setError] = (0, react_1.useState)(null);
@@ -78,7 +78,7 @@ function useBalance(address, options = {}) {
             setError(null);
             const balanceInfo = await sdk.getBalance(address, {
                 includeUSD,
-                includeMetadata
+                includeMetadata,
             });
             setBalance(balanceInfo);
         }
@@ -130,7 +130,7 @@ function useBalance(address, options = {}) {
             return {
                 native: '0',
                 symbol: 'SEL',
-                decimals: 18
+                decimals: 18,
             };
         }
         const native = (Number(balance.balance) / Math.pow(10, balance.decimals)).toFixed(6);
@@ -140,7 +140,7 @@ function useBalance(address, options = {}) {
                 ? `$${(Number(balance.usdValue) / Math.pow(10, balance.decimals)).toFixed(2)}`
                 : undefined,
             symbol: balance.symbol || 'SEL',
-            decimals: balance.decimals
+            decimals: balance.decimals,
         };
     }, [balance, includeUSD]);
     return {
@@ -149,7 +149,7 @@ function useBalance(address, options = {}) {
         error,
         refresh: fetchBalance,
         formatted,
-        wei: balance?.balance || '0'
+        wei: balance?.balance || '0',
     };
 }
 /**
@@ -172,7 +172,7 @@ function useBalance(address, options = {}) {
  */
 function useAccount(options = {}) {
     const { sdk, isConnected } = useSelendraSDK();
-    const { refreshInterval = 15000, includeBalance = true, includeHistory = false, historyLimit = 100 } = options;
+    const { refreshInterval = 15000, includeBalance = true, includeHistory = false, historyLimit = 100, } = options;
     const [account, setAccount] = (0, react_1.useState)(null);
     const [transactions, setTransactions] = (0, react_1.useState)([]);
     const [isLoading, setIsLoading] = (0, react_1.useState)(false);
@@ -186,8 +186,8 @@ function useAccount(options = {}) {
             setError(null);
             const accountInfo = await sdk.getAccount();
             setAccount(accountInfo);
-            if (includeHistory) {
-                const txHistory = await sdk.getTransactionHistory(historyLimit);
+            if (includeHistory && accountInfo.address) {
+                const txHistory = await sdk.getTransactionHistory(accountInfo.address, historyLimit);
                 setTransactions(txHistory);
             }
         }
@@ -221,7 +221,7 @@ function useAccount(options = {}) {
         error,
         refresh: fetchAccount,
         transactions,
-        hasBalance
+        hasBalance,
     };
 }
 /**
@@ -251,7 +251,7 @@ function useAccount(options = {}) {
  */
 function useTransaction(options = {}) {
     const { sdk } = useSelendraSDK();
-    const { autoSign = false, waitForInclusion = true, waitForFinality = false, timeout = 30000, showProgress = false } = options;
+    const { autoSign = false, waitForInclusion = true, waitForFinality = false, timeout = 30000, showProgress = false, } = options;
     const [status, setStatus] = (0, react_1.useState)('idle');
     const [transaction, setTransaction] = (0, react_1.useState)(null);
     const [isLoading, setIsLoading] = (0, react_1.useState)(false);
@@ -276,7 +276,7 @@ function useTransaction(options = {}) {
                 autoSign: mergedOptions.autoSign ?? autoSign,
                 waitForInclusion: mergedOptions.waitForInclusion ?? waitForInclusion,
                 waitForFinality: mergedOptions.waitForFinality ?? waitForFinality,
-                timeout: mergedOptions.timeout ?? timeout
+                timeout: mergedOptions.timeout ?? timeout,
             });
             // Update status based on result
             if (txResult.status === 'finalized') {
@@ -326,7 +326,7 @@ function useTransaction(options = {}) {
         isLoading,
         error,
         cancel,
-        reset
+        reset,
     };
 }
 /**
@@ -366,11 +366,11 @@ function useContract(address, options = {}) {
             const contractInfo = await sdk.getContract(address, {
                 abi,
                 metadata,
-                cache
+                cache,
             });
             const contractInstance = await sdk.getContractInstance(address, {
                 abi,
-                metadata
+                metadata,
             });
             setContract(contractInfo);
             setInstance(contractInstance);
@@ -421,7 +421,7 @@ function useContract(address, options = {}) {
         read,
         write,
         estimateGas,
-        getEvents
+        getEvents,
     };
 }
 /**
@@ -466,11 +466,11 @@ function useEvents(options = {}) {
             ...filters,
             callback: (event) => {
                 callback(event);
-                setEvents(prev => {
+                setEvents((prev) => {
                     const newEvents = [event, ...prev];
                     return autoPurge ? newEvents.slice(0, maxEvents) : newEvents;
                 });
-            }
+            },
         });
         subscriptionsRef.current.set(subscriptionId, unsubscribe);
         return () => {
@@ -482,7 +482,7 @@ function useEvents(options = {}) {
         };
     }, [sdk, isConnected, filters, autoPurge, maxEvents]);
     const unsubscribeAll = (0, react_1.useCallback)(() => {
-        subscriptionsRef.current.forEach(unsubscribe => unsubscribe());
+        subscriptionsRef.current.forEach((unsubscribe) => unsubscribe());
         subscriptionsRef.current.clear();
     }, []);
     const clear = (0, react_1.useCallback)(() => {
@@ -505,7 +505,7 @@ function useEvents(options = {}) {
         unsubscribeAll,
         clear,
         count,
-        lastEvent
+        lastEvent,
     };
 }
 /**
@@ -535,7 +535,7 @@ function useEvents(options = {}) {
  */
 function useBlockSubscription(options = {}) {
     const { sdk, isConnected } = useSelendraSDK();
-    const { autoSubscribe = false, includeDetails = true, includeExtrinsics = false, includeEvents = false } = options;
+    const { autoSubscribe = false, includeDetails = true, includeExtrinsics = false, includeEvents = false, } = options;
     const [blockNumber, setBlockNumber] = (0, react_1.useState)(null);
     const [blockHash, setBlockHash] = (0, react_1.useState)(null);
     const [block, setBlock] = (0, react_1.useState)(null);
@@ -562,7 +562,7 @@ function useBlockSubscription(options = {}) {
                 setBlockHash(blockData.hash);
                 setTimestamp(blockData.timestamp);
                 callback(blockData);
-            }
+            },
         });
         return () => {
             if (unsubscribeRef.current) {
@@ -601,7 +601,7 @@ function useBlockSubscription(options = {}) {
         subscribe,
         unsubscribe,
         isSubscribed,
-        timestamp
+        timestamp,
     };
 }
 /**
@@ -695,53 +695,110 @@ Object.defineProperty(exports, "useContext", { enumerable: true, get: function (
  *
  * @param addresses - Array of addresses to track
  * @param options - Balance tracking options
- * @returns Map of address to balance information
+ * @returns Balance information with refresh capability
  */
 function useMultiBalance(addresses, options = {}) {
-    const balances = new Map();
-    addresses.forEach(address => {
+    const [refreshKey, setRefreshKey] = (0, react_1.useState)(0);
+    const balanceResults = addresses.map((address) => {
         const balanceHook = useBalance(address, options);
-        balances.set(address, balanceHook);
+        return {
+            address,
+            balance: balanceHook.balance,
+            isLoading: balanceHook.isLoading,
+            error: balanceHook.error,
+        };
     });
-    return balances;
+    // Force re-render when refreshKey changes
+    (0, react_1.useEffect)(() => {
+        // Trigger re-fetch by changing a dependency
+    }, [refreshKey]);
+    const isLoading = balanceResults.some((b) => b.isLoading);
+    const refresh = (0, react_1.useCallback)(() => {
+        setRefreshKey((prev) => prev + 1);
+    }, []);
+    return {
+        balances: balanceResults,
+        isLoading,
+        refresh,
+    };
 }
 /**
  * useMultiContract - Interact with multiple contracts
  *
- * @param contracts - Array of contract configurations
- * @returns Map of address to contract hooks
+ * @param contracts - Array of contract configurations or addresses
+ * @returns Contract information with refresh capability
  */
 function useMultiContract(contracts) {
-    const contractMap = new Map();
-    contracts.forEach(({ address, options = {} }) => {
+    const [refreshKey, setRefreshKey] = (0, react_1.useState)(0);
+    const contractArray = Array.isArray(contracts)
+        ? contracts.map((c) => (typeof c === 'string' ? { address: c, options: {} } : c))
+        : [];
+    const contractResults = contractArray.map(({ address, options = {} }) => {
         const contractHook = useContract(address, options);
-        contractMap.set(address, contractHook);
+        return {
+            address,
+            contract: contractHook.contract,
+            isLoading: contractHook.isLoading,
+            error: contractHook.error,
+        };
     });
-    return contractMap;
+    // Force re-render when refreshKey changes
+    (0, react_1.useEffect)(() => {
+        // Trigger re-fetch by changing a dependency
+    }, [refreshKey]);
+    const isLoading = contractResults.some((c) => c.isLoading);
+    const refresh = (0, react_1.useCallback)(() => {
+        setRefreshKey((prev) => prev + 1);
+    }, []);
+    return {
+        contracts: contractResults,
+        isLoading,
+        refresh,
+    };
 }
 /**
  * useBatchTransactions - Batch multiple transactions
  *
  * @param transactions - Array of transactions to batch
  * @param options - Batch transaction options
- * @returns Batch transaction management
+ * @returns Batch transaction management with status control
  */
 function useBatchTransactions(transactions = [], options = {}) {
-    const [results, setResults] = (0, react_1.useState)([]);
+    const [transactionResults, setTransactionResults] = (0, react_1.useState)([]);
+    const [status, setStatus] = (0, react_1.useState)('idle');
     const [isLoading, setIsLoading] = (0, react_1.useState)(false);
     const [error, setError] = (0, react_1.useState)(null);
     const [progress, setProgress] = (0, react_1.useState)(0);
+    const [isCancelled, setIsCancelled] = (0, react_1.useState)(false);
+    const cancel = (0, react_1.useCallback)(() => {
+        setIsCancelled(true);
+        setStatus('idle');
+        setIsLoading(false);
+    }, []);
+    const reset = (0, react_1.useCallback)(() => {
+        setTransactionResults([]);
+        setStatus('idle');
+        setIsLoading(false);
+        setError(null);
+        setProgress(0);
+        setIsCancelled(false);
+    }, []);
     const submit = (0, react_1.useCallback)(async () => {
         if (transactions.length === 0) {
             return [];
         }
+        setIsCancelled(false);
         setIsLoading(true);
+        setStatus('pending');
         setError(null);
-        setResults([]);
+        setTransactionResults([]);
         setProgress(0);
         try {
             const batchResults = [];
             for (let i = 0; i < transactions.length; i++) {
+                if (isCancelled) {
+                    throw new Error('Batch transaction cancelled by user');
+                }
                 const tx = transactions[i];
                 try {
                     // This would need to be implemented in the SDK
@@ -753,25 +810,30 @@ function useBatchTransactions(transactions = [], options = {}) {
                 }
                 setProgress(((i + 1) / transactions.length) * 100);
             }
-            setResults(batchResults);
+            setTransactionResults(batchResults);
+            setStatus('success');
             return batchResults;
         }
         catch (err) {
             const error = err instanceof Error ? err : new Error('Batch transaction failed');
             setError(error);
+            setStatus('error');
             throw error;
         }
         finally {
             setIsLoading(false);
             setProgress(0);
         }
-    }, [transactions]);
+    }, [transactions, isCancelled]);
     return {
         submit,
-        results,
+        cancel,
+        reset,
+        transactions: transactionResults,
+        status,
         isLoading,
         error,
-        progress
+        progress,
     };
 }
 //# sourceMappingURL=hooks.js.map

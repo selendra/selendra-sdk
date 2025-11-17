@@ -317,11 +317,18 @@ export class ErrorFactory {
 
     switch (code) {
       case ErrorCode.CONNECTION_FAILED:
-      case ErrorCode.CONNECTION_TIMEOUT:
       case ErrorCode.CONNECTION_REFUSED:
       case ErrorCode.CONNECTION_LOST:
       case ErrorCode.MAX_RETRIES_EXCEEDED:
         return new ConnectionError(errorMessage, context?.endpoint as string, cause, context);
+
+      case ErrorCode.CONNECTION_TIMEOUT:
+        return new TimeoutError(
+          errorMessage,
+          context?.timeout as number || 30000,
+          context?.operation as string,
+          cause
+        );
 
       case ErrorCode.TRANSACTION_FAILED:
       case ErrorCode.TRANSACTION_REJECTED:

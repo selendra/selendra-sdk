@@ -75,6 +75,58 @@ export declare class UnifiedClient {
     }>;
     /**
      * Cross-chain transfer (bridge functionality)
+     *
+     * Enables transferring tokens between Substrate and EVM layers on Selendra.
+     * This is a critical feature for unified accounts that allows seamless asset movement
+     * across the different execution environments.
+     *
+     * @param from - Source address (Substrate or EVM)
+     * @param to - Destination address (Substrate or EVM)
+     * @param amount - Amount to transfer (in smallest unit)
+     * @param options - Transfer options including gas settings and private key for EVM
+     * @returns Transaction hash and optional block number
+     *
+     * @throws Error indicating bridge functionality is under development
+     *
+     * @remarks
+     * **Status: Coming Soon**
+     *
+     * The bridge implementation will support:
+     * - Substrate → EVM transfers via `evm.withdraw` extrinsic
+     * - EVM → Substrate transfers via bridge precompile contract
+     * - Automatic balance synchronization between layers
+     * - Replay protection and nonce management
+     * - Fee estimation and optimization
+     *
+     * **Planned Interface:**
+     * ```typescript
+     * interface BridgeTransferOptions {
+     *   gasLimit?: string;
+     *   gasPrice?: string;
+     *   memo?: string;
+     *   privateKey?: string;
+     *   maxSlippage?: number;
+     *   deadline?: number;
+     * }
+     *
+     * interface BridgeTransferResult {
+     *   hash: string;
+     *   blockNumber?: number;
+     *   bridgeId?: string;
+     *   estimatedConfirmations?: number;
+     * }
+     * ```
+     *
+     * **Roadmap:**
+     * 1. Q1 2025: Bridge precompile contract deployment
+     * 2. Q1 2025: SDK integration and testing
+     * 3. Q2 2025: Mainnet launch with audit
+     *
+     * **Workaround:**
+     * For now, please use same-chain transfers. You can convert addresses using
+     * `convertAddress()` method to ensure compatibility.
+     *
+     * @see {@link https://docs.selendra.org/bridge | Bridge Documentation}
      */
     private crossChainTransfer;
     /**
@@ -91,12 +143,28 @@ export declare class UnifiedClient {
     private getAddressType;
     /**
      * Convert Substrate address to EVM address
-     * This is a simplified conversion - real implementation would use proper conversion logic
+     * Uses proper AccountId32 → H160 conversion compatible with Selendra's unified accounts
+     *
+     * @param substrateAddress - Substrate SS58 address
+     * @returns EVM H160 address
+     *
+     * @remarks
+     * This conversion extracts the first 20 bytes from the decoded Substrate address
+     * (AccountId32 public key) to create an EVM-compatible H160 address.
+     * This matches the on-chain conversion logic used by Selendra's unified accounts pallet.
      */
     private substrateToEvmAddress;
     /**
      * Convert EVM address to Substrate address
-     * This is a simplified conversion - real implementation would use proper conversion logic
+     * Uses proper H160 → AccountId32 conversion compatible with Selendra's unified accounts
+     *
+     * @param evmAddress - EVM H160 address
+     * @returns Substrate SS58 address
+     *
+     * @remarks
+     * This conversion pads the 20-byte EVM address to 32 bytes (AccountId32) and encodes
+     * it using SS58 format with Selendra's network prefix (204 for mainnet).
+     * The padding matches the on-chain conversion logic used by Selendra's unified accounts pallet.
      */
     private evmToSubstrateAddress;
 }

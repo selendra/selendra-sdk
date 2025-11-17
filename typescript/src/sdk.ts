@@ -1,12 +1,12 @@
 /**
  * Selendra SDK - Main Class
  *
- * Comprehensive SDK for interacting with the Selendra blockchain.
+ * SDK for interacting with the Selendra blockchain.
  * Supports both Substrate and EVM chains with unified interface.
  *
  * @author Selendra Team <team@selendra.org>
  * @license Apache-2.0
- * @version 0.1.0
+ * @version 1.0.0
  */
 
 import { ApiPromise, WsProvider } from '@polkadot/api';
@@ -140,8 +140,26 @@ export class SelendraSDK extends EventEmitter {
       return await this.evmClient.getAccount(address);
     }
 
-    // Placeholder for Substrate account info
-    throw new Error('Account information not implemented for Substrate chains yet');
+    // Substrate account info
+    if (this.api && address) {
+      const account: any = await this.api.query.system.account(address);
+      const { nonce, data } = account;
+      return {
+        address,
+        nonce: nonce.toNumber(),
+        balance: data.free.toString(),
+        type: 'substrate',
+        isActive: !data.free.isZero(),
+        metadata: {
+          data: {
+            free: data.free.toString(),
+            reserved: data.reserved.toString(),
+          },
+        },
+      };
+    }
+
+    throw new Error('API not connected or address not provided');
   }
 
   /**
@@ -160,8 +178,20 @@ export class SelendraSDK extends EventEmitter {
       return await this.evmClient.getBalanceInfo(address, options);
     }
 
-    // Placeholder for Substrate balance
-    throw new Error('Balance query not implemented for Substrate chains yet');
+    // Substrate balance
+    if (this.api) {
+      const account: any = await this.api.query.system.account(address);
+      const { data } = account;
+      return {
+        total: data.free.add(data.reserved).toString(),
+        free: data.free.toString(),
+        reserved: data.reserved.toString(),
+        symbol: 'SEL',
+        decimals: 18,
+      };
+    }
+
+    throw new Error('API not connected');
   }
 
   /**
@@ -182,8 +212,33 @@ export class SelendraSDK extends EventEmitter {
       return await this.evmClient.submitTransaction(transaction, options);
     }
 
-    // Placeholder for Substrate transaction
-    throw new Error('Transaction submission not implemented for Substrate chains yet');
+    // Substrate transaction (basic transfer)
+    if (this.api && transaction.signer && transaction.to && transaction.amount) {
+      const keyring = new Keyring({ type: 'sr25519' });
+      const sender = keyring.addFromUri(transaction.signer);
+
+      return new Promise((resolve, reject) => {
+        this.api!.tx.balances.transferKeepAlive(transaction.to, transaction.amount)
+          .signAndSend(sender, ({ status, txHash, events }) => {
+            if (status.isFinalized) {
+              resolve({
+                hash: txHash.toString(),
+                blockHash: status.asFinalized.toString(),
+                from: sender.address,
+                to: transaction.to,
+                value: transaction.amount.toString(),
+                fee: '0',
+                nonce: 0,
+                status: 'finalized',
+                timestamp: Date.now(),
+              } as TransactionInfo);
+            }
+          })
+          .catch(reject);
+      });
+    }
+
+    throw new Error('Invalid transaction or API not connected');
   }
 
   /**

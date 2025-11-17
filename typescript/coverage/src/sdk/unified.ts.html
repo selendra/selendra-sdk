@@ -25,7 +25,7 @@
             <div class='fl pad1y space-right2'>
                 <span class="strong">0% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>0/64</span>
+                <span class='fraction'>0/61</span>
             </div>
         
             
@@ -46,7 +46,7 @@
             <div class='fl pad1y space-right2'>
                 <span class="strong">0% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>0/64</span>
+                <span class='fraction'>0/61</span>
             </div>
         
             
@@ -423,9 +423,9 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
@@ -765,11 +765,11 @@ import type { EvmClient } from './evm';
 /**
  * Client for unified cross-chain operations
  */
-<span class="cstat-no" title="statement not covered" >export class U</span>nifiedClient {
-  private <span class="cstat-no" title="statement not covered" >substrateClient: SubstrateClient;</span>
-  private <span class="cstat-no" title="statement not covered" >evmClient: EvmClient;</span>
+export class UnifiedClient {
+  private substrateClient: SubstrateClient;
+  private evmClient: EvmClient;
 &nbsp;
-<span class="fstat-no" title="function not covered" >  constructor(s</span>ubstrateClient: SubstrateClient, evmClient: EvmClient) {
+<span class="fstat-no" title="function not covered" >  co</span>nstructor(substrateClient: SubstrateClient, evmClient: EvmClient) {
 <span class="cstat-no" title="statement not covered" >    this.substrateClient = substrateClient;</span>
 <span class="cstat-no" title="statement not covered" >    this.evmClient = evmClient;</span>
   }
@@ -777,7 +777,7 @@ import type { EvmClient } from './evm';
   /**
    * Get comprehensive chain information
    */
-<span class="fstat-no" title="function not covered" >  async </span>chainInfo(): Promise&lt;ChainInfo&gt; {
+<span class="fstat-no" title="function not covered" >  as</span>ync chainInfo(): Promise&lt;ChainInfo&gt; {
     const [substrateInfo, evmInfo] = <span class="cstat-no" title="statement not covered" >await Promise.all([</span>
       this.substrateClient.getChainInfo(),
       this.evmClient.getChainInfo()
@@ -802,7 +802,7 @@ import type { EvmClient } from './evm';
   /**
    * Get balance for any address type (Substrate or EVM)
    */
-<span class="fstat-no" title="function not covered" >  async </span>getBalance(address: Address): Promise&lt;Balance&gt; {
+<span class="fstat-no" title="function not covered" >  as</span>ync getBalance(address: Address): Promise&lt;Balance&gt; {
 <span class="cstat-no" title="statement not covered" >    if (this.isSubstrateAddress(address)) {</span>
 <span class="cstat-no" title="statement not covered" >      return await this.substrateClient.getBalance(address as SubstrateAddress);</span>
     } else <span class="cstat-no" title="statement not covered" >if (this.isEvmAddress(address)) {</span>
@@ -815,7 +815,7 @@ import type { EvmClient } from './evm';
   /**
    * Transfer tokens between addresses (cross-chain support)
    */
-<span class="fstat-no" title="function not covered" >  async </span>transfer(
+<span class="fstat-no" title="function not covered" >  as</span>ync transfer(
     from: Address,
     to: Address,
     amount: string | number,
@@ -867,7 +867,7 @@ import type { EvmClient } from './evm';
   /**
    * Get transaction status (works for both Substrate and EVM transactions)
    */
-<span class="fstat-no" title="function not covered" >  async </span>getTransactionStatus(txHash: string): Promise&lt;{
+<span class="fstat-no" title="function not covered" >  as</span>ync getTransactionStatus(txHash: string): Promise&lt;{
     status: 'pending' | 'success' | 'failed';
     blockNumber?: number;
     blockHash?: string;
@@ -904,7 +904,7 @@ import type { EvmClient } from './evm';
   /**
    * Wait for transaction confirmation
    */
-<span class="fstat-no" title="function not covered" >  async </span>waitForTransaction(
+<span class="fstat-no" title="function not covered" >  as</span>ync waitForTransaction(
     txHash: string,
     confirmations = <span class="branch-0 cbranch-no" title="branch not covered" >1</span>
   ): Promise&lt;{
@@ -944,7 +944,7 @@ import type { EvmClient } from './evm';
   /**
    * Convert between different address formats
    */
-<span class="fstat-no" title="function not covered" >  convertAddress(</span>address: Address, targetFormat: 'substrate' | 'evm'): Address {
+<span class="fstat-no" title="function not covered" >  co</span>nvertAddress(address: Address, targetFormat: 'substrate' | 'evm'): Address {
 <span class="cstat-no" title="statement not covered" >    if (this.isSubstrateAddress(address) &amp;&amp; targetFormat === 'evm') {</span>
 <span class="cstat-no" title="statement not covered" >      return this.substrateToEvmAddress(address as SubstrateAddress);</span>
     } else <span class="cstat-no" title="statement not covered" >if (this.isEvmAddress(address) &amp;&amp; targetFormat === 'substrate') {</span>
@@ -958,7 +958,7 @@ import type { EvmClient } from './evm';
   /**
    * Estimate gas for a transaction
    */
-<span class="fstat-no" title="function not covered" >  async </span>estimateGas(
+<span class="fstat-no" title="function not covered" >  as</span>ync estimateGas(
     from: Address,
     to: Address,
     amount: string | number,
@@ -984,7 +984,7 @@ import type { EvmClient } from './evm';
   /**
    * Get current block number
    */
-<span class="fstat-no" title="function not covered" >  async </span>getBlockNumber(): Promise&lt;number&gt; {
+<span class="fstat-no" title="function not covered" >  as</span>ync getBlockNumber(): Promise&lt;number&gt; {
     const [substrateBlock, evmBlock] = <span class="cstat-no" title="statement not covered" >await Promise.all([</span>
       this.substrateClient.getBlockNumber(),
       this.evmClient.getBlockNumber()
@@ -997,7 +997,7 @@ import type { EvmClient } from './evm';
   /**
    * Get block information
    */
-<span class="fstat-no" title="function not covered" >  async </span>getBlock(blockNumber: number | 'latest'): Promise&lt;{
+<span class="fstat-no" title="function not covered" >  as</span>ync getBlock(blockNumber: number | 'latest'): Promise&lt;{
     number: number;
     hash: string;
     parentHash: string;
@@ -1015,7 +1015,7 @@ import type { EvmClient } from './evm';
   /**
    * Cross-chain transfer (bridge functionality)
    */
-  private <span class="fstat-no" title="function not covered" >async </span>crossChainTransfer(
+<span class="fstat-no" title="function not covered" >  pr</span>ivate async crossChainTransfer(
     from: Address,
     to: Address,
     amount: string | number,
@@ -1034,7 +1034,7 @@ import type { EvmClient } from './evm';
   /**
    * Check if address is a Substrate address
    */
-  private <span class="fstat-no" title="function not covered" >isSubstrateAddress(</span>address: string): boolean {
+<span class="fstat-no" title="function not covered" >  pr</span>ivate isSubstrateAddress(address: string): boolean {
     // Substrate addresses start with a number and are longer than EVM addresses
 <span class="cstat-no" title="statement not covered" >    return /^[1-9][0-9]*[a-zA-Z0-9]+$/.test(address) &amp;&amp; address.length &gt; 40;</span>
   }
@@ -1042,14 +1042,14 @@ import type { EvmClient } from './evm';
   /**
    * Check if address is an EVM address
    */
-  private <span class="fstat-no" title="function not covered" >isEvmAddress(</span>address: string): boolean {
+<span class="fstat-no" title="function not covered" >  pr</span>ivate isEvmAddress(address: string): boolean {
 <span class="cstat-no" title="statement not covered" >    return /^0x[a-fA-F0-9]{40}$/.test(address);</span>
   }
 &nbsp;
   /**
    * Get address type
    */
-  private <span class="fstat-no" title="function not covered" >getAddressType(</span>address: Address): 'substrate' | 'evm' {
+<span class="fstat-no" title="function not covered" >  pr</span>ivate getAddressType(address: Address): 'substrate' | 'evm' {
 <span class="cstat-no" title="statement not covered" >    if (this.isSubstrateAddress(address)) {</span>
 <span class="cstat-no" title="statement not covered" >      return 'substrate';</span>
     } else <span class="cstat-no" title="statement not covered" >if (this.isEvmAddress(address)) {</span>
@@ -1063,7 +1063,7 @@ import type { EvmClient } from './evm';
    * Convert Substrate address to EVM address
    * This is a simplified conversion - real implementation would use proper conversion logic
    */
-  private <span class="fstat-no" title="function not covered" >substrateToEvmAddress(</span>substrateAddress: SubstrateAddress): EvmAddress {
+<span class="fstat-no" title="function not covered" >  pr</span>ivate substrateToEvmAddress(substrateAddress: SubstrateAddress): EvmAddress {
     // Simplified conversion - real implementation would use H160 conversion
     // For now, return a placeholder that indicates the conversion
     const hash = <span class="cstat-no" title="statement not covered" >require('crypto')</span>
@@ -1078,7 +1078,7 @@ import type { EvmClient } from './evm';
    * Convert EVM address to Substrate address
    * This is a simplified conversion - real implementation would use proper conversion logic
    */
-  private <span class="fstat-no" title="function not covered" >evmToSubstrateAddress(</span>evmAddress: EvmAddress): SubstrateAddress {
+<span class="fstat-no" title="function not covered" >  pr</span>ivate evmToSubstrateAddress(evmAddress: EvmAddress): SubstrateAddress {
     // Simplified conversion - real implementation would use SS58 encoding
     // For now, return a placeholder that indicates the conversion
     const cleanAddress = <span class="cstat-no" title="statement not covered" >evmAddress.slice(2);</span> // Remove 0x
@@ -1096,7 +1096,7 @@ import type { EvmClient } from './evm';
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2025-11-16T13:35:36.268Z
+                at 2025-11-16T16:15:54.838Z
             </div>
         <script src="../../prettify.js"></script>
         <script>

@@ -59,7 +59,9 @@ export async function walletOperations() {
   console.log('New wallet address:', wallet.getAddress());
 
   // Create wallet from private key
-  const privateKey = '0x0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef';
+  // IMPORTANT: This is a placeholder private key for example only
+  // NEVER use hardcoded private keys in production code
+  const privateKey = process.env.EXAMPLE_PRIVATE_KEY || '0x0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef';
   const walletFromKey = new SelendraWallet(privateKey);
   console.log('Wallet from private key:', walletFromKey.getAddress());
 

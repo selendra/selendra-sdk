@@ -1,6 +1,6 @@
 # Rust SDK API Reference
 
-Complete API documentation for the Selendra Rust SDK.
+API documentation for the Selendra Rust SDK.
 
 ## Table of Contents
 

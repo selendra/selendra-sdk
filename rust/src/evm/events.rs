@@ -1,11 +1,10 @@
 //! EVM Event Handling
 //!
-//! This module provides comprehensive event monitoring, filtering, and processing
-//! for EVM-compatible chains within the Selendra ecosystem.
+//! Event monitoring, filtering, and processing for EVM-compatible chains.
 
 use crate::types::{Result, SDKError};
 use crate::evm::client::EVMClient;
-use ethers_core::{
+use ethers::core::{
     types::{
         Address, U256, H256, Log, Filter, FilterBlockOption, BlockNumber,
         Topic, TxHash, ValueOrArray, Block, Transaction, TxpoolContent, TxpoolInspect,
@@ -13,7 +12,7 @@ use ethers_core::{
     },
     utils::keccak256,
 };
-use ethers_providers::{Middleware, StreamExt, WatchStream};
+use ethers::providers::{Middleware, StreamExt, WatchStream};
 use std::collections::{HashMap, HashSet};
 use std::time::{Duration, SystemTime, UNIX_EPOCH};
 use std::sync::Arc;

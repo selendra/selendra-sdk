@@ -25,7 +25,7 @@
             <div class='fl pad1y space-right2'>
                 <span class="strong">0% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>0/63</span>
+                <span class='fraction'>0/56</span>
             </div>
         
             
@@ -46,7 +46,7 @@
             <div class='fl pad1y space-right2'>
                 <span class="strong">0% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>0/63</span>
+                <span class='fraction'>0/56</span>
             </div>
         
             
@@ -256,19 +256,19 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
@@ -445,28 +445,28 @@
  * Connection manager for handling Substrate and EVM providers
  */
 &nbsp;
-<span class="cstat-no" title="statement not covered" >import { ApiPromise, WsProvider } from '@polkadot/api';</span>
-<span class="cstat-no" title="statement not covered" >import { ethers } from 'ethers';</span>
+import { ApiPromise, WsProvider } from '@polkadot/api';
+import { ethers } from 'ethers';
 import type { NetworkConfig } from '../types/network';
 import type { SDKConfig } from './index';
 &nbsp;
 /**
  * Manages connections to both Substrate and EVM endpoints
  */
-<span class="cstat-no" title="statement not covered" >export class C</span>onnectionManager {
-  private <span class="cstat-no" title="statement not covered" >config: SDKConfig;</span>
-  private <span class="cstat-no" title="statement not covered" >substrateApi?: ApiPromise;</span>
-  private <span class="cstat-no" title="statement not covered" >evmProvider?: ethers.JsonRpcProvider;</span>
-  private <span class="cstat-no" title="statement not covered" >networkConfig?: NetworkConfig;</span>
+export class ConnectionManager {
+  private config: SDKConfig;
+  private substrateApi?: ApiPromise;
+  private evmProvider?: ethers.JsonRpcProvider;
+  private networkConfig?: NetworkConfig;
 &nbsp;
-<span class="fstat-no" title="function not covered" >  constructor(c</span>onfig: SDKConfig) {
+<span class="fstat-no" title="function not covered" >  co</span>nstructor(config: SDKConfig) {
 <span class="cstat-no" title="statement not covered" >    this.config = config;</span>
   }
 &nbsp;
   /**
    * Connect to the configured networks
    */
-<span class="fstat-no" title="function not covered" >  async </span>connect(): Promise&lt;void&gt; {
+<span class="fstat-no" title="function not covered" >  as</span>ync connect(): Promise&lt;void&gt; {
     // Determine network configuration
 <span class="cstat-no" title="statement not covered" >    if (this.config.network) {</span>
 <span class="cstat-no" title="statement not covered" >      if (typeof this.config.network === 'string') {</span>
@@ -488,7 +488,7 @@ import type { SDKConfig } from './index';
   /**
    * Disconnect from all networks
    */
-<span class="fstat-no" title="function not covered" >  async </span>disconnect(): Promise&lt;void&gt; {
+<span class="fstat-no" title="function not covered" >  as</span>ync disconnect(): Promise&lt;void&gt; {
 <span class="cstat-no" title="statement not covered" >    if (this.substrateApi) {</span>
 <span class="cstat-no" title="statement not covered" >      await this.substrateApi.disconnect();</span>
 <span class="cstat-no" title="statement not covered" >      this.substrateApi = undefined;</span>
@@ -500,7 +500,7 @@ import type { SDKConfig } from './index';
   /**
    * Get the Substrate API instance
    */
-<span class="fstat-no" title="function not covered" >  async </span>getSubstrateApi(): Promise&lt;ApiPromise&gt; {
+<span class="fstat-no" title="function not covered" >  as</span>ync getSubstrateApi(): Promise&lt;ApiPromise&gt; {
 <span class="cstat-no" title="statement not covered" >    if (!this.substrateApi) {</span>
 <span class="cstat-no" title="statement not covered" >      throw new Error('Substrate API not initialized. Call connect() first.');</span>
     }
@@ -510,7 +510,7 @@ import type { SDKConfig } from './index';
   /**
    * Get the EVM provider instance
    */
-<span class="fstat-no" title="function not covered" >  async </span>getEvmProvider(): Promise&lt;ethers.JsonRpcProvider&gt; {
+<span class="fstat-no" title="function not covered" >  as</span>ync getEvmProvider(): Promise&lt;ethers.JsonRpcProvider&gt; {
 <span class="cstat-no" title="statement not covered" >    if (!this.evmProvider) {</span>
 <span class="cstat-no" title="statement not covered" >      throw new Error('EVM provider not initialized. Call connect() first.');</span>
     }
@@ -520,11 +520,11 @@ import type { SDKConfig } from './index';
   /**
    * Get the current network configuration
    */
-<span class="fstat-no" title="function not covered" >  getNetworkConfig(</span>): NetworkConfig | undefined {
+<span class="fstat-no" title="function not covered" >  ge</span>tNetworkConfig(): NetworkConfig | undefined {
 <span class="cstat-no" title="statement not covered" >    return this.networkConfig;</span>
   }
 &nbsp;
-  private <span class="fstat-no" title="function not covered" >async </span>connectSubstrate(): Promise&lt;void&gt; {
+<span class="fstat-no" title="function not covered" >  pr</span>ivate async connectSubstrate(): Promise&lt;void&gt; {
 <span class="cstat-no" title="statement not covered" >    if (this.config.substrateProvider) {</span>
       // Use custom Substrate provider
 <span class="cstat-no" title="statement not covered" >      this.substrateApi = await ApiPromise.create({</span>
@@ -564,7 +564,7 @@ import type { SDKConfig } from './index';
 <span class="cstat-no" title="statement not covered" >    await this.substrateApi.isReady;</span>
   }
 &nbsp;
-  private <span class="fstat-no" title="function not covered" >async </span>connectEvm(): Promise&lt;void&gt; {
+<span class="fstat-no" title="function not covered" >  pr</span>ivate async connectEvm(): Promise&lt;void&gt; {
 <span class="cstat-no" title="statement not covered" >    if (this.config.evmProvider) {</span>
       // Use custom EVM provider
 <span class="cstat-no" title="statement not covered" >      this.evmProvider = this.config.evmProvider;</span>
@@ -602,13 +602,13 @@ import type { SDKConfig } from './index';
     }
   }
 &nbsp;
-  private <span class="fstat-no" title="function not covered" >getNetworkById(</span>networkId: string): NetworkConfig | undefined {
+<span class="fstat-no" title="function not covered" >  pr</span>ivate getNetworkById(networkId: string): NetworkConfig | undefined {
     // Import here to avoid circular dependencies
     const { getNetworkConfig } = <span class="cstat-no" title="statement not covered" >require('../types/network');</span>
 <span class="cstat-no" title="statement not covered" >    return getNetworkConfig(networkId);</span>
   }
 &nbsp;
-  private <span class="fstat-no" title="function not covered" >getChainId(</span>): number {
+<span class="fstat-no" title="function not covered" >  pr</span>ivate getChainId(): number {
 <span class="cstat-no" title="statement not covered" >    if (this.networkConfig?.chainId) {</span>
       // Try to parse as number first, then look up known chain IDs
 <span class="cstat-no" title="statement not covered" >      if (typeof this.networkConfig.chainId === 'number') {</span>
@@ -637,7 +637,7 @@ const throwOnConnect = <span class="cstat-no" title="statement not covered" >tru
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2025-11-16T13:35:36.130Z
+                at 2025-11-16T16:15:54.658Z
             </div>
         <script src="../../prettify.js"></script>
         <script>

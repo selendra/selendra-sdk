@@ -123,9 +123,22 @@ export interface MultiSignature {
     createdAt: number;
 }
 /**
+ * EIP-712 typed data structure
+ */
+export interface EIP712TypedData {
+    /** EIP-712 domain separator */
+    domain: TypedDataDomain;
+    /** EIP-712 type definitions */
+    types: Record<string, TypedDataField[]>;
+    /** Primary type being signed */
+    primaryType: string;
+    /** Message data to be signed */
+    message: Record<string, unknown>;
+}
+/**
  * EIP-712 typed data signature
  */
-export interface TypedDataSignature extends Signature {
+export interface TypedDataSignature extends Omit<Signature, 'algorithm' | 'format' | 'message'> {
     /** EIP-712 domain */
     domain: TypedDataDomain;
     /** EIP-712 types */
@@ -180,9 +193,106 @@ export declare class SignatureUtils {
     static convertFormat(signature: string, fromFormat: SignatureFormat, toFormat: SignatureFormat): string;
     private static isHexSignature;
     private static normalizeSignature;
+    /**
+     * Verify signature using the appropriate algorithm
+     *
+     * @param signature - Signature to verify
+     * @param message - Original message that was signed
+     * @param algorithm - Signature algorithm used
+     * @param publicKey - Public key of the signer
+     * @returns Promise that resolves to true if signature is valid
+     *
+     * @remarks
+     * This is a placeholder implementation that validates signature format.
+     * For production use, integrate with appropriate cryptographic libraries:
+     *
+     * - **ECDSA (secp256k1)**: Use `ethers` or `@noble/secp256k1`
+     * - **EdDSA (Ed25519)**: Use `@polkadot/util-crypto` or `@noble/ed25519`
+     * - **EdDSA (Sr25519)**: Use `@polkadot/util-crypto`
+     * - **Schnorr**: Use `@noble/secp256k1` with schnorr
+     * - **BLS**: Use `@noble/bls12-381`
+     *
+     * @example
+     * ```typescript
+     * // Example with ethers for ECDSA verification
+     * import { ethers } from 'ethers';
+     *
+     * const messageHash = ethers.hashMessage(message);
+     * const recoveredAddress = ethers.recoverAddress(messageHash, signature);
+     * const expectedAddress = ethers.computeAddress(publicKey);
+     * return recoveredAddress === expectedAddress;
+     * ```
+     *
+     * @example
+     * ```typescript
+     * // Example with Polkadot for Ed25519 verification
+     * import { signatureVerify } from '@polkadot/util-crypto';
+     *
+     * const result = signatureVerify(message, signature, publicKey);
+     * return result.isValid;
+     * ```
+     */
     private static verifyWithAlgorithm;
+    /**
+     * Recover address from public key
+     *
+     * @param publicKey - Public key as hex string
+     * @param algorithm - Algorithm used to generate the key
+     * @returns Address derived from the public key
+     *
+     * @remarks
+     * For production use, integrate with appropriate cryptographic libraries:
+     *
+     * - **ECDSA (secp256k1)**: Use `ethers.computeAddress()` or equivalent
+     * - **EdDSA (Ed25519/Sr25519)**: Use `@polkadot/util-crypto` address encoding
+     *
+     * @example
+     * ```typescript
+     * // ECDSA (Ethereum)
+     * import { ethers } from 'ethers';
+     * const address = ethers.computeAddress(publicKey);
+     *
+     * // EdDSA (Substrate)
+     * import { encodeAddress } from '@polkadot/util-crypto';
+     * import { hexToU8a } from '@polkadot/util';
+     * const address = encodeAddress(hexToU8a(publicKey), 204);
+     * ```
+     */
     private static recoverAddress;
     private static areAddressesEqual;
+    /**
+     * Combine multiple signatures into a single multi-signature
+     *
+     * @param signatures - Array of individual signatures
+     * @param algorithm - Algorithm used for signatures
+     * @returns Combined multi-signature as hex string
+     *
+     * @remarks
+     * Multi-signature combination is algorithm-specific:
+     *
+     * - **ECDSA**: Concatenate signatures or use threshold signature schemes
+     * - **EdDSA**: Use Substrate's MultiSignature type
+     * - **BLS**: Use signature aggregation (native BLS feature)
+     * - **Schnorr**: Use MuSig or similar threshold signature protocol
+     *
+     * For production use, integrate with appropriate multi-signature libraries
+     * based on your specific use case and security requirements.
+     *
+     * @example
+     * ```typescript
+     * // For Substrate multi-signature
+     * // Signatures are typically combined at the extrinsic level
+     * const multiSig = {
+     *   threshold: 2,
+     *   signatories: [...addresses],
+     *   signatures: [...sigs]
+     * };
+     *
+     * // For BLS signature aggregation
+     * // const { aggregateSignatures } = require('@noble/bls12-381');
+     * // const combined = await aggregateSignatures(signatures);
+     * ```
+     */
     private static combineSignatures;
     private static hexToBytes;
     private static bytesToHex;

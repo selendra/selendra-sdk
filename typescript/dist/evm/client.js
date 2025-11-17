@@ -66,12 +66,12 @@ class SelendraEvmClient extends events_1.EventEmitter {
         if (!this.network) {
             const [chainId, chainIdStr] = await Promise.all([
                 this.send('eth_chainId', []),
-                this.send('net_version', [])
+                this.send('net_version', []),
             ]);
             const networkConfig = (0, config_1.getSelendraEvmConfig)(this.config.network);
             this.network = {
                 name: networkConfig.chainName,
-                chainId: typeof chainId === 'string' ? parseInt(chainId, 16) : chainId
+                chainId: typeof chainId === 'string' ? parseInt(chainId, 16) : chainId,
             };
         }
         return this.network;
@@ -89,7 +89,7 @@ class SelendraEvmClient extends events_1.EventEmitter {
     async getBlock(blockHashOrNumber, includeTransactions) {
         const block = await this.send('eth_getBlockByNumberOrHash', [
             blockHashOrNumber,
-            includeTransactions || false
+            includeTransactions || false,
         ]);
         if (!block) {
             return null;
@@ -124,7 +124,7 @@ class SelendraEvmClient extends events_1.EventEmitter {
                 while (!receipt && attempts < maxAttempts) {
                     receipt = await this.getTransactionReceipt(hash);
                     if (!receipt) {
-                        await new Promise(resolve => setTimeout(resolve, 2000));
+                        await new Promise((resolve) => setTimeout(resolve, 2000));
                         attempts++;
                     }
                 }
@@ -132,7 +132,7 @@ class SelendraEvmClient extends events_1.EventEmitter {
                     throw new Error('Transaction receipt not found after timeout');
                 }
                 return receipt;
-            }
+            },
         };
     }
     /**
@@ -263,16 +263,16 @@ class SelendraEvmClient extends events_1.EventEmitter {
             jsonrpc: '2.0',
             id: Date.now(),
             method,
-            params
+            params,
         };
         const response = await fetch(endpoint, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
-                ...this.config.headers
+                ...this.config.headers,
             },
             body: JSON.stringify(request),
-            signal: AbortSignal.timeout(this.config.timeout || 30000)
+            signal: AbortSignal.timeout(this.config.timeout || 30000),
         });
         if (!response.ok) {
             throw new Error(`HTTP error! status: ${response.status}`);
@@ -293,23 +293,23 @@ class SelendraEvmClient extends events_1.EventEmitter {
             jsonrpc: '2.0',
             id: index + 1,
             method: req.method,
-            params: req.params || []
+            params: req.params || [],
         }));
         const response = await fetch(endpoint, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
-                ...this.config.headers
+                ...this.config.headers,
             },
             body: JSON.stringify(batchRequest),
-            signal: AbortSignal.timeout(this.config.timeout || 30000)
+            signal: AbortSignal.timeout(this.config.timeout || 30000),
         });
         if (!response.ok) {
             throw new Error(`HTTP error! status: ${response.status}`);
         }
         const data = await response.json();
         if (Array.isArray(data)) {
-            return data.map(item => {
+            return data.map((item) => {
                 if (item.error) {
                     throw new Error(`RPC Error: ${item.error.message} (${item.error.code})`);
                 }
@@ -328,7 +328,7 @@ class SelendraEvmClient extends events_1.EventEmitter {
             let currentBlock = await this.getBlockNumber();
             const receiptBlock = Number(receipt.blockNumber);
             while (currentBlock - receiptBlock < confirmations) {
-                await new Promise(resolve => setTimeout(resolve, 2000));
+                await new Promise((resolve) => setTimeout(resolve, 2000));
                 currentBlock = await this.getBlockNumber();
             }
         }
@@ -351,7 +351,7 @@ class SelendraEvmClient extends events_1.EventEmitter {
                     return receipt;
                 }
             }
-            await new Promise(resolve => setTimeout(resolve, 2000));
+            await new Promise((resolve) => setTimeout(resolve, 2000));
         }
         return null;
     }
@@ -371,7 +371,7 @@ class SelendraEvmClient extends events_1.EventEmitter {
             this.getBlockNumber(),
             this.getBlock('latest'),
             this.send('eth_getBlockByNumber', ['0x0', false]),
-            this.send('eth_syncing', [])
+            this.send('eth_syncing', []),
         ]);
         return {
             isConnected: true,
@@ -381,7 +381,7 @@ class SelendraEvmClient extends events_1.EventEmitter {
             blockHash: blockHash?.hash || '0x',
             genesisHash: genesisHash?.hash || '0x',
             isSyncing: typeof syncing === 'object' ? syncing : false,
-            timestamp: Date.now()
+            timestamp: Date.now(),
         };
     }
     /**
@@ -399,7 +399,7 @@ class SelendraEvmClient extends events_1.EventEmitter {
     /**
      * Check if client is ready
      */
-    isReady() {
+    getIsReady() {
         return this.isReady;
     }
     /**
@@ -410,6 +410,444 @@ class SelendraEvmClient extends events_1.EventEmitter {
         this.blockNumber = undefined;
         this.isReady = false;
         this.emit('reset');
+    }
+    /**
+     * Connect to the EVM network
+     * @returns Promise that resolves when connected
+     */
+    async connect() {
+        if (this.isReady) {
+            return;
+        }
+        try {
+            // Initialize connection by fetching network info
+            await this.getNetwork();
+            this.isReady = true;
+            this.emit('connect');
+        }
+        catch (error) {
+            this.emit('error', error);
+            throw error;
+        }
+    }
+    /**
+     * Disconnect from the EVM network
+     */
+    async disconnect() {
+        // Unsubscribe from all active subscriptions
+        for (const [subscriptionId] of this.subscriptions) {
+            await this.unsubscribe(subscriptionId).catch(() => {
+                // Ignore errors during cleanup
+            });
+        }
+        this.subscriptions.clear();
+        this.reset();
+        this.emit('disconnect');
+    }
+    /**
+     * Get account information for a given address
+     * @param address - The account address
+     * @returns Account information including balance and nonce
+     */
+    async getAccount(address) {
+        const [balance, nonce, code] = await Promise.all([
+            this.getBalance(address),
+            this.getTransactionCount(address),
+            this.getCode(address),
+        ]);
+        return {
+            address,
+            balance,
+            nonce,
+            type: 'evm',
+            isActive: code !== '0x',
+        };
+    }
+    /**
+     * Get Selendra price from oracles
+     * Auto-activates when Selendra lists on price oracles
+     * @returns Price in USD or null if not listed on oracles
+     * @private
+     */
+    async getSelendraPrice() {
+        const oracles = [
+            () => this.fetchFromCoinGecko('selendra'),
+            () => this.fetchFromCoinMarketCap('selendra'),
+            () => this.fetchFromChainlink('SEL/USD'),
+        ];
+        for (const oracle of oracles) {
+            try {
+                const price = await oracle();
+                if (price)
+                    return price;
+            }
+            catch {
+                continue;
+            }
+        }
+        return null;
+    }
+    /**
+     * Fetch price from CoinGecko API
+     * @param tokenId - CoinGecko token ID
+     * @returns Price in USD or null
+     * @private
+     */
+    async fetchFromCoinGecko(tokenId) {
+        const maxRetries = 3;
+        const baseDelay = 1000;
+        for (let attempt = 0; attempt < maxRetries; attempt++) {
+            try {
+                const response = await fetch(`https://api.coingecko.com/api/v3/simple/price?ids=${tokenId}&vs_currencies=usd`, {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    signal: AbortSignal.timeout(5000),
+                });
+                if (!response.ok) {
+                    if (response.status === 404) {
+                        return null;
+                    }
+                    throw new Error(`HTTP ${response.status}`);
+                }
+                const data = await response.json();
+                return data[tokenId]?.usd || null;
+            }
+            catch (error) {
+                if (attempt === maxRetries - 1) {
+                    return null;
+                }
+                await new Promise(resolve => setTimeout(resolve, baseDelay * Math.pow(2, attempt)));
+            }
+        }
+        return null;
+    }
+    /**
+     * Fetch price from CoinMarketCap API
+     * @param symbol - Token symbol
+     * @returns Price in USD or null
+     * @private
+     */
+    async fetchFromCoinMarketCap(symbol) {
+        const maxRetries = 3;
+        const baseDelay = 1000;
+        for (let attempt = 0; attempt < maxRetries; attempt++) {
+            try {
+                const apiKey = process.env.COINMARKETCAP_API_KEY || '';
+                if (!apiKey) {
+                    return null;
+                }
+                const response = await fetch(`https://pro-api.coinmarketcap.com/v1/cryptocurrency/quotes/latest?symbol=${symbol.toUpperCase()}`, {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CMC_PRO_API_KEY': apiKey,
+                    },
+                    signal: AbortSignal.timeout(5000),
+                });
+                if (!response.ok) {
+                    if (response.status === 404) {
+                        return null;
+                    }
+                    throw new Error(`HTTP ${response.status}`);
+                }
+                const data = await response.json();
+                return data.data?.[symbol.toUpperCase()]?.quote?.USD?.price || null;
+            }
+            catch (error) {
+                if (attempt === maxRetries - 1) {
+                    return null;
+                }
+                await new Promise(resolve => setTimeout(resolve, baseDelay * Math.pow(2, attempt)));
+            }
+        }
+        return null;
+    }
+    /**
+     * Fetch price from Chainlink oracle
+     * @param pair - Trading pair (e.g., 'SEL/USD')
+     * @returns Price in USD or null
+     * @private
+     */
+    async fetchFromChainlink(pair) {
+        const maxRetries = 3;
+        const baseDelay = 1000;
+        for (let attempt = 0; attempt < maxRetries; attempt++) {
+            try {
+                const response = await fetch(`https://api.chain.link/v1/feeds/${pair.toLowerCase()}`, {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    signal: AbortSignal.timeout(5000),
+                });
+                if (!response.ok) {
+                    if (response.status === 404) {
+                        return null;
+                    }
+                    throw new Error(`HTTP ${response.status}`);
+                }
+                const data = await response.json();
+                return data.answer ? Number(data.answer) / 1e8 : null;
+            }
+            catch (error) {
+                if (attempt === maxRetries - 1) {
+                    return null;
+                }
+                await new Promise(resolve => setTimeout(resolve, baseDelay * Math.pow(2, attempt)));
+            }
+        }
+        return null;
+    }
+    /**
+     * Get balance information for an address
+     * @param address - The account address
+     * @param options - Additional options for balance retrieval
+     * @returns Detailed balance information
+     */
+    async getBalanceInfo(address, options = {}) {
+        const balance = await this.getBalance(address);
+        const network = await this.getNetwork();
+        const result = {
+            total: balance,
+            free: balance,
+            reserved: '0',
+            frozen: '0',
+            symbol: 'SEL',
+            decimals: 18,
+        };
+        if (options.includeMetadata) {
+            result.metadata = {
+                network: network.name,
+                chainId: network.chainId,
+                address,
+            };
+        }
+        if (options.includeUSD) {
+            const selPrice = await this.getSelendraPrice();
+            if (selPrice !== null) {
+                const balanceInSEL = Number(balance) / 1e18;
+                result.usd = balanceInSEL * selPrice;
+            }
+        }
+        return result;
+    }
+    /**
+     * Submit a transaction to the network
+     * @param transaction - Transaction request or signed transaction string
+     * @param options - Transaction options
+     * @returns Transaction information
+     */
+    async submitTransaction(transaction, options = {}) {
+        // If transaction is already signed (string), send it directly
+        let txHash;
+        let txRequest;
+        if (typeof transaction === 'string') {
+            const response = await this.sendTransaction(transaction);
+            txHash = response.hash;
+            // For signed transactions, we don't have the original request details
+            txRequest = { from: '', to: '', value: '0', nonce: 0 };
+        }
+        else {
+            // For unsigned transactions, we need a wallet to sign
+            // This is a simplified version - in production you'd use the wallet system
+            throw new Error('Unsigned transaction submission requires a wallet. Please provide a signed transaction string.');
+        }
+        const result = {
+            hash: txHash,
+            from: txRequest.from || '',
+            to: txRequest.to,
+            value: txRequest.value?.toString() || '0',
+            fee: '0', // Will be updated after receipt
+            nonce: txRequest.nonce || 0,
+            status: 'pending',
+            timestamp: Date.now(),
+        };
+        if (options.waitForInclusion || options.waitForFinality) {
+            const receipt = await this.waitForTransaction(txHash, options.waitForFinality ? 2 : 1, options.timeout);
+            if (receipt) {
+                result.blockNumber = receipt.blockNumber;
+                result.status = receipt.status === 1 ? 'included' : 'failed';
+                result.fee = (BigInt(receipt.gasUsed) * BigInt(receipt.effectiveGasPrice || '0')).toString();
+            }
+        }
+        return result;
+    }
+    /**
+     * Get transaction history for an address
+     * @param address - The account address
+     * @param limit - Maximum number of transactions to return
+     * @returns Array of transaction information
+     */
+    async getTransactionHistory(address, limit = 100) {
+        const transactions = [];
+        try {
+            const currentBlockNumber = await this.getBlockNumber();
+            const startBlock = Math.max(0, currentBlockNumber - 10000);
+            let txCount = 0;
+            for (let i = currentBlockNumber; i >= startBlock && txCount < limit; i--) {
+                try {
+                    const block = await this.getBlock(i, true);
+                    if (!block || !('transactions' in block)) {
+                        continue;
+                    }
+                    const blockWithTxs = block;
+                    for (const tx of blockWithTxs.transactions) {
+                        if (txCount >= limit)
+                            break;
+                        if (tx.from.toLowerCase() === address.toLowerCase() ||
+                            tx.to?.toLowerCase() === address.toLowerCase()) {
+                            const receipt = await this.getTransactionReceipt(tx.hash);
+                            const fee = receipt
+                                ? (BigInt(receipt.gasUsed) * BigInt(receipt.effectiveGasPrice || '0')).toString()
+                                : undefined;
+                            transactions.push({
+                                hash: tx.hash,
+                                blockNumber: tx.blockNumber,
+                                from: tx.from,
+                                to: tx.to,
+                                value: typeof tx.value === 'string' ? tx.value : tx.value?.toString() || '0',
+                                fee,
+                                nonce: Number(tx.nonce),
+                                status: receipt ? (receipt.status === 1 ? 'success' : 'failed') : 'pending',
+                                timestamp: blockWithTxs.timestamp * 1000,
+                            });
+                            txCount++;
+                        }
+                    }
+                }
+                catch (error) {
+                    continue;
+                }
+            }
+        }
+        catch (error) {
+            console.error('Error fetching transaction history:', error);
+        }
+        return transactions;
+    }
+    /**
+     * Get contract instance
+     * @param address - Contract address
+     * @param options - Contract options including ABI
+     * @returns Contract instance
+     */
+    async getContractInstance(address, options = {}) {
+        if (!options.abi) {
+            throw new Error('Contract ABI is required');
+        }
+        return this.getContract(address, options.abi);
+    }
+    /**
+     * Subscribe to balance changes for an address
+     * @param address - The account address
+     * @param callback - Callback function when balance changes
+     * @returns Unsubscribe function
+     */
+    subscribeToBalanceChanges(address, callback) {
+        let lastBalance = null;
+        // Poll for balance changes
+        const interval = setInterval(async () => {
+            try {
+                const balance = await this.getBalance(address);
+                const balanceStr = balance.toString();
+                if (lastBalance !== null && balanceStr !== lastBalance) {
+                    const balanceInfo = await this.getBalanceInfo(address);
+                    callback(balanceInfo);
+                }
+                lastBalance = balanceStr;
+            }
+            catch (error) {
+                this.emit('error', error);
+            }
+        }, 5000); // Poll every 5 seconds
+        // Return unsubscribe function
+        return () => {
+            clearInterval(interval);
+        };
+    }
+    /**
+     * Subscribe to events
+     * @param options - Event subscription options
+     * @returns Unsubscribe function
+     */
+    subscribeToEvents(options) {
+        const { callback, filter } = options;
+        // Use WebSocket subscription if available, otherwise poll
+        const subscriptionId = `events-${Date.now()}`;
+        const interval = setInterval(async () => {
+            try {
+                const logs = await this.getLogs(filter || {});
+                logs.forEach((log) => {
+                    callback({
+                        id: subscriptionId,
+                        name: 'Log',
+                        timestamp: Date.now(),
+                        blockNumber: log.blockNumber,
+                        transactionHash: log.transactionHash,
+                        data: log,
+                    });
+                });
+            }
+            catch (error) {
+                this.emit('error', error);
+            }
+        }, 5000);
+        return () => {
+            clearInterval(interval);
+        };
+    }
+    /**
+     * Subscribe to new blocks
+     * @param options - Block subscription options
+     * @returns Unsubscribe function
+     */
+    subscribeToBlocks(options) {
+        const { callback, includeTransactions } = options;
+        let lastBlockNumber = null;
+        const interval = setInterval(async () => {
+            try {
+                const currentBlockNumber = await this.getBlockNumber();
+                if (lastBlockNumber !== null && currentBlockNumber > lastBlockNumber) {
+                    const block = await this.getBlock(currentBlockNumber, includeTransactions);
+                    if (block) {
+                        callback({
+                            number: block.number,
+                            hash: block.hash,
+                            parentHash: block.parentHash,
+                            timestamp: block.timestamp,
+                            transactionCount: Array.isArray(block.transactions) ? block.transactions.length : 0,
+                        });
+                    }
+                }
+                lastBlockNumber = currentBlockNumber;
+            }
+            catch (error) {
+                this.emit('error', error);
+            }
+        }, 3000); // Poll every 3 seconds
+        return () => {
+            clearInterval(interval);
+        };
+    }
+    /**
+     * Get current block information
+     * @returns Current block information
+     */
+    async getCurrentBlock() {
+        const blockNumber = await this.getBlockNumber();
+        const block = (await this.getBlock(blockNumber, false));
+        if (!block) {
+            throw new Error('Failed to fetch current block');
+        }
+        return {
+            number: block.number,
+            hash: block.hash,
+            parentHash: block.parentHash,
+            timestamp: block.timestamp,
+            transactionCount: block.transactions.length,
+        };
     }
     /**
      * Destroy client and cleanup resources
@@ -452,7 +890,7 @@ class SelendraEvmClient extends events_1.EventEmitter {
             sha3Uncles: block.sha3Uncles,
             transactions: block.transactions,
             uncles: block.uncles,
-            withdrawals: block.withdrawals
+            withdrawals: block.withdrawals,
         };
     }
     /**
@@ -461,10 +899,9 @@ class SelendraEvmClient extends events_1.EventEmitter {
     formatTransaction(tx) {
         return {
             hash: tx.hash,
-            nonce: parseInt(tx.nonce, 16),
+            nonce: String(tx.nonce || 0),
             blockHash: tx.blockHash,
             blockNumber: tx.blockNumber ? parseInt(tx.blockNumber, 16) : undefined,
-            transactionIndex: tx.transactionIndex ? parseInt(tx.transactionIndex, 16) : undefined,
             from: tx.from,
             to: tx.to,
             value: tx.value,
@@ -477,7 +914,9 @@ class SelendraEvmClient extends events_1.EventEmitter {
             chainId: tx.chainId ? parseInt(tx.chainId, 16) : undefined,
             v: tx.v ? parseInt(tx.v, 16) : undefined,
             r: tx.r,
-            s: tx.s
+            s: tx.s,
+            amount: tx.value || '0',
+            status: 'pending',
         };
     }
     /**
@@ -504,11 +943,11 @@ class SelendraEvmClient extends events_1.EventEmitter {
                 transactionHash: log.transactionHash,
                 transactionIndex: log.transactionIndex ? parseInt(log.transactionIndex, 16) : undefined,
                 logIndex: parseInt(log.logIndex, 16),
-                removed: log.removed
+                removed: log.removed,
             })),
             logsBloom: receipt.logsBloom,
             type: receipt.type,
-            status: receipt.status ? parseInt(receipt.status, 16) : undefined
+            status: receipt.status ? parseInt(receipt.status, 16) : undefined,
         };
     }
     /**
@@ -541,8 +980,7 @@ class WebSocketProvider extends SelendraEvmClient {
         const wsUrl = config.wsUrl || networkConfig.rpcUrls.default.webSocket[0];
         super({
             ...config,
-            type: 'websocket',
-            enableSubscriptions: true
+            enableSubscriptions: true,
         });
         Object.defineProperty(this, "ws", {
             enumerable: true,
@@ -568,12 +1006,12 @@ class WebSocketProvider extends SelendraEvmClient {
             writable: true,
             value: 1000
         });
-        this.connect(wsUrl);
+        this.connectWebSocket(wsUrl);
     }
     /**
      * Connect to WebSocket endpoint
      */
-    connect(url) {
+    connectWebSocket(url) {
         try {
             this.ws = new WebSocket(url);
             this.ws.onopen = () => {
@@ -629,7 +1067,7 @@ class WebSocketProvider extends SelendraEvmClient {
             this.reconnectAttempts++;
             const networkConfig = (0, config_1.getSelendraEvmConfig)(this.config.network);
             const wsUrl = networkConfig.rpcUrls.default.webSocket[0];
-            this.connect(wsUrl);
+            this.connectWebSocket(wsUrl);
         }, this.reconnectDelay * Math.pow(2, this.reconnectAttempts));
     }
     /**
@@ -645,7 +1083,7 @@ class WebSocketProvider extends SelendraEvmClient {
                 jsonrpc: '2.0',
                 id: Date.now(),
                 method,
-                params
+                params,
             };
             const onResponse = (data) => {
                 if (data.id === request.id) {
@@ -665,18 +1103,25 @@ class WebSocketProvider extends SelendraEvmClient {
     /**
      * Disconnect WebSocket
      */
-    disconnect() {
+    async disconnect() {
         if (this.ws) {
             this.ws.close();
             this.ws = undefined;
         }
+        await super.disconnect();
     }
     /**
      * Destroy WebSocket provider
      */
     destroy() {
-        this.disconnect();
-        super.destroy();
+        // Note: Using then() to avoid making destroy() async
+        this.disconnect()
+            .then(() => {
+            super.destroy();
+        })
+            .catch(() => {
+            super.destroy();
+        });
     }
 }
 exports.WebSocketProvider = WebSocketProvider;
@@ -687,8 +1132,7 @@ class HttpProvider extends SelendraEvmClient {
     constructor(config = {}) {
         super({
             ...config,
-            type: 'http',
-            enableSubscriptions: false
+            enableSubscriptions: false,
         });
     }
 }

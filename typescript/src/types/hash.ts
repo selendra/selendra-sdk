@@ -216,7 +216,7 @@ export class HashUtils {
         .map((b) => b.toString(16).padStart(2, '0'))
         .join('');
     } else {
-      result = btoa(String.fromCharCode(...hashBytes));
+      result = btoa(String.fromCharCode(...Array.from(hashBytes)));
     }
 
     // Add prefix if requested

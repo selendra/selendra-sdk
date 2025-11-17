@@ -48,8 +48,11 @@ async fn main() -> Result<()> {
     println!("     Type: AccountId32");
 
     // EVM account
-    let evm_private_key = "0x0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef";
-    let evm_wallet = EVMWallet::from_private_key(evm_private_key, None)?;
+    // IMPORTANT: This is a placeholder private key for example only
+    // NEVER use hardcoded private keys in production code
+    let evm_private_key = std::env::var("EXAMPLE_PRIVATE_KEY")
+        .unwrap_or_else(|_| "0x0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef".to_string());
+    let evm_wallet = EVMWallet::from_private_key(&evm_private_key, None)?;
     let evm_address = evm_wallet.address();
     println!("   EVM Account:");
     println!("     Address: {:#x}", evm_address);

@@ -1,15 +1,12 @@
 //! EVM Client Implementation
 //!
-//! This module provides a comprehensive EVM client using ethers-rs for interacting
-//! with EVM-compatible chains in the Selendra ecosystem.
+//! EVM client using ethers-rs for interacting with EVM-compatible chains.
 
 use crate::types::{Result, SDKError};
-use ethers_providers::{Middleware, Http, Provider, Ws};
-use ethers_signers::{Signer, Wallet};
-use ethers_core::{
-    types::{Address, U256, BlockId, BlockNumber, TransactionRequest, H256, Bytes, Transaction, TransactionReceipt, Log, Filter},
-    utils::{keccak256, to_checksum},
-};
+use ethers::providers::{Middleware, Http, Provider, Ws};
+use ethers::signers::{Signer, Wallet};
+use ethers::types::{Address, U256, BlockId, BlockNumber, TransactionRequest, H256, Bytes, Transaction, TransactionReceipt, Log, Filter};
+use ethers::utils::{keccak256, to_checksum};
 use std::sync::Arc;
 use std::str::FromStr;
 use std::time::Duration;
@@ -94,7 +91,7 @@ pub struct EVMClient {
     /// WebSocket provider for real-time updates (optional)
     ws_provider: Option<Arc<Provider<Ws>>>,
     /// Wallet for signed transactions (optional)
-    wallet: Option<Arc<Wallet<ethers_core::k256::ecdsa::SigningKey>>>,
+    wallet: Option<Arc<Wallet<ethers::core::k256::ecdsa::SigningKey>>>,
     /// Configuration
     config: EVMConfig,
 }
@@ -128,7 +125,7 @@ impl EVMClient {
 
         // Create wallet if private key provided
         let wallet = if let Some(private_key) = &config.private_key {
-            let wallet = private_key.parse::<Wallet<ethers_core::k256::ecdsa::SigningKey>>()
+            let wallet = private_key.parse::<Wallet<ethers::core::k256::ecdsa::SigningKey>>()
                 .map_err(|e| SDKError::InvalidKey(format!("Invalid private key: {}", e)))?;
 
             // Set chain ID if provided
@@ -340,7 +337,7 @@ impl EVMClient {
     }
 
     /// Get the wallet (for advanced usage)
-    pub fn wallet(&self) -> Option<Arc<Wallet<ethers_core::k256::ecdsa::SigningKey>>> {
+    pub fn wallet(&self) -> Option<Arc<Wallet<ethers::core::k256::ecdsa::SigningKey>>> {
         self.wallet.clone()
     }
 
@@ -353,7 +350,7 @@ impl EVMClient {
 /// Utility functions for EVM operations
 pub mod utils {
     use super::*;
-    use ethers_core::utils::parse_ether;
+    use ethers::utils::parse_ether;
 
     /// Convert ether to wei
     pub fn ether_to_wei(ether: &str) -> Result<U256> {
@@ -363,7 +360,7 @@ pub mod utils {
 
     /// Convert wei to ether (returns string)
     pub fn wei_to_ether(wei: U256) -> String {
-        format!("{:.6}", ethers_core::utils::format_ether(wei))
+        format!("{:.6}", ethers::utils::format_ether(wei))
     }
 
     /// Convert an address to checksum format
@@ -380,9 +377,8 @@ pub mod utils {
     /// Generate a random address (for testing only)
     #[cfg(test)]
     pub fn generate_random_address() -> Address {
-        use ethers_core::rand::thread_rng;
-        use ethers_core::k256::ecdsa::SigningKey;
-        use ethers_signers::Signer;
+        use ethers::core::rand::thread_rng;
+        use ethers::signers::Signer;
 
         let wallet = Wallet::new(&mut thread_rng());
         wallet.address()

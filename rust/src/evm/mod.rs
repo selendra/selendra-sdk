@@ -1,7 +1,6 @@
 //! EVM client implementation for the Selendra SDK
 //!
-//! This module provides a comprehensive client for interacting with EVM-compatible chains
-//! within the Selendra ecosystem.
+//! Client for interacting with EVM-compatible chains.
 
 pub mod client;
 pub mod types;

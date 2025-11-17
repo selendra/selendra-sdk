@@ -1,11 +1,10 @@
 //! EVM Transaction Management
 //!
-//! This module provides utilities for creating, signing, and managing EVM transactions
-//! with enhanced features for the Selendra ecosystem.
+//! Utilities for creating, signing, and managing EVM transactions.
 
 use crate::types::{Result, SDKError};
 use crate::evm::client::EVMClient;
-use ethers_core::{
+use ethers::core::{
     types::{
         Address, U256, Bytes, H256, TransactionRequest, TransactionReceipt,
         Eip1559TransactionRequest, Transaction, BlockNumber, BlockId,
@@ -13,8 +12,8 @@ use ethers_core::{
     },
     utils::keccak256,
 };
-use ethers_signers::{Signer, Wallet};
-use ethers_providers::Middleware;
+use ethers::signers::{Signer, Wallet};
+use ethers::providers::Middleware;
 use std::time::{SystemTime, UNIX_EPOCH};
 use serde::{Serialize, Deserialize};
 
@@ -52,7 +51,6 @@ pub enum TransactionStatus {
     Cancelled,
 }
 
-/// Enhanced transaction builder
 #[derive(Debug, Clone)]
 pub struct TransactionBuilder {
     /// Transaction request
@@ -279,7 +277,7 @@ impl TransactionManager {
                 let block_hash = receipt.block_hash.unwrap_or_default();
                 let tx_index = receipt.transaction_index.unwrap_or_default().as_u64();
 
-                if receipt.status.unwrap_or_default() == ethers_core::types::U64::from(1u64) {
+                if receipt.status.unwrap_or_default() == ethers::core::types::U64::from(1u64) {
                     Ok(TransactionStatus::Included {
                         block_number: block_number.as_u64(),
                         block_hash,
@@ -456,7 +454,7 @@ pub struct EIP1559Fees {
 /// Utility functions for transaction handling
 pub mod utils {
     use super::*;
-    use ethers_core::utils::parse_ether;
+    use ethers::utils::parse_ether;
 
     /// Create a simple ETH transfer transaction
     pub fn create_eth_transfer(to: Address, amount: &str) -> TransactionBuilder {
@@ -493,7 +491,7 @@ pub mod utils {
     /// Format transaction fee for display
     pub fn format_transaction_fee(gas_used: U256, gas_price: U256) -> String {
         let fee_wei = calculate_transaction_fee(gas_used, gas_price);
-        ethers_core::utils::format_ether(fee_wei).to_string()
+        ethers::core::utils::format_ether(fee_wei).to_string()
     }
 
     /// Check if a transaction is EIP-1559
@@ -537,7 +535,7 @@ mod tests {
 
         assert_eq!(builder.request.to, Some(to.into()));
         // Should be 1.5 ETH in wei
-        assert_eq!(builder.request.value.unwrap(), ethers_core::utils::parse_ether("1.5").unwrap());
+        assert_eq!(builder.request.value.unwrap(), ethers::core::utils::parse_ether("1.5").unwrap());
     }
 
     #[test]

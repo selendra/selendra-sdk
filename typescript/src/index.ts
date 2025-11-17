@@ -6,7 +6,7 @@
  * @fileoverview Main entry point for the Selendra SDK
  * @author Selendra Team <team@selendra.org>
  * @license Apache-2.0
- * @version 0.1.0
+ * @version 1.0.0
  */
 
 // Export main SDK class
@@ -103,7 +103,7 @@ export {
 } from './react';
 
 // Version information
-export const VERSION = '0.1.0';
+export const VERSION = '1.0.0';
 
 /**
  * Default timeout for network operations (in milliseconds)

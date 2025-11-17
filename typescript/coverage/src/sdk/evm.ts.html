@@ -25,7 +25,7 @@
             <div class='fl pad1y space-right2'>
                 <span class="strong">0% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>0/65</span>
+                <span class='fraction'>0/61</span>
             </div>
         
             
@@ -46,7 +46,7 @@
             <div class='fl pad1y space-right2'>
                 <span class="strong">0% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>0/65</span>
+                <span class='fraction'>0/61</span>
             </div>
         
             
@@ -419,16 +419,16 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
@@ -771,18 +771,18 @@
  * EVM client using ethers.js and existing EVM modules
  */
 &nbsp;
-<span class="cstat-no" title="statement not covered" >import { ethers } from 'ethers';</span>
+import { ethers } from 'ethers';
 import type { EvmAddress, ChainInfo, EvmTransaction } from '../types';
 import type { SDKConfig } from './index';
 &nbsp;
 /**
  * Client for EVM-specific operations
  */
-<span class="cstat-no" title="statement not covered" >export class E</span>vmClient {
-  private <span class="cstat-no" title="statement not covered" >provider: ethers.JsonRpcProvider;</span>
-  private <span class="cstat-no" title="statement not covered" >config: SDKConfig;</span>
+export class EvmClient {
+  private provider: ethers.JsonRpcProvider;
+  private config: SDKConfig;
 &nbsp;
-<span class="fstat-no" title="function not covered" >  constructor(p</span>rovider: ethers.JsonRpcProvider, config: SDKConfig) {
+<span class="fstat-no" title="function not covered" >  co</span>nstructor(provider: ethers.JsonRpcProvider, config: SDKConfig) {
 <span class="cstat-no" title="statement not covered" >    this.provider = provider;</span>
 <span class="cstat-no" title="statement not covered" >    this.config = config;</span>
   }
@@ -790,7 +790,7 @@ import type { SDKConfig } from './index';
   /**
    * Get chain information from EVM
    */
-<span class="fstat-no" title="function not covered" >  async </span>getChainInfo(): Promise&lt;Partial&lt;ChainInfo&gt;&gt; {
+<span class="fstat-no" title="function not covered" >  as</span>ync getChainInfo(): Promise&lt;Partial&lt;ChainInfo&gt;&gt; {
     const [network, block] = <span class="cstat-no" title="statement not covered" >await Promise.all([</span>
       this.provider.getNetwork(),
       this.provider.getBlock('latest'),
@@ -810,7 +810,7 @@ import type { SDKConfig } from './index';
   /**
    * Get balance for an EVM address
    */
-<span class="fstat-no" title="function not covered" >  async </span>getBalance(address: EvmAddress): Promise&lt;string&gt; {
+<span class="fstat-no" title="function not covered" >  as</span>ync getBalance(address: EvmAddress): Promise&lt;string&gt; {
 <span class="cstat-no" title="statement not covered" >    try {</span>
       const balance = <span class="cstat-no" title="statement not covered" >await this.provider.getBalance(address);</span>
 <span class="cstat-no" title="statement not covered" >      return balance.toString();</span>
@@ -822,7 +822,7 @@ import type { SDKConfig } from './index';
   /**
    * Transfer tokens between EVM addresses
    */
-<span class="fstat-no" title="function not covered" >  async </span>transfer(
+<span class="fstat-no" title="function not covered" >  as</span>ync transfer(
     from: EvmAddress,
     privateKey: string,
     to: EvmAddress,
@@ -876,7 +876,7 @@ import type { SDKConfig } from './index';
   /**
    * Get transaction status
    */
-<span class="fstat-no" title="function not covered" >  async </span>getTransactionStatus(txHash: string): Promise&lt;{
+<span class="fstat-no" title="function not covered" >  as</span>ync getTransactionStatus(txHash: string): Promise&lt;{
     status: 'pending' | 'success' | 'failed';
     blockNumber?: number;
     blockHash?: string;
@@ -910,7 +910,7 @@ import type { SDKConfig } from './index';
   /**
    * Wait for transaction confirmation
    */
-<span class="fstat-no" title="function not covered" >  async </span>waitForTransaction(
+<span class="fstat-no" title="function not covered" >  as</span>ync waitForTransaction(
     txHash: string,
     confirmations = <span class="branch-0 cbranch-no" title="branch not covered" >1,</span>
   ): Promise&lt;{
@@ -947,14 +947,14 @@ import type { SDKConfig } from './index';
   /**
    * Get current block number
    */
-<span class="fstat-no" title="function not covered" >  async </span>getBlockNumber(): Promise&lt;number&gt; {
+<span class="fstat-no" title="function not covered" >  as</span>ync getBlockNumber(): Promise&lt;number&gt; {
 <span class="cstat-no" title="statement not covered" >    return await this.provider.getBlockNumber();</span>
   }
 &nbsp;
   /**
    * Get block information
    */
-<span class="fstat-no" title="function not covered" >  async </span>getBlock(blockNumber: number | 'latest'): Promise&lt;{
+<span class="fstat-no" title="function not covered" >  as</span>ync getBlock(blockNumber: number | 'latest'): Promise&lt;{
     number: number;
     hash: string;
     parentHash: string;
@@ -981,7 +981,7 @@ import type { SDKConfig } from './index';
   /**
    * Estimate gas for a transaction
    */
-<span class="fstat-no" title="function not covered" >  async </span>estimateGas(
+<span class="fstat-no" title="function not covered" >  as</span>ync estimateGas(
     from: EvmAddress,
     to: EvmAddress,
     amount: string,
@@ -1006,7 +1006,7 @@ import type { SDKConfig } from './index';
   /**
    * Get gas price
    */
-<span class="fstat-no" title="function not covered" >  async </span>getGasPrice(): Promise&lt;string&gt; {
+<span class="fstat-no" title="function not covered" >  as</span>ync getGasPrice(): Promise&lt;string&gt; {
     const feeData = <span class="cstat-no" title="statement not covered" >await this.provider.getFeeData();</span>
 <span class="cstat-no" title="statement not covered" >    return feeData.gasPrice?.toString() || '0';</span>
   }
@@ -1014,7 +1014,7 @@ import type { SDKConfig } from './index';
   /**
    * Get fee data
    */
-<span class="fstat-no" title="function not covered" >  async </span>getFeeData(): Promise&lt;{
+<span class="fstat-no" title="function not covered" >  as</span>ync getFeeData(): Promise&lt;{
     gasPrice: string;
     maxFeePerGas: string;
     maxPriorityFeePerGas: string;
@@ -1031,7 +1031,7 @@ import type { SDKConfig } from './index';
   /**
    * Call a smart contract method (read-only)
    */
-<span class="fstat-no" title="function not covered" >  async </span>call(to: EvmAddress, data: string, from?: EvmAddress): Promise&lt;string&gt; {
+<span class="fstat-no" title="function not covered" >  as</span>ync call(to: EvmAddress, data: string, from?: EvmAddress): Promise&lt;string&gt; {
 <span class="cstat-no" title="statement not covered" >    try {</span>
       const result = <span class="cstat-no" title="statement not covered" >await this.provider.call({</span>
         to,
@@ -1048,7 +1048,7 @@ import type { SDKConfig } from './index';
   /**
    * Send raw transaction
    */
-<span class="fstat-no" title="function not covered" >  async </span>sendRawTransaction(signedTx: string): Promise&lt;string&gt; {
+<span class="fstat-no" title="function not covered" >  as</span>ync sendRawTransaction(signedTx: string): Promise&lt;string&gt; {
 <span class="cstat-no" title="statement not covered" >    try {</span>
       const txResponse = <span class="cstat-no" title="statement not covered" >await this.provider.broadcastTransaction(signedTx);</span>
 <span class="cstat-no" title="statement not covered" >      return txResponse.hash;</span>
@@ -1060,14 +1060,14 @@ import type { SDKConfig } from './index';
   /**
    * Get transaction count (nonce) for an address
    */
-<span class="fstat-no" title="function not covered" >  async </span>getTransactionCount(address: EvmAddress): Promise&lt;number&gt; {
+<span class="fstat-no" title="function not covered" >  as</span>ync getTransactionCount(address: EvmAddress): Promise&lt;number&gt; {
 <span class="cstat-no" title="statement not covered" >    return await this.provider.getTransactionCount(address);</span>
   }
 &nbsp;
   /**
    * Get transaction by hash
    */
-<span class="fstat-no" title="function not covered" >  async </span>getTransaction(txHash: string): Promise&lt;{
+<span class="fstat-no" title="function not covered" >  as</span>ync getTransaction(txHash: string): Promise&lt;{
     hash: string;
     from: string;
     to: string;
@@ -1098,7 +1098,7 @@ import type { SDKConfig } from './index';
   /**
    * Get logs matching filter criteria
    */
-<span class="fstat-no" title="function not covered" >  async </span>getLogs(filter: {
+<span class="fstat-no" title="function not covered" >  as</span>ync getLogs(filter: {
     address?: EvmAddress | EvmAddress[];
     topics?: (string | string[] | null)[];
     fromBlock?: number | 'latest';
@@ -1115,7 +1115,7 @@ import type { SDKConfig } from './index';
   /**
    * Get the underlying provider instance
    */
-<span class="fstat-no" title="function not covered" >  getProvider(</span>): ethers.JsonRpcProvider {
+<span class="fstat-no" title="function not covered" >  ge</span>tProvider(): ethers.JsonRpcProvider {
 <span class="cstat-no" title="statement not covered" >    return this.provider;</span>
   }
 }
@@ -1126,7 +1126,7 @@ import type { SDKConfig } from './index';
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2025-11-16T13:35:36.268Z
+                at 2025-11-16T16:15:54.838Z
             </div>
         <script src="../../prettify.js"></script>
         <script>

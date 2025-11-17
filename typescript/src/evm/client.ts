@@ -597,6 +597,166 @@ export class SelendraEvmClient extends EventEmitter {
   }
 
   /**
+   * Get Selendra price from oracles
+   * Auto-activates when Selendra lists on price oracles
+   * @returns Price in USD or null if not listed on oracles
+   * @private
+   */
+  private async getSelendraPrice(): Promise<number | null> {
+    const oracles = [
+      () => this.fetchFromCoinGecko('selendra'),
+      () => this.fetchFromCoinMarketCap('selendra'),
+      () => this.fetchFromChainlink('SEL/USD'),
+    ];
+
+    for (const oracle of oracles) {
+      try {
+        const price = await oracle();
+        if (price) return price;
+      } catch {
+        continue;
+      }
+    }
+
+    return null;
+  }
+
+  /**
+   * Fetch price from CoinGecko API
+   * @param tokenId - CoinGecko token ID
+   * @returns Price in USD or null
+   * @private
+   */
+  private async fetchFromCoinGecko(tokenId: string): Promise<number | null> {
+    const maxRetries = 3;
+    const baseDelay = 1000;
+
+    for (let attempt = 0; attempt < maxRetries; attempt++) {
+      try {
+        const response = await fetch(
+          `https://api.coingecko.com/api/v3/simple/price?ids=${tokenId}&vs_currencies=usd`,
+          {
+            method: 'GET',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            signal: AbortSignal.timeout(5000),
+          }
+        );
+
+        if (!response.ok) {
+          if (response.status === 404) {
+            return null;
+          }
+          throw new Error(`HTTP ${response.status}`);
+        }
+
+        const data = await response.json();
+        return data[tokenId]?.usd || null;
+      } catch (error) {
+        if (attempt === maxRetries - 1) {
+          return null;
+        }
+        await new Promise(resolve => setTimeout(resolve, baseDelay * Math.pow(2, attempt)));
+      }
+    }
+
+    return null;
+  }
+
+  /**
+   * Fetch price from CoinMarketCap API
+   * @param symbol - Token symbol
+   * @returns Price in USD or null
+   * @private
+   */
+  private async fetchFromCoinMarketCap(symbol: string): Promise<number | null> {
+    const maxRetries = 3;
+    const baseDelay = 1000;
+
+    for (let attempt = 0; attempt < maxRetries; attempt++) {
+      try {
+        const apiKey = process.env.COINMARKETCAP_API_KEY || '';
+        if (!apiKey) {
+          return null;
+        }
+
+        const response = await fetch(
+          `https://pro-api.coinmarketcap.com/v1/cryptocurrency/quotes/latest?symbol=${symbol.toUpperCase()}`,
+          {
+            method: 'GET',
+            headers: {
+              'Content-Type': 'application/json',
+              'X-CMC_PRO_API_KEY': apiKey,
+            },
+            signal: AbortSignal.timeout(5000),
+          }
+        );
+
+        if (!response.ok) {
+          if (response.status === 404) {
+            return null;
+          }
+          throw new Error(`HTTP ${response.status}`);
+        }
+
+        const data = await response.json();
+        return data.data?.[symbol.toUpperCase()]?.quote?.USD?.price || null;
+      } catch (error) {
+        if (attempt === maxRetries - 1) {
+          return null;
+        }
+        await new Promise(resolve => setTimeout(resolve, baseDelay * Math.pow(2, attempt)));
+      }
+    }
+
+    return null;
+  }
+
+  /**
+   * Fetch price from Chainlink oracle
+   * @param pair - Trading pair (e.g., 'SEL/USD')
+   * @returns Price in USD or null
+   * @private
+   */
+  private async fetchFromChainlink(pair: string): Promise<number | null> {
+    const maxRetries = 3;
+    const baseDelay = 1000;
+
+    for (let attempt = 0; attempt < maxRetries; attempt++) {
+      try {
+        const response = await fetch(
+          `https://api.chain.link/v1/feeds/${pair.toLowerCase()}`,
+          {
+            method: 'GET',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            signal: AbortSignal.timeout(5000),
+          }
+        );
+
+        if (!response.ok) {
+          if (response.status === 404) {
+            return null;
+          }
+          throw new Error(`HTTP ${response.status}`);
+        }
+
+        const data = await response.json();
+        return data.answer ? Number(data.answer) / 1e8 : null;
+      } catch (error) {
+        if (attempt === maxRetries - 1) {
+          return null;
+        }
+        await new Promise(resolve => setTimeout(resolve, baseDelay * Math.pow(2, attempt)));
+      }
+    }
+
+    return null;
+  }
+
+  /**
    * Get balance information for an address
    * @param address - The account address
    * @param options - Additional options for balance retrieval
@@ -638,9 +798,12 @@ export class SelendraEvmClient extends EventEmitter {
       };
     }
 
-    // TODO: Implement USD price fetching from price oracle
     if (options.includeUSD) {
-      result.usd = 0;
+      const selPrice = await this.getSelendraPrice();
+      if (selPrice !== null) {
+        const balanceInSEL = Number(balance) / 1e18;
+        result.usd = balanceInSEL * selPrice;
+      }
     }
 
     return result;
@@ -730,17 +893,67 @@ export class SelendraEvmClient extends EventEmitter {
       timestamp: number;
     }>
   > {
-    // Note: This is a simplified implementation
-    // In production, you'd query a blockchain indexer or API
-    // For now, return empty array with TODO comment
+    const transactions: Array<{
+      hash: string;
+      blockNumber?: number;
+      from: string;
+      to?: string;
+      value: string;
+      fee?: string;
+      nonce: number;
+      status: string;
+      timestamp: number;
+    }> = [];
 
-    // TODO: Implement transaction history retrieval
-    // Options:
-    // 1. Use a blockchain indexer service (The Graph, Covalent, etc.)
-    // 2. Query contract events if available
-    // 3. Implement custom indexing solution
+    try {
+      const currentBlockNumber = await this.getBlockNumber();
+      const startBlock = Math.max(0, currentBlockNumber - 10000);
+      let txCount = 0;
 
-    return [];
+      for (let i = currentBlockNumber; i >= startBlock && txCount < limit; i--) {
+        try {
+          const block = await this.getBlock(i, true);
+          if (!block || !('transactions' in block)) {
+            continue;
+          }
+
+          const blockWithTxs = block as BlockWithTransactions;
+
+          for (const tx of blockWithTxs.transactions) {
+            if (txCount >= limit) break;
+
+            if (tx.from.toLowerCase() === address.toLowerCase() ||
+                tx.to?.toLowerCase() === address.toLowerCase()) {
+
+              const receipt = await this.getTransactionReceipt(tx.hash);
+              const fee = receipt
+                ? (BigInt(receipt.gasUsed) * BigInt(receipt.effectiveGasPrice || '0')).toString()
+                : undefined;
+
+              transactions.push({
+                hash: tx.hash,
+                blockNumber: tx.blockNumber,
+                from: tx.from,
+                to: tx.to,
+                value: typeof tx.value === 'string' ? tx.value : tx.value?.toString() || '0',
+                fee,
+                nonce: Number(tx.nonce),
+                status: receipt ? (receipt.status === 1 ? 'success' : 'failed') : 'pending',
+                timestamp: blockWithTxs.timestamp * 1000,
+              });
+
+              txCount++;
+            }
+          }
+        } catch (error) {
+          continue;
+        }
+      }
+    } catch (error) {
+      console.error('Error fetching transaction history:', error);
+    }
+
+    return transactions;
   }
 
   /**

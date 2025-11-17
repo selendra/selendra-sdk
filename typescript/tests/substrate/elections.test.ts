@@ -5,7 +5,7 @@
 import { ElectionsClient } from '../../src/substrate/elections';
 import { ApiPromise } from '@polkadot/api';
 
-const createMockApi = (overrides: any = {}) => {
+const createMockApi = (overrides = {}) => {
   const mockApi = {
     query: {
       elections: {
@@ -57,7 +57,7 @@ const createMockApi = (overrides: any = {}) => {
     tx: {
       elections: {
         changeValidators: jest.fn().mockReturnValue({
-          signAndSend: jest.fn().mockImplementation((_signer: any, callback: any) => {
+          signAndSend: jest.fn().mockImplementation((_signer, callback) => {
             if (callback) {
               callback({
                 status: { isFinalized: true, asFinalized: { toString: () => '0xblockhash' } },
@@ -69,7 +69,7 @@ const createMockApi = (overrides: any = {}) => {
           }),
         }),
         setElectionsOpenness: jest.fn().mockReturnValue({
-          signAndSend: jest.fn().mockImplementation((_signer: any, callback: any) => {
+          signAndSend: jest.fn().mockImplementation((_signer, callback) => {
             if (callback) {
               callback({
                 status: { isFinalized: true, asFinalized: { toString: () => '0xblockhash' } },
@@ -83,14 +83,14 @@ const createMockApi = (overrides: any = {}) => {
       },
     },
     ...overrides,
-  } as unknown as ApiPromise;
+  };
 
   return mockApi;
 };
 
 describe('ElectionsClient', () => {
-  let electionsClient: ElectionsClient;
-  let mockApi: ApiPromise;
+  let electionsClient;
+  let mockApi;
 
   beforeEach(() => {
     mockApi = createMockApi();
@@ -168,7 +168,7 @@ describe('ElectionsClient', () => {
 
   describe('changeValidators', () => {
     it('should change validators successfully', async () => {
-      const mockSigner = {} as any;
+      const mockSigner = {};
       const reserved = ['reserved1'];
       const nonReserved = ['nonreserved1', 'nonreserved2'];
       const committee = ['committee1', 'committee2'];
@@ -197,7 +197,7 @@ describe('ElectionsClient', () => {
       });
       electionsClient = new ElectionsClient(mockApi);
 
-      const mockSigner = {} as any;
+      const mockSigner = {};
       await expect(electionsClient.changeValidators(mockSigner, [], [], [])).rejects.toThrow(
         'Transaction failed',
       );
@@ -206,7 +206,7 @@ describe('ElectionsClient', () => {
 
   describe('setElectionsOpenness', () => {
     it('should set elections openness successfully', async () => {
-      const mockSigner = {} as any;
+      const mockSigner = {};
       const result = await electionsClient.setElectionsOpenness(mockSigner, 'Permissionless');
       expect(result.blockHash).toBe('0xblockhash');
       expect(result.success).toBe(true);

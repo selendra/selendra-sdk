@@ -7,6 +7,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.ContractFactory = exports.ERC721Contract = exports.ERC20Contract = exports.Contract = exports.Interface = exports.EventSubscription = void 0;
 const events_1 = require("events");
+const ethers_1 = require("ethers");
 /**
  * Event subscription
  */
@@ -56,13 +57,21 @@ class EventSubscription extends events_1.EventEmitter {
                 address: this.contract.address,
                 topics: this.buildTopics(),
                 fromBlock: this.filter.fromBlock || 'latest',
-                toBlock: this.filter.toBlock || 'latest'
+                toBlock: this.filter.toBlock || 'latest',
             });
             this.contract.provider.on(this.subscriptionId, (log) => {
-                const parsedEvent = this.contract.parseLog(log);
-                if (parsedEvent && parsedEvent.name === this.eventName) {
-                    this.emit('data', parsedEvent);
-                    this.emit('event', parsedEvent);
+                if (log.topics && log.topics[0]) {
+                    const fragment = this.contract.interface.getEvent(this.eventName);
+                    if (fragment && log.topics[0] === fragment.signature) {
+                        const parsedEvent = {
+                            name: this.eventName,
+                            signature: fragment.signature,
+                            args: [],
+                            raw: log,
+                        };
+                        this.emit('data', parsedEvent);
+                        this.emit('event', parsedEvent);
+                    }
                 }
             });
             this.isSubscribed = true;
@@ -128,9 +137,35 @@ class EventSubscription extends events_1.EventEmitter {
      * Encode value for topic filtering
      */
     encodeTopicValue(value, type) {
-        // This would implement proper topic encoding based on type
-        // For now, return a placeholder
-        return typeof value === 'string' ? value : String(value);
+        const abiCoder = ethers_1.AbiCoder.defaultAbiCoder();
+        if (typeof value === 'string' && value.startsWith('0x')) {
+            return value;
+        }
+        try {
+            if (type === 'address') {
+                return (0, ethers_1.zeroPadValue)(value, 32);
+            }
+            else if (type.startsWith('uint') || type.startsWith('int')) {
+                const encoded = abiCoder.encode([type], [value]);
+                return encoded;
+            }
+            else if (type === 'bool') {
+                return (0, ethers_1.zeroPadValue)(value ? '0x01' : '0x00', 32);
+            }
+            else if (type === 'bytes32' || type.startsWith('bytes')) {
+                if (typeof value === 'string') {
+                    return (0, ethers_1.keccak256)((0, ethers_1.toUtf8Bytes)(value));
+                }
+                return value;
+            }
+            else {
+                const encoded = abiCoder.encode([type], [value]);
+                return (0, ethers_1.keccak256)((0, ethers_1.getBytes)(encoded));
+            }
+        }
+        catch {
+            return typeof value === 'string' ? value : String(value);
+        }
     }
 }
 exports.EventSubscription = EventSubscription;
@@ -157,13 +192,13 @@ class Interface {
             writable: true,
             value: void 0
         });
-        Object.defineProperty(this, "fallback", {
+        Object.defineProperty(this, "fallbackFragment", {
             enumerable: true,
             configurable: true,
             writable: true,
             value: void 0
         });
-        Object.defineProperty(this, "receive", {
+        Object.defineProperty(this, "receiveFragment", {
             enumerable: true,
             configurable: true,
             writable: true,
@@ -203,12 +238,9 @@ class Interface {
         if (!fragment) {
             throw new Error(`Function ${functionName} not found in contract interface`);
         }
-        // Validate arguments
         if (args.length !== fragment.inputs.length) {
             throw new Error(`Function ${functionName} expects ${fragment.inputs.length} arguments, got ${args.length}`);
         }
-        // This would implement ABI encoding
-        // For now, return a placeholder
         const signature = fragment.signature;
         const encodedArgs = this.encodeArguments(args, fragment.inputs);
         return `${signature}${encodedArgs}`;
@@ -221,9 +253,18 @@ class Interface {
         if (!fragment) {
             throw new Error(`Function ${functionName} not found in contract interface`);
         }
-        // This would implement ABI decoding
-        // For now, return placeholder
-        return [];
+        if (!fragment.outputs || fragment.outputs.length === 0) {
+            return [];
+        }
+        const abiCoder = ethers_1.AbiCoder.defaultAbiCoder();
+        const types = fragment.outputs.map((output) => output.type);
+        try {
+            const decoded = abiCoder.decode(types, data);
+            return Array.from(decoded);
+        }
+        catch (error) {
+            throw new Error(`Failed to decode function result: ${error}`);
+        }
     }
     /**
      * Parse log
@@ -235,7 +276,7 @@ class Interface {
                 return {
                     name,
                     args,
-                    signature: fragment.signature
+                    signature: fragment.signature,
                 };
             }
         }
@@ -245,13 +286,13 @@ class Interface {
      * Encode constructor arguments
      */
     encodeDeploy(args = []) {
-        if (!this.constructor) {
+        if (!this.constructorFragment) {
             return '0x';
         }
-        if (args.length !== this.constructor.inputs.length) {
-            throw new Error(`Constructor expects ${this.constructor.inputs.length} arguments, got ${args.length}`);
+        if (args.length !== this.constructorFragment.inputs.length) {
+            throw new Error(`Constructor expects ${this.constructorFragment.inputs.length} arguments, got ${args.length}`);
         }
-        return this.encodeArguments(args, this.constructor.inputs);
+        return this.encodeArguments(args, this.constructorFragment.inputs);
     }
     /**
      * Parse contract ABI
@@ -289,13 +330,13 @@ class Interface {
                 this.events.set(eventFrag.signature, eventFrag);
                 break;
             case 'constructor':
-                this.constructor = this.parseConstructorFragment(fragment);
+                this.constructorFragment = this.parseConstructorFragment(fragment);
                 break;
             case 'fallback':
-                this.fallback = this.parseFallbackFragment(fragment);
+                this.fallbackFragment = this.parseFallbackFragment(fragment);
                 break;
             case 'receive':
-                this.receive = this.parseReceiveFragment(fragment);
+                this.receiveFragment = this.parseReceiveFragment(fragment);
                 break;
             default:
                 throw new Error(`Unknown fragment type: ${fragment.type}`);
@@ -312,8 +353,10 @@ class Interface {
             outputs: fragment.outputs?.map((output) => this.parseParamType(output)) || [],
             stateMutability: fragment.stateMutability || 'nonpayable',
             payable: fragment.stateMutability === 'payable' || fragment.payable === true,
-            constant: fragment.stateMutability === 'view' || fragment.stateMutability === 'pure' || fragment.constant === true,
-            signature: this.createFunctionSignature(fragment.name, fragment.inputs || [])
+            constant: fragment.stateMutability === 'view' ||
+                fragment.stateMutability === 'pure' ||
+                fragment.constant === true,
+            signature: this.createFunctionSignature(fragment.name, fragment.inputs || []),
         };
     }
     /**
@@ -323,9 +366,12 @@ class Interface {
         return {
             name: fragment.name,
             type: 'event',
-            inputs: fragment.inputs?.map((input) => ({ ...this.parseParamType(input), indexed: input.indexed || false })) || [],
+            inputs: fragment.inputs?.map((input) => ({
+                ...this.parseParamType(input),
+                indexed: input.indexed || false,
+            })) || [],
             anonymous: fragment.anonymous || false,
-            signature: this.createEventSignature(fragment.name, fragment.inputs || [])
+            signature: this.createEventSignature(fragment.name, fragment.inputs || []),
         };
     }
     /**
@@ -335,7 +381,7 @@ class Interface {
         return {
             type: 'constructor',
             inputs: fragment.inputs?.map((input) => this.parseParamType(input)) || [],
-            payable: fragment.stateMutability === 'payable' || fragment.payable === true
+            payable: fragment.stateMutability === 'payable' || fragment.payable === true,
         };
     }
     /**
@@ -345,7 +391,7 @@ class Interface {
         return {
             type: 'fallback',
             stateMutability: fragment.stateMutability || 'nonpayable',
-            payable: fragment.stateMutability === 'payable' || fragment.payable === true
+            payable: fragment.stateMutability === 'payable' || fragment.payable === true,
         };
     }
     /**
@@ -354,7 +400,8 @@ class Interface {
     parseReceiveFragment(fragment) {
         return {
             type: 'receive',
-            stateMutability: 'payable'
+            stateMutability: 'payable',
+            payable: true,
         };
     }
     /**
@@ -365,40 +412,82 @@ class Interface {
             name: param.name || '',
             type: param.type,
             indexed: param.indexed || false,
-            components: param.components?.map((comp) => this.parseParamType(comp)) || []
+            components: param.components?.map((comp) => this.parseParamType(comp)) || [],
         };
     }
     /**
      * Create function signature
      */
     createFunctionSignature(name, inputs) {
-        const types = inputs.map(input => input.type).join(',');
+        const types = inputs.map((input) => input.type).join(',');
         const signature = `${name}(${types})`;
-        return `0x${Buffer.from(signature).toString('hex').slice(0, 8)}`;
+        const hash = (0, ethers_1.keccak256)((0, ethers_1.toUtf8Bytes)(signature));
+        return hash.slice(0, 10);
     }
     /**
      * Create event signature
      */
     createEventSignature(name, inputs) {
-        const types = inputs.map(input => input.type).join(',');
+        const types = inputs.map((input) => input.type).join(',');
         const signature = `${name}(${types})`;
-        return `0x${Buffer.from(signature).toString('hex')}`;
+        return (0, ethers_1.keccak256)((0, ethers_1.toUtf8Bytes)(signature));
     }
     /**
      * Encode arguments
      */
     encodeArguments(args, params) {
-        // This would implement full ABI encoding
-        // For now, return a placeholder
-        return args.map(arg => typeof arg === 'string' && arg.startsWith('0x') ? arg.slice(2) : String(arg)).join('');
+        if (args.length === 0 || params.length === 0) {
+            return '';
+        }
+        const abiCoder = ethers_1.AbiCoder.defaultAbiCoder();
+        const types = params.map((param) => param.type);
+        try {
+            const encoded = abiCoder.encode(types, args);
+            return encoded.startsWith('0x') ? encoded.slice(2) : encoded;
+        }
+        catch (error) {
+            throw new Error(`Failed to encode arguments: ${error}`);
+        }
     }
     /**
      * Decode event log
      */
     decodeEventLog(fragment, log) {
-        // This would implement event log decoding
-        // For now, return placeholder
-        return [];
+        const abiCoder = ethers_1.AbiCoder.defaultAbiCoder();
+        const results = [];
+        try {
+            const indexedParams = fragment.inputs.filter((input) => input.indexed);
+            const nonIndexedParams = fragment.inputs.filter((input) => !input.indexed);
+            let topicIndex = 1;
+            for (const param of indexedParams) {
+                if (topicIndex < log.topics.length) {
+                    const topic = log.topics[topicIndex];
+                    if (param.type === 'string' || param.type.startsWith('bytes') || param.type.startsWith('array')) {
+                        results.push(topic);
+                    }
+                    else {
+                        try {
+                            const decoded = abiCoder.decode([param.type], topic);
+                            results.push(decoded[0]);
+                        }
+                        catch {
+                            results.push(topic);
+                        }
+                    }
+                    topicIndex++;
+                }
+            }
+            if (nonIndexedParams.length > 0 && log.data && log.data !== '0x') {
+                const types = nonIndexedParams.map((param) => param.type);
+                const decoded = abiCoder.decode(types, log.data);
+                results.push(...Array.from(decoded));
+            }
+            return results;
+        }
+        catch (error) {
+            console.error('Error decoding event log:', error);
+            return [];
+        }
     }
 }
 exports.Interface = Interface;
@@ -470,7 +559,7 @@ class Contract extends events_1.EventEmitter {
                 from: overrides.from || (this.signer ? await this.signer.getAddress() : undefined),
                 gas: overrides.gas,
                 value: overrides.value,
-                blockTag: overrides.blockTag || 'latest'
+                blockTag: overrides.blockTag || 'latest',
             });
             return this.interface.decodeFunctionResult(method, result)[0];
         }
@@ -499,7 +588,7 @@ class Contract extends events_1.EventEmitter {
             maxFeePerGas: overrides.maxFeePerGas,
             maxPriorityFeePerGas: overrides.maxPriorityFeePerGas,
             nonce: overrides.nonce,
-            type: overrides.type
+            type: overrides.type,
         });
         return tx.hash;
     }
@@ -518,7 +607,7 @@ class Contract extends events_1.EventEmitter {
                 data: callData,
                 from: overrides.from || (this.signer ? await this.signer.getAddress() : undefined),
                 value: overrides.value || '0x0',
-                gas: overrides.gas
+                gas: overrides.gas,
             });
             return Number(gas);
         }
@@ -534,10 +623,10 @@ class Contract extends events_1.EventEmitter {
             address: this.address,
             topics: this.buildEventTopics(eventName, filter.args),
             fromBlock: filter.fromBlock || 'earliest',
-            toBlock: filter.toBlock || 'latest'
+            toBlock: filter.toBlock || 'latest',
         };
         const logs = await this.provider.getLogs(eventFilter);
-        return logs.filter(log => {
+        return logs.filter((log) => {
             const parsed = this.interface.parseLog(log);
             return parsed && parsed.name === eventName;
         });
@@ -577,7 +666,7 @@ class Contract extends events_1.EventEmitter {
             maxFeePerGas: overrides.maxFeePerGas,
             maxPriorityFeePerGas: overrides.maxPriorityFeePerGas,
             nonce: overrides.nonce,
-            type: overrides.type
+            type: overrides.type,
         });
         const receipt = await tx.wait();
         const contractAddress = receipt.contractAddress;
@@ -623,8 +712,35 @@ class Contract extends events_1.EventEmitter {
      * Encode value for topic filtering
      */
     encodeTopicValue(value, type) {
-        // This would implement proper topic encoding
-        return typeof value === 'string' ? value : String(value);
+        const abiCoder = ethers_1.AbiCoder.defaultAbiCoder();
+        if (typeof value === 'string' && value.startsWith('0x')) {
+            return value;
+        }
+        try {
+            if (type === 'address') {
+                return (0, ethers_1.zeroPadValue)(value, 32);
+            }
+            else if (type.startsWith('uint') || type.startsWith('int')) {
+                const encoded = abiCoder.encode([type], [value]);
+                return encoded;
+            }
+            else if (type === 'bool') {
+                return (0, ethers_1.zeroPadValue)(value ? '0x01' : '0x00', 32);
+            }
+            else if (type === 'bytes32' || type.startsWith('bytes')) {
+                if (typeof value === 'string') {
+                    return (0, ethers_1.keccak256)((0, ethers_1.toUtf8Bytes)(value));
+                }
+                return value;
+            }
+            else {
+                const encoded = abiCoder.encode([type], [value]);
+                return (0, ethers_1.keccak256)((0, ethers_1.getBytes)(encoded));
+            }
+        }
+        catch {
+            return typeof value === 'string' ? value : String(value);
+        }
     }
 }
 exports.Contract = Contract;
@@ -645,7 +761,7 @@ class ERC20Contract extends Contract {
             'function approve(address,uint256) returns (bool)',
             'function transferFrom(address,address,uint256) returns (bool)',
             'event Transfer(address indexed from,address indexed to,uint256 value)',
-            'event Approval(address indexed owner,address indexed spender,uint256 value)'
+            'event Approval(address indexed owner,address indexed spender,uint256 value)',
         ];
         super(address, erc20ABI, provider, signer);
     }
@@ -680,10 +796,7 @@ class ERC20Contract extends Contract {
      * Get formatted balance with decimals
      */
     async getFormattedBalance(account) {
-        const [balance, decimals] = await Promise.all([
-            this.balanceOf(account),
-            this.decimals()
-        ]);
+        const [balance, decimals] = await Promise.all([this.balanceOf(account), this.decimals()]);
         const balanceValue = typeof balance === 'string' ? BigInt(balance) : balance;
         const divisor = BigInt(10 ** decimals);
         const whole = balanceValue / divisor;
@@ -710,7 +823,7 @@ class ERC721Contract extends Contract {
             'function isApprovedForAll(address,address) view returns (bool)',
             'event Transfer(address indexed from,address indexed to,uint256 indexed tokenId)',
             'event Approval(address indexed owner,address indexed approved,uint256 indexed tokenId)',
-            'event ApprovalForAll(address indexed owner,address indexed operator,bool approved)'
+            'event ApprovalForAll(address indexed owner,address indexed operator,bool approved)',
         ];
         super(address, erc721ABI, provider, signer);
     }
@@ -745,12 +858,12 @@ exports.ERC721Contract = ERC721Contract;
  * Contract Factory
  */
 class ContractFactory {
-    constructor(interface, bytecode, signer) {
-        Object.defineProperty(this, "interface", {
+    constructor(contractInterface, bytecode, signer) {
+        Object.defineProperty(this, "contractInterface", {
             enumerable: true,
             configurable: true,
             writable: true,
-            value: interface
+            value: contractInterface
         });
         Object.defineProperty(this, "bytecode", {
             enumerable: true,
@@ -769,31 +882,31 @@ class ContractFactory {
      * Deploy contract
      */
     async deploy(...args) {
-        const deployData = this.bytecode + this.interface.encodeDeploy(args).slice(2);
+        const deployData = this.bytecode + this.contractInterface.encodeDeploy(args).slice(2);
         const tx = await this.signer.sendTransaction({
-            data: deployData
+            data: deployData,
         });
         const receipt = await tx.wait();
         const contractAddress = receipt.contractAddress;
         if (!contractAddress) {
             throw new Error('Contract deployment failed: no contract address in receipt');
         }
-        return new Contract(contractAddress, this.interface.abi, this.signer.provider, this.signer);
+        return new Contract(contractAddress, [], this.signer.provider, this.signer);
     }
     /**
      * Get deployment transaction
      */
     getDeployTransaction(...args) {
-        const deployData = this.bytecode + this.interface.encodeDeploy(args).slice(2);
+        const deployData = this.bytecode + this.contractInterface.encodeDeploy(args).slice(2);
         return {
-            data: deployData
+            data: deployData,
         };
     }
     /**
      * Connect to different signer
      */
     connect(signer) {
-        return new ContractFactory(this.interface, this.bytecode, signer);
+        return new ContractFactory(this.contractInterface, this.bytecode, signer);
     }
     /**
      * Create contract factory from ABI and bytecode

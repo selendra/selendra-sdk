@@ -9,7 +9,7 @@ use crate::evm::{
 };
 use crate::substrate::{Connection, SignedConnection};
 use ethers_core::types::{Address, U256, H256};
-use sp_core::{crypto::AccountId32, sr25519, ed25519, Pair, H160 as SubstrateH160};
+use sp_core::{crypto::{AccountId32, Ss58Codec}, sr25519, ed25519, Pair, H160 as SubstrateH160};
 use sp_runtime::{MultiAddress, AccountId32 as RuntimeAccountId32};
 use sp_keyring::AccountKeyring;
 use std::str::FromStr;
@@ -99,7 +99,7 @@ impl UnifiedAddress {
             Self::H160(addr) => Some(*addr),
             Self::EVM(evm_addr) => {
                 // Convert EVM address to H160
-                Some(SubstrateH160::from_slice(&ev_addr.as_bytes()))
+                Some(SubstrateH160::from_slice(evm_addr.as_ref()))
             }
             Self::Substrate(substrate_addr) => {
                 // Take last 20 bytes of Substrate address
@@ -568,13 +568,14 @@ pub mod address_utils {
         match &addr {
             UnifiedAddress::Substrate(account_id) => {
                 // Check if it's a valid SS58 address
-                if account_id.as_ref().iter().all(|&b| b == 0) {
+                let bytes: &[u8] = account_id.as_ref();
+                if bytes.iter().all(|&b| b == 0) {
                     return Err(SDKError::InvalidAddress("Zero address is not valid".to_string()));
                 }
             }
             UnifiedAddress::EVM(evm_addr) => {
                 // Check if it's a valid Ethereum address
-                if evv_addr.is_zero() {
+                if evm_addr.is_zero() {
                     return Err(SDKError::InvalidAddress("Zero address is not valid".to_string()));
                 }
             }

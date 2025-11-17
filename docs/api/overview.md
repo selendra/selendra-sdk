@@ -1,16 +1,17 @@
 # API Overview
 
-The Selendra SDK provides a comprehensive API for interacting with the Selendra blockchain. The SDK is designed to be intuitive, type-safe, and feature-rich while maintaining excellent performance.
+The Selendra SDK provides an API for interacting with the Selendra blockchain. The SDK is type-safe and handles connection management automatically.
 
 ## Core Concepts
 
 ### Unified API
 
-The SDK provides a unified interface that works with both Substrate and EVM chains within the Selendra ecosystem. This means you can write code once and it will work regardless of the underlying chain type.
+The SDK provides a unified interface for both Substrate and EVM chains within the Selendra ecosystem.
 
 ### Connection Management
 
-The SDK handles all connection details automatically, including:
+The SDK handles connection details automatically:
+
 - WebSocket and HTTP connections
 - Automatic reconnection
 - Connection pooling
@@ -19,7 +20,8 @@ The SDK handles all connection details automatically, including:
 
 ### Account Management
 
-The SDK provides comprehensive account management features:
+Account management features:
+
 - Account creation and import
 - Private key management
 - Address derivation
@@ -28,11 +30,12 @@ The SDK provides comprehensive account management features:
 
 ### Type Safety
 
-Both Rust and TypeScript implementations provide full type safety:
+Both Rust and TypeScript implementations provide type safety:
+
 - Compile-time type checking
 - Runtime validation
 - Auto-generated types from chain metadata
-- Comprehensive error handling
+- Error handling
 
 ## Architecture
 
@@ -55,11 +58,13 @@ The SDK is organized into several key modules:
 ## Supported Networks
 
 The SDK supports all Selendra ecosystem networks:
+
 - Selendra Mainnet
 - Selendra Testnet
 - Custom Substrate chains
 - EVM-compatible chains
 
 For detailed API reference, see the language-specific documentation:
+
 - [Rust API](../rust/)
 - [TypeScript API](../typescript/)

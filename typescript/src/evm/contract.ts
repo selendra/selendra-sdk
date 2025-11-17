@@ -5,6 +5,7 @@
  */
 
 import { EventEmitter } from 'events';
+import { AbiCoder, keccak256, toUtf8Bytes, zeroPadValue, getBytes } from 'ethers';
 import type { Address, Balance, TransactionHash, BlockNumber, GasAmount } from '../types/common';
 import type {
   EvmContract,
@@ -264,9 +265,32 @@ export class EventSubscription extends EventEmitter {
    * Encode value for topic filtering
    */
   private encodeTopicValue(value: unknown, type: string): string {
-    // This would implement proper topic encoding based on type
-    // For now, return a placeholder
-    return typeof value === 'string' ? value : String(value);
+    const abiCoder = AbiCoder.defaultAbiCoder();
+
+    if (typeof value === 'string' && value.startsWith('0x')) {
+      return value;
+    }
+
+    try {
+      if (type === 'address') {
+        return zeroPadValue(value as string, 32);
+      } else if (type.startsWith('uint') || type.startsWith('int')) {
+        const encoded = abiCoder.encode([type], [value]);
+        return encoded;
+      } else if (type === 'bool') {
+        return zeroPadValue(value ? '0x01' : '0x00', 32);
+      } else if (type === 'bytes32' || type.startsWith('bytes')) {
+        if (typeof value === 'string') {
+          return keccak256(toUtf8Bytes(value));
+        }
+        return value as string;
+      } else {
+        const encoded = abiCoder.encode([type], [value]);
+        return keccak256(getBytes(encoded));
+      }
+    } catch {
+      return typeof value === 'string' ? value : String(value);
+    }
   }
 }
 
@@ -325,15 +349,12 @@ export class Interface {
       throw new Error(`Function ${functionName} not found in contract interface`);
     }
 
-    // Validate arguments
     if (args.length !== fragment.inputs.length) {
       throw new Error(
         `Function ${functionName} expects ${fragment.inputs.length} arguments, got ${args.length}`,
       );
     }
 
-    // This would implement ABI encoding
-    // For now, return a placeholder
     const signature = fragment.signature;
     const encodedArgs = this.encodeArguments(args, fragment.inputs);
 
@@ -349,9 +370,19 @@ export class Interface {
       throw new Error(`Function ${functionName} not found in contract interface`);
     }
 
-    // This would implement ABI decoding
-    // For now, return placeholder
-    return [];
+    if (!fragment.outputs || fragment.outputs.length === 0) {
+      return [];
+    }
+
+    const abiCoder = AbiCoder.defaultAbiCoder();
+    const types = fragment.outputs.map((output) => output.type);
+
+    try {
+      const decoded = abiCoder.decode(types, data);
+      return Array.from(decoded);
+    } catch (error) {
+      throw new Error(`Failed to decode function result: ${error}`);
+    }
   }
 
   /**
@@ -529,7 +560,8 @@ export class Interface {
   private createFunctionSignature(name: string, inputs: ParamType[]): string {
     const types = inputs.map((input) => input.type).join(',');
     const signature = `${name}(${types})`;
-    return `0x${Buffer.from(signature).toString('hex').slice(0, 8)}`;
+    const hash = keccak256(toUtf8Bytes(signature));
+    return hash.slice(0, 10);
   }
 
   /**
@@ -538,27 +570,68 @@ export class Interface {
   private createEventSignature(name: string, inputs: ParamType[]): string {
     const types = inputs.map((input) => input.type).join(',');
     const signature = `${name}(${types})`;
-    return `0x${Buffer.from(signature).toString('hex')}`;
+    return keccak256(toUtf8Bytes(signature));
   }
 
   /**
    * Encode arguments
    */
   private encodeArguments(args: unknown[], params: ParamType[]): string {
-    // This would implement full ABI encoding
-    // For now, return a placeholder
-    return args
-      .map((arg) => (typeof arg === 'string' && arg.startsWith('0x') ? arg.slice(2) : String(arg)))
-      .join('');
+    if (args.length === 0 || params.length === 0) {
+      return '';
+    }
+
+    const abiCoder = AbiCoder.defaultAbiCoder();
+    const types = params.map((param) => param.type);
+
+    try {
+      const encoded = abiCoder.encode(types, args);
+      return encoded.startsWith('0x') ? encoded.slice(2) : encoded;
+    } catch (error) {
+      throw new Error(`Failed to encode arguments: ${error}`);
+    }
   }
 
   /**
    * Decode event log
    */
   private decodeEventLog(fragment: EventFragment, log: EvmLog): unknown[] {
-    // This would implement event log decoding
-    // For now, return placeholder
-    return [];
+    const abiCoder = AbiCoder.defaultAbiCoder();
+    const results: unknown[] = [];
+
+    try {
+      const indexedParams = fragment.inputs.filter((input) => input.indexed);
+      const nonIndexedParams = fragment.inputs.filter((input) => !input.indexed);
+
+      let topicIndex = 1;
+      for (const param of indexedParams) {
+        if (topicIndex < log.topics.length) {
+          const topic = log.topics[topicIndex];
+          if (param.type === 'string' || param.type.startsWith('bytes') || param.type.startsWith('array')) {
+            results.push(topic);
+          } else {
+            try {
+              const decoded = abiCoder.decode([param.type], topic);
+              results.push(decoded[0]);
+            } catch {
+              results.push(topic);
+            }
+          }
+          topicIndex++;
+        }
+      }
+
+      if (nonIndexedParams.length > 0 && log.data && log.data !== '0x') {
+        const types = nonIndexedParams.map((param) => param.type);
+        const decoded = abiCoder.decode(types, log.data);
+        results.push(...Array.from(decoded));
+      }
+
+      return results;
+    } catch (error) {
+      console.error('Error decoding event log:', error);
+      return [];
+    }
   }
 }
 
@@ -814,8 +887,32 @@ export class Contract extends EventEmitter implements EvmContract {
    * Encode value for topic filtering
    */
   private encodeTopicValue(value: unknown, type: string): string {
-    // This would implement proper topic encoding
-    return typeof value === 'string' ? value : String(value);
+    const abiCoder = AbiCoder.defaultAbiCoder();
+
+    if (typeof value === 'string' && value.startsWith('0x')) {
+      return value;
+    }
+
+    try {
+      if (type === 'address') {
+        return zeroPadValue(value as string, 32);
+      } else if (type.startsWith('uint') || type.startsWith('int')) {
+        const encoded = abiCoder.encode([type], [value]);
+        return encoded;
+      } else if (type === 'bool') {
+        return zeroPadValue(value ? '0x01' : '0x00', 32);
+      } else if (type === 'bytes32' || type.startsWith('bytes')) {
+        if (typeof value === 'string') {
+          return keccak256(toUtf8Bytes(value));
+        }
+        return value as string;
+      } else {
+        const encoded = abiCoder.encode([type], [value]);
+        return keccak256(getBytes(encoded));
+      }
+    } catch {
+      return typeof value === 'string' ? value : String(value);
+    }
   }
 }
 

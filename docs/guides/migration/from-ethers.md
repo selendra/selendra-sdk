@@ -1,8 +1,8 @@
 # Migration Guide: From Ethers.js to Selendra SDK
 
-This guide helps developers familiar with Ethers.js transition to the Selendra SDK while leveraging their existing knowledge.
+This guide helps developers familiar with Ethers.js transition to the Selendra SDK.
 
-## 🎯 Quick Reference
+## Quick Reference
 
 | Ethers.js Concept | Selendra SDK Equivalent |
 |-------------------|------------------------|
@@ -12,7 +12,7 @@ This guide helps developers familiar with Ethers.js transition to the Selendra S
 | `contract.method(...args)` | `contract.send(method, options, ...args)` |
 | `wallet.sendTransaction(tx)` | `sdk.sendTransaction(options)` |
 
-## 🏗 Core Concepts Comparison
+## Core Concepts Comparison
 
 ### Provider and Connection
 
@@ -257,7 +257,7 @@ const addressType = sdk.validateAddress('5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPc
 const isValid = addressType !== 'invalid';
 ```
 
-## 🚀 Advanced Patterns
+## Advanced Patterns
 
 ### Gas Estimation
 
@@ -339,7 +339,7 @@ const deployed = await sdk.deployContract({
 console.log('Contract deployed at:', deployed.address);
 ```
 
-## 🎯 React Integration
+## React Integration
 
 ### Ethers.js with React
 
@@ -386,7 +386,7 @@ function BalanceDisplay({ address }) {
 
 ## 🔄 Migration Checklist
 
-### ✅ Easy Replacements
+###  Easy Replacements
 
 - [ ] Replace `ethers.providers` with `SelendraSDK`
 - [ ] Replace `ethers.Contract` with `Contract` from SDK
@@ -410,7 +410,7 @@ function BalanceDisplay({ address }) {
 - [ ] Implement cross-chain functionality
 - [ ] Utilize built-in transaction history tracking
 
-## 🛠 Code Migration Example
+##  Code Migration Example
 
 ### Before (Ethers.js)
 

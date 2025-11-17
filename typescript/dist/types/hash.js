@@ -35,7 +35,7 @@ exports.HASH_PATTERNS = {
     /** Hex hash without 0x prefix */
     HEX_NO_PREFIX: /^[a-fA-F0-9]{40,64}$/,
     /** Base64 hash pattern */
-    BASE64: /^[A-Za-z0-9+/]+={0,2}$/
+    BASE64: /^[A-Za-z0-9+/]+={0,2}$/,
 };
 /**
  * Hash utility functions
@@ -48,7 +48,7 @@ class HashUtils {
         if (!hash || typeof hash !== 'string') {
             return {
                 isValid: false,
-                error: 'Hash must be a non-empty string'
+                error: 'Hash must be a non-empty string',
             };
         }
         // Normalize hash (remove 0x prefix if present)
@@ -57,7 +57,7 @@ class HashUtils {
         if (!/^[a-fA-F0-9]+$/.test(normalized)) {
             return {
                 isValid: false,
-                error: 'Hash contains non-hexadecimal characters'
+                error: 'Hash contains non-hexadecimal characters',
             };
         }
         // Check length and determine type
@@ -74,29 +74,32 @@ class HashUtils {
         else {
             return {
                 isValid: false,
-                error: `Invalid hash length: ${normalized.length} characters`
+                error: `Invalid hash length: ${normalized.length} characters`,
             };
         }
         return {
             isValid: true,
             type,
-            normalized: `0x${normalized.toLowerCase()}`
+            normalized: `0x${normalized.toLowerCase()}`,
         };
     }
     /**
      * Generate hash from data
      */
     static async generate(data, options = {}) {
-        const { algorithm = HashType.SHA256, inputEncoding = 'utf8', outputEncoding = 'hex', includePrefix = true } = options;
+        const { algorithm = HashType.SHA256, inputEncoding = 'utf8', outputEncoding = 'hex', includePrefix = true, } = options;
         // Convert input to bytes
         let inputBytes;
         if (typeof data === 'string') {
             switch (inputEncoding) {
                 case 'hex':
-                    inputBytes = new Uint8Array(data.replace('0x', '').match(/.{2}/g)?.map(byte => parseInt(byte, 16)) || []);
+                    inputBytes = new Uint8Array(data
+                        .replace('0x', '')
+                        .match(/.{2}/g)
+                        ?.map((byte) => parseInt(byte, 16)) || []);
                     break;
                 case 'base64':
-                    inputBytes = Uint8Array.from(atob(data), c => c.charCodeAt(0));
+                    inputBytes = Uint8Array.from(atob(data), (c) => c.charCodeAt(0));
                     break;
                 default:
                     inputBytes = new TextEncoder().encode(data);
@@ -130,11 +133,11 @@ class HashUtils {
         let result;
         if (outputEncoding === 'hex') {
             result = Array.from(hashBytes)
-                .map(b => b.toString(16).padStart(2, '0'))
+                .map((b) => b.toString(16).padStart(2, '0'))
                 .join('');
         }
         else {
-            result = btoa(String.fromCharCode(...hashBytes));
+            result = btoa(String.fromCharCode(...Array.from(hashBytes)));
         }
         // Add prefix if requested
         if (includePrefix && outputEncoding === 'hex') {
@@ -178,7 +181,7 @@ class HashUtils {
         const level0 = hashes.map((hash, index) => ({
             hash,
             level: 0,
-            index
+            index,
         }));
         const tree = [level0];
         let currentLevel = level0;
@@ -188,15 +191,15 @@ class HashUtils {
             for (let i = 0; i < currentLevel.length; i += 2) {
                 const left = currentLevel[i];
                 const right = i + 1 < currentLevel.length ? currentLevel[i + 1] : left;
-                // In a real implementation, you would hash left.hash + right.hash
+                // Simple synchronous hash combination (placeholder)
                 const combinedHash = `${left.hash}${right.hash}`;
-                const nodeHash = this.generate(combinedHash);
+                const nodeHash = `0x${combinedHash.slice(2, 66)}`;
                 const node = {
                     hash: nodeHash,
                     level: currentLevel[0].level + 1,
                     index: Math.floor(i / 2),
                     left,
-                    right
+                    right,
                 };
                 nextLevel.push(node);
             }
@@ -205,7 +208,7 @@ class HashUtils {
         }
         return {
             root: currentLevel[0].hash,
-            tree
+            tree,
         };
     }
     /**
@@ -213,7 +216,7 @@ class HashUtils {
      */
     static generateMerkleProof(leafHash, tree) {
         // Find the leaf node
-        const leafIndex = tree[0].findIndex(node => this.isEqual(node.hash, leafHash));
+        const leafIndex = tree[0].findIndex((node) => this.isEqual(node.hash, leafHash));
         if (leafIndex === -1) {
             throw new Error('Leaf hash not found in Merkle tree');
         }
@@ -226,7 +229,7 @@ class HashUtils {
             if (siblingIndex < tree[level].length) {
                 path.push({
                     hash: tree[level][siblingIndex].hash,
-                    isLeft
+                    isLeft,
                 });
             }
             currentIndex = Math.floor(currentIndex / 2);
@@ -235,7 +238,7 @@ class HashUtils {
             root: tree[tree.length - 1][0].hash,
             leaf: leafHash,
             path,
-            depth: path.length
+            depth: path.length,
         };
     }
     /**
@@ -247,7 +250,8 @@ class HashUtils {
             const combinedHash = sibling.isLeft
                 ? `${sibling.hash}${currentHash}`
                 : `${currentHash}${sibling.hash}`;
-            currentHash = this.generate(combinedHash);
+            // Simple synchronous hash combination (placeholder)
+            currentHash = `0x${combinedHash.slice(2, 66)}`;
         }
         return this.isEqual(currentHash, proof.root);
     }

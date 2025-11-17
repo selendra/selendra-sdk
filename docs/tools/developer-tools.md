@@ -1,8 +1,8 @@
 # Developer Tools Guide
 
-Complete guide to development tools, testing strategies, debugging techniques, and performance optimization for Selenda SDK development.
+ guide to development tools, testing strategies, debugging techniques, and performance optimization for Selenda SDK development.
 
-## 🛠 Core Development Tools
+##  Core Development Tools
 
 ### Selendra CLI
 
@@ -351,7 +351,7 @@ test.describe('Task Management', () => {
     await page.goto('/');
   });
 
-  test('should create and complete a task', async ({ page }) => {
+  test('should create and  a task', async ({ page }) => {
     // Create wallet
     await page.click('text=Create New Wallet');
     await page.waitForSelector('text=Connected');
@@ -365,12 +365,12 @@ test.describe('Task Management', () => {
     await expect(page.locator('text=Test Task')).toBeVisible();
     await expect(page.locator('text=Reward: 10.00 SEL')).toBeVisible();
 
-    // Complete task
-    await page.click('text=Complete Task');
+    //  task
+    await page.click('text= Task');
 
     // Verify completion
-    await expect(page.locator('text=Completed')).toBeVisible();
-    await expect(page.locator('text=Task completed successfully!')).toBeVisible();
+    await expect(page.locator('text=d')).toBeVisible();
+    await expect(page.locator('text=Task d successfully!')).toBeVisible();
   });
 
   test('should handle transaction errors gracefully', async ({ page }) => {
@@ -418,7 +418,7 @@ sdk.on('request', (request) => {
 });
 
 sdk.on('response', (response) => {
-  console.log('✅ SDK Response:', {
+  console.log(' SDK Response:', {
     id: response.id,
     result: response.result,
     duration: response.duration
@@ -616,7 +616,7 @@ console.log('Transaction Analysis:', {
 
 ---
 
-## ⚡ Performance Optimization
+##  Performance Optimization
 
 ### Code Splitting
 
@@ -1062,7 +1062,7 @@ console.log('Performance Metrics:', {
 
 ---
 
-## 🚀 Production Deployment
+##  Production Deployment
 
 ### Build Optimization
 
@@ -1122,7 +1122,7 @@ const sanitizeInput = (input: string): string => {
 
 ---
 
-## 📚 Additional Resources
+##  Additional Resources
 
 ### CLI Reference
 
@@ -1181,6 +1181,6 @@ selendra config list
 
 ---
 
-**Happy building!** 🚀
+**Happy building!** 
 
-This guide provides comprehensive tools and techniques for professional Selendra SDK development. For specific issues or questions, don't hesitate to reach out to our community!
+This guide provides  tools and techniques for professional Selendra SDK development. For specific issues or questions, don't hesitate to reach out to our community!

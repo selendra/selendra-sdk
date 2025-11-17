@@ -133,6 +133,20 @@ export interface MultiSignature {
 }
 
 /**
+ * EIP-712 typed data structure
+ */
+export interface EIP712TypedData {
+  /** EIP-712 domain separator */
+  domain: TypedDataDomain;
+  /** EIP-712 type definitions */
+  types: Record<string, TypedDataField[]>;
+  /** Primary type being signed */
+  primaryType: string;
+  /** Message data to be signed */
+  message: Record<string, unknown>;
+}
+
+/**
  * EIP-712 typed data signature
  */
 export interface TypedDataSignature extends Omit<Signature, 'algorithm' | 'format' | 'message'> {
@@ -177,24 +191,24 @@ export class SignatureUtils {
 
     switch (algorithm) {
       case SignatureAlgorithm.ECDSA_SECP256K1:
-        // 65 bytes: 32 for r, 32 for s, 1 for v
-        return this.isHexSignature(signature, 130);
+        // 65 bytes: 32 for r, 32 for s, 1 for v (130 hex chars + 0x prefix = 132 total)
+        return this.isHexSignature(signature, 132);
 
       case SignatureAlgorithm.EDDSA_ED25519:
-        // 64 bytes for Ed25519
-        return this.isHexSignature(signature, 128);
+        // 64 bytes for Ed25519 (128 hex chars + 0x prefix = 130 total)
+        return this.isHexSignature(signature, 130);
 
       case SignatureAlgorithm.EDDSA_SR25519:
-        // 64 bytes for Sr25519
-        return this.isHexSignature(signature, 128);
+        // 64 bytes for Sr25519 (128 hex chars + 0x prefix = 130 total)
+        return this.isHexSignature(signature, 130);
 
       case SignatureAlgorithm.SCHNORR:
-        // 64 bytes for Schnorr
-        return this.isHexSignature(signature, 128);
+        // 64 bytes for Schnorr (128 hex chars + 0x prefix = 130 total)
+        return this.isHexSignature(signature, 130);
 
       case SignatureAlgorithm.BLS:
-        // 48 bytes for compressed BLS signature
-        return this.isHexSignature(signature, 96) || this.isHexSignature(signature, 192);
+        // 48 bytes for compressed BLS signature (96 hex chars + 0x prefix = 98 total) or 96 bytes (192 hex chars + 0x prefix = 194 total)
+        return this.isHexSignature(signature, 98) || this.isHexSignature(signature, 194);
 
       default:
         return false;
@@ -405,37 +419,257 @@ export class SignatureUtils {
     }
   }
 
+  /**
+   * Verify signature using the appropriate algorithm
+   *
+   * @param signature - Signature to verify
+   * @param message - Original message that was signed
+   * @param algorithm - Signature algorithm used
+   * @param publicKey - Public key of the signer
+   * @returns Promise that resolves to true if signature is valid
+   *
+   * @remarks
+   * This is a placeholder implementation that validates signature format.
+   * For production use, integrate with appropriate cryptographic libraries:
+   *
+   * - **ECDSA (secp256k1)**: Use `ethers` or `@noble/secp256k1`
+   * - **EdDSA (Ed25519)**: Use `@polkadot/util-crypto` or `@noble/ed25519`
+   * - **EdDSA (Sr25519)**: Use `@polkadot/util-crypto`
+   * - **Schnorr**: Use `@noble/secp256k1` with schnorr
+   * - **BLS**: Use `@noble/bls12-381`
+   *
+   * @example
+   * ```typescript
+   * // Example with ethers for ECDSA verification
+   * import { ethers } from 'ethers';
+   *
+   * const messageHash = ethers.hashMessage(message);
+   * const recoveredAddress = ethers.recoverAddress(messageHash, signature);
+   * const expectedAddress = ethers.computeAddress(publicKey);
+   * return recoveredAddress === expectedAddress;
+   * ```
+   *
+   * @example
+   * ```typescript
+   * // Example with Polkadot for Ed25519 verification
+   * import { signatureVerify } from '@polkadot/util-crypto';
+   *
+   * const result = signatureVerify(message, signature, publicKey);
+   * return result.isValid;
+   * ```
+   */
   private static async verifyWithAlgorithm(
     signature: string,
     message: string | Uint8Array,
     algorithm: SignatureAlgorithm,
     publicKey?: string,
   ): Promise<boolean> {
-    // Placeholder for actual verification implementation
-    // Would use appropriate crypto libraries
-    return false;
+    // Validate signature format first
+    if (!this.validate(signature, algorithm)) {
+      return false;
+    }
+
+    // Check if public key is provided
+    if (!publicKey) {
+      console.warn('Public key not provided for signature verification');
+      return false;
+    }
+
+    try {
+      switch (algorithm) {
+        case SignatureAlgorithm.ECDSA_SECP256K1:
+          // For ECDSA verification, we would use ethers or @noble/secp256k1
+          // Example implementation:
+          // const { ethers } = require('ethers');
+          // const messageHash = typeof message === 'string'
+          //   ? ethers.hashMessage(message)
+          //   : ethers.hashMessage(new Uint8Array(message));
+          // const recoveredAddress = ethers.recoverAddress(messageHash, signature);
+          // const expectedAddress = ethers.computeAddress(publicKey);
+          // return recoveredAddress.toLowerCase() === expectedAddress.toLowerCase();
+          console.warn('ECDSA verification requires ethers library integration');
+          return false;
+
+        case SignatureAlgorithm.EDDSA_ED25519:
+        case SignatureAlgorithm.EDDSA_SR25519:
+          // For EdDSA verification, we would use @polkadot/util-crypto
+          // Example implementation:
+          // const { signatureVerify } = require('@polkadot/util-crypto');
+          // const result = signatureVerify(message, signature, publicKey);
+          // return result.isValid;
+          console.warn('EdDSA verification requires @polkadot/util-crypto integration');
+          return false;
+
+        case SignatureAlgorithm.SCHNORR:
+          // For Schnorr verification, we would use @noble/secp256k1
+          // Example implementation:
+          // const { schnorr } = require('@noble/secp256k1');
+          // const msgBytes = typeof message === 'string'
+          //   ? new TextEncoder().encode(message)
+          //   : message;
+          // return await schnorr.verify(signature, msgBytes, publicKey);
+          console.warn('Schnorr verification requires @noble/secp256k1 integration');
+          return false;
+
+        case SignatureAlgorithm.BLS:
+          // For BLS verification, we would use @noble/bls12-381
+          // Example implementation:
+          // const { verify } = require('@noble/bls12-381');
+          // const msgBytes = typeof message === 'string'
+          //   ? new TextEncoder().encode(message)
+          //   : message;
+          // return await verify(signature, msgBytes, publicKey);
+          console.warn('BLS verification requires @noble/bls12-381 integration');
+          return false;
+
+        default:
+          console.warn(`Unsupported signature algorithm: ${algorithm}`);
+          return false;
+      }
+    } catch (error) {
+      console.error('Signature verification error:', error);
+      return false;
+    }
   }
 
+  /**
+   * Recover address from public key
+   *
+   * @param publicKey - Public key as hex string
+   * @param algorithm - Algorithm used to generate the key
+   * @returns Address derived from the public key
+   *
+   * @remarks
+   * For production use, integrate with appropriate cryptographic libraries:
+   *
+   * - **ECDSA (secp256k1)**: Use `ethers.computeAddress()` or equivalent
+   * - **EdDSA (Ed25519/Sr25519)**: Use `@polkadot/util-crypto` address encoding
+   *
+   * @example
+   * ```typescript
+   * // ECDSA (Ethereum)
+   * import { ethers } from 'ethers';
+   * const address = ethers.computeAddress(publicKey);
+   *
+   * // EdDSA (Substrate)
+   * import { encodeAddress } from '@polkadot/util-crypto';
+   * import { hexToU8a } from '@polkadot/util';
+   * const address = encodeAddress(hexToU8a(publicKey), 204);
+   * ```
+   */
   private static async recoverAddress(
     publicKey: string,
     algorithm: SignatureAlgorithm,
   ): Promise<Address> {
-    // Placeholder for address recovery from public key
-    // Would use appropriate crypto libraries
-    return '';
+    try {
+      switch (algorithm) {
+        case SignatureAlgorithm.ECDSA_SECP256K1:
+          // For Ethereum addresses
+          // const { ethers } = require('ethers');
+          // return ethers.computeAddress(publicKey);
+          console.warn('Address recovery for ECDSA requires ethers integration');
+          return '';
+
+        case SignatureAlgorithm.EDDSA_ED25519:
+        case SignatureAlgorithm.EDDSA_SR25519:
+          // For Substrate addresses
+          // const { encodeAddress } = require('@polkadot/util-crypto');
+          // const { hexToU8a } = require('@polkadot/util');
+          // return encodeAddress(hexToU8a(publicKey), 204);
+          console.warn('Address recovery for EdDSA requires @polkadot/util-crypto integration');
+          return '';
+
+        default:
+          console.warn(`Address recovery not supported for algorithm: ${algorithm}`);
+          return '';
+      }
+    } catch (error) {
+      console.error('Address recovery error:', error);
+      return '';
+    }
   }
 
   private static areAddressesEqual(address1: Address, address2: Address): boolean {
     return address1.toLowerCase() === address2.toLowerCase();
   }
 
+  /**
+   * Combine multiple signatures into a single multi-signature
+   *
+   * @param signatures - Array of individual signatures
+   * @param algorithm - Algorithm used for signatures
+   * @returns Combined multi-signature as hex string
+   *
+   * @remarks
+   * Multi-signature combination is algorithm-specific:
+   *
+   * - **ECDSA**: Concatenate signatures or use threshold signature schemes
+   * - **EdDSA**: Use Substrate's MultiSignature type
+   * - **BLS**: Use signature aggregation (native BLS feature)
+   * - **Schnorr**: Use MuSig or similar threshold signature protocol
+   *
+   * For production use, integrate with appropriate multi-signature libraries
+   * based on your specific use case and security requirements.
+   *
+   * @example
+   * ```typescript
+   * // For Substrate multi-signature
+   * // Signatures are typically combined at the extrinsic level
+   * const multiSig = {
+   *   threshold: 2,
+   *   signatories: [...addresses],
+   *   signatures: [...sigs]
+   * };
+   *
+   * // For BLS signature aggregation
+   * // const { aggregateSignatures } = require('@noble/bls12-381');
+   * // const combined = await aggregateSignatures(signatures);
+   * ```
+   */
   private static async combineSignatures(
     signatures: Signature[],
     algorithm: SignatureAlgorithm,
   ): Promise<string> {
-    // Placeholder for signature combination
-    // Would be algorithm-specific implementation
-    return '';
+    if (signatures.length === 0) {
+      throw new Error('No signatures to combine');
+    }
+
+    try {
+      switch (algorithm) {
+        case SignatureAlgorithm.ECDSA_SECP256K1:
+          // ECDSA typically doesn't support native signature aggregation
+          // Instead, collect signatures for threshold verification
+          console.warn('ECDSA multi-signature requires threshold scheme implementation');
+          // For now, concatenate signatures (implementation-specific)
+          return signatures.map(s => s.signature).join('');
+
+        case SignatureAlgorithm.EDDSA_ED25519:
+        case SignatureAlgorithm.EDDSA_SR25519:
+          // For Substrate, multi-signatures are handled at the extrinsic level
+          console.warn('EdDSA multi-signature requires Substrate MultiSignature type');
+          return signatures.map(s => s.signature).join('');
+
+        case SignatureAlgorithm.BLS:
+          // BLS supports native signature aggregation
+          // const { aggregateSignatures } = require('@noble/bls12-381');
+          // const sigBytes = signatures.map(s => s.signature);
+          // return await aggregateSignatures(sigBytes);
+          console.warn('BLS signature aggregation requires @noble/bls12-381 integration');
+          return signatures.map(s => s.signature).join('');
+
+        case SignatureAlgorithm.SCHNORR:
+          // Schnorr supports MuSig and similar protocols
+          console.warn('Schnorr multi-signature requires MuSig implementation');
+          return signatures.map(s => s.signature).join('');
+
+        default:
+          throw new Error(`Signature combination not supported for algorithm: ${algorithm}`);
+      }
+    } catch (error) {
+      throw new Error(
+        `Failed to combine signatures: ${error instanceof Error ? error.message : 'Unknown error'}`
+      );
+    }
   }
 
   private static hexToBytes(hex: string): Uint8Array {
@@ -454,6 +688,6 @@ export class SignatureUtils {
   }
 
   private static bytesToBase64(bytes: Uint8Array): string {
-    return btoa(String.fromCharCode(...bytes));
+    return btoa(String.fromCharCode(...Array.from(bytes)));
   }
 }
