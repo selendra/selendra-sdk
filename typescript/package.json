@@ -1,7 +1,7 @@
 {
   "name": "@selendrajs/sdk",
   "version": "1.0.0",
-  "description": "A comprehensive SDK for interacting with the Selendra blockchain",
+  "description": "SDK for interacting with the Selendra blockchain",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {

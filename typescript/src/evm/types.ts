@@ -12,24 +12,20 @@ export type {
   Network,
   BlockWithTransactions,
   BlockWithHashes,
-  ProviderOptions
+  ProviderOptions,
 } from './client';
 
 export type {
   TransactionOptions,
   CallOptions,
-  TransactionOptions as ContractTransactionOptions
+  TransactionOptions as ContractTransactionOptions,
 } from './contract';
 
-export type {
-  TransactionStatus,
-  GasEstimation,
-  TransactionTracker
-} from './transaction';
+export type { TransactionStatus, GasEstimation, TransactionTracker } from './transaction';
 
 export type {
   EventSubscriptionOptions,
   ParsedEvent,
   EventQueryResult,
-  EventFilter as EventFilterType
+  EventFilter as EventFilterType,
 } from './events';

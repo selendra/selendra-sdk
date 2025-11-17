@@ -25,7 +25,7 @@ rust-version = "1.70.0"
 
 [dependencies]
 # Core client
-selendra_client = { path = "../../vendors/selendra-client", version = "3.16" }
+selendra_client = "1.0.1"
 
 # Substrate dependencies
 sp-core = { version = "20.0.0", default-features = false }
