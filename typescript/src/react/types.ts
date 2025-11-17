@@ -9,6 +9,7 @@
  */
 
 import { ReactNode, ComponentType, HTMLAttributes, CSSProperties } from 'react';
+
 import { SelendraEvmClient, type SelendraEvmConfig } from '../evm';
 import type { Address, Balance } from '../types/common';
 import type {

@@ -4,10 +4,11 @@
  */
 
 import { ApiPromise } from '@polkadot/api';
-import { KeyringPair } from '@polkadot/keyring/types';
 import { SubmittableExtrinsic } from '@polkadot/api/types';
+import { KeyringPair } from '@polkadot/keyring/types';
 import { ISubmittableResult, Codec } from '@polkadot/types/types';
 import { BN } from '@polkadot/util';
+
 import type { SubstrateAddress, Balance } from '../types/common';
 
 /**

@@ -5,11 +5,11 @@
  */
 import { EventEmitter } from 'events';
 import type { Address, Balance, BlockNumber, BlockHash, NetworkStatus } from '../types/common';
-import type { TransactionInfo } from '../types/sdk-types';
 import type { EvmTransaction, EvmTransactionRequest, EvmTransactionReceipt, EvmBlock, EvmLog, EvmFilter, EvmCallOptions, EvmEstimateGasOptions } from '../types/evm';
-import { TransactionManager } from './transaction';
-import { Contract, ERC20Contract, ERC721Contract, ContractFactory } from './contract';
+import type { TransactionInfo } from '../types/sdk-types';
 import { EvmClientConfig } from './config';
+import { Contract, ERC20Contract, ERC721Contract, ContractFactory } from './contract';
+import { TransactionManager } from './transaction';
 /**
  * Provider types
  */

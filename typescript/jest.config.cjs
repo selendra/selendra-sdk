@@ -7,7 +7,7 @@ module.exports = {
   ],
   transform: {
     '^.+\\.ts$': ['babel-jest', {
-      configFile: './babel.config.js',
+      configFile: './babel.config.cjs',
     }],
   },
   transformIgnorePatterns: [

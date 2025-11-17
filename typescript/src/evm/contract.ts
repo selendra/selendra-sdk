@@ -5,7 +5,9 @@
  */
 
 import { EventEmitter } from 'events';
+
 import { AbiCoder, keccak256, toUtf8Bytes, zeroPadValue, getBytes } from 'ethers';
+
 import type { Address, Balance, TransactionHash, BlockNumber, GasAmount } from '../types/common';
 import type {
   EvmContract,
@@ -17,8 +19,9 @@ import type {
   Erc20Contract,
   Erc721Contract,
 } from '../types/evm';
-import { TransactionBuilder } from './transaction';
+
 import { GAS_ESTIMATION_DEFAULTS } from './config';
+import { TransactionBuilder } from './transaction';
 
 /**
  * Function fragment interface
@@ -778,7 +781,7 @@ export class Contract extends EventEmitter implements EvmContract {
     const logs = await this.provider.getLogs(eventFilter);
     return logs.filter((log) => {
       const parsed = this.interface.parseLog(log);
-      return parsed && parsed.name === eventName;
+      return parsed?.name === eventName;
     });
   }
 

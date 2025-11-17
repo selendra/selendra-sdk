@@ -5,6 +5,7 @@
  */
 
 import { EventEmitter } from 'events';
+
 import type {
   Address,
   Balance,
@@ -20,6 +21,7 @@ import type {
   EvmTransactionReceipt,
   EvmEstimateGasOptions,
 } from '../types/evm';
+
 import {
   etherToWei,
   weiToEther,

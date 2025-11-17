@@ -5,8 +5,10 @@
  */
 
 import { EventEmitter } from 'events';
+
 import type { Address, BlockNumber, BlockHash } from '../types/common';
 import type { EvmLog, EvmFilter } from '../types/evm';
+
 import { Contract } from './contract';
 
 /**

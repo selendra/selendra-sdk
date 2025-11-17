@@ -5,6 +5,7 @@
 import { ApiPromise, WsProvider } from '@polkadot/api';
 import { Keyring } from '@polkadot/keyring';
 import { ethers } from 'ethers';
+
 import type {
   NetworkConfig,
   Network,
@@ -16,9 +17,10 @@ import type {
   SubstrateAddress,
 } from '../types';
 import { NETWORKS, getNetworkConfig } from '../types/network';
+
 import { ConnectionManager } from './connection';
-import { SubstrateClient } from './substrate';
 import { EvmClient } from './evm';
+import { SubstrateClient } from './substrate';
 import { UnifiedClient } from './unified';
 
 export { Network };

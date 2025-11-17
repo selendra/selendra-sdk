@@ -10,6 +10,7 @@
  */
 
 import { ChainType, BalanceInfo, TransactionInfo, AccountInfo } from '../types';
+
 import { FormatterOptions, ValidationRule, ValidationResult, ToastOptions } from './types';
 
 /**
@@ -510,7 +511,7 @@ export function isTransactionConfirmed(
   confirmations: number = 1,
   currentBlockNumber?: number,
 ): boolean {
-  if (!transaction || !transaction.blockNumber) {
+  if (!transaction?.blockNumber) {
     return false;
   }
 

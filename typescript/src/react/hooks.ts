@@ -9,6 +9,7 @@
  */
 
 import React, { useContext, useEffect, useState, useCallback, useRef, useMemo } from 'react';
+
 import { SelendraSDK } from '../sdk';
 import {
   AccountInfo,
@@ -18,6 +19,7 @@ import {
   EventSubscription,
   BlockInfo,
 } from '../types';
+
 import { SelendraContextValue, useSelendraContext } from './provider';
 
 /**

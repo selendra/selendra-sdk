@@ -628,7 +628,7 @@ class Contract extends events_1.EventEmitter {
         const logs = await this.provider.getLogs(eventFilter);
         return logs.filter((log) => {
             const parsed = this.interface.parseLog(log);
-            return parsed && parsed.name === eventName;
+            return parsed?.name === eventName;
         });
     }
     /**

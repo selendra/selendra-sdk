@@ -4,7 +4,9 @@
 
 import { ApiPromise, WsProvider } from '@polkadot/api';
 import { ethers } from 'ethers';
+
 import type { NetworkConfig } from '../types/network';
+
 import type { SDKConfig } from './index';
 
 /**

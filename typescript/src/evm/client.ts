@@ -5,8 +5,8 @@
  */
 
 import { EventEmitter } from 'events';
+
 import type { Address, Balance, BlockNumber, BlockHash, NetworkStatus } from '../types/common';
-import type { TransactionInfo } from '../types/sdk-types';
 import type {
   EvmTransaction,
   EvmTransactionRequest,
@@ -17,10 +17,12 @@ import type {
   EvmCallOptions,
   EvmEstimateGasOptions,
 } from '../types/evm';
+import type { TransactionInfo } from '../types/sdk-types';
+
 import { SelendraWallet } from './account';
-import { TransactionManager, TransactionTracker } from './transaction';
-import { Contract, ERC20Contract, ERC721Contract, ContractFactory } from './contract';
 import { createDefaultEvmClientConfig, EvmClientConfig, getSelendraEvmConfig } from './config';
+import { Contract, ERC20Contract, ERC721Contract, ContractFactory } from './contract';
+import { TransactionManager, TransactionTracker } from './transaction';
 
 /**
  * Provider types

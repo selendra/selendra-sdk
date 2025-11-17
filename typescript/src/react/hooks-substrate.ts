@@ -8,7 +8,7 @@
  */
 
 import { useState, useEffect, useCallback, useMemo } from 'react';
-import { useSelendraContext } from './provider';
+
 import type {
   ValidatorPerformance,
   SessionCommittee,
@@ -21,6 +21,8 @@ import type {
   VoteInfo,
 } from '../substrate';
 import { Conviction } from '../substrate';
+
+import { useSelendraContext } from './provider';
 
 /**
  * Hook options for Substrate features

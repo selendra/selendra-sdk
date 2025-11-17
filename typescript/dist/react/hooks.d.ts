@@ -146,7 +146,7 @@ export declare function useBalance(address?: string, options?: UseBalanceOptions
 /**
  * useAccount - Account Management Hook
  *
- * Comprehensive account management with wallet integration, balance tracking,
+ * Account management with wallet integration, balance tracking,
  * and transaction history.
  *
  * @param options - Account management options
@@ -264,7 +264,7 @@ export declare function useEvents(options?: UseEventsOptions): UseEventsReturn;
  */
 export declare function useBlockSubscription(options?: UseBlockSubscriptionOptions): UseBlockSubscriptionReturn;
 /**
- * Advanced utility hooks for enhanced developer experience
+ * Utility hooks
  */
 /**
  * useDebounce - Debounce value changes
@@ -297,7 +297,7 @@ export declare function usePrevious<T>(value: T): T | undefined;
 export declare function useIsMounted(): () => boolean;
 export { useSelendraContext as useContext } from './provider';
 /**
- * Advanced Hooks for Power Users
+ * Advanced Hooks
  */
 /**
  * useMultiBalance - Track balances for multiple addresses

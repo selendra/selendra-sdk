@@ -5,6 +5,7 @@
  */
 
 import { createHash, randomBytes } from 'crypto';
+
 import type { Address, Balance, TransactionHash } from '../types/common';
 import type {
   EvmWallet,
@@ -12,6 +13,7 @@ import type {
   TypedDataDomain,
   TypedDataField
 } from '../types/evm';
+
 import {
   isValidEthereumAddress,
   isValidPrivateKey,

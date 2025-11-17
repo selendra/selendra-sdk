@@ -3,7 +3,6 @@
  */
 
 import type { ChainType as ChainEnvironment } from './chain-info';
-import type { NetworkType } from './network';
 import type {
   Address,
   Balance,
@@ -13,6 +12,7 @@ import type {
   TransactionHash,
   Nonce,
 } from './common';
+import type { NetworkType } from './network';
 
 /**
  * Chain protocol type (Substrate vs EVM)

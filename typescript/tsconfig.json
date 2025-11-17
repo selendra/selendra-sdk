@@ -21,7 +21,7 @@
     "sourceMap": true,
     "removeComments": false,
     "importHelpers": false,
-    "composite": true,
+    "composite": false,
 
     /* Strict Type-Checking Options */
     "strict": false,

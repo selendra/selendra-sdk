@@ -155,7 +155,7 @@ function useBalance(address, options = {}) {
 /**
  * useAccount - Account Management Hook
  *
- * Comprehensive account management with wallet integration, balance tracking,
+ * Account management with wallet integration, balance tracking,
  * and transaction history.
  *
  * @param options - Account management options
@@ -605,7 +605,7 @@ function useBlockSubscription(options = {}) {
     };
 }
 /**
- * Advanced utility hooks for enhanced developer experience
+ * Utility hooks
  */
 /**
  * useDebounce - Debounce value changes
@@ -688,7 +688,7 @@ function useIsMounted() {
 var provider_2 = require("./provider");
 Object.defineProperty(exports, "useContext", { enumerable: true, get: function () { return provider_2.useSelendraContext; } });
 /**
- * Advanced Hooks for Power Users
+ * Advanced Hooks
  */
 /**
  * useMultiBalance - Track balances for multiple addresses

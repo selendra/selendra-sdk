@@ -3,7 +3,9 @@
  */
 
 import { ethers } from 'ethers';
+
 import type { EvmAddress, ChainInfo, EvmTransaction } from '../types';
+
 import type { SDKConfig } from './index';
 
 /**

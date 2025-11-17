@@ -10,15 +10,17 @@
 import { ApiPromise, Keyring } from '@polkadot/api';
 import type { Codec } from '@polkadot/types/types';
 import { BN, BN_ZERO } from '@polkadot/util';
-import type { SubstrateAddress } from '../types/common';
-import type { SubstrateTransaction } from '../types/substrate';
-import type { ChainInfo } from '../types/chain-info';
-import type { Balance } from '../types/common';
-import type { SDKConfig } from './index';
-import { StakingClient } from '../substrate/staking';
-import { UnifiedAccountManager } from '../unified/accounts';
+
 import { AlephClient } from '../substrate/aleph';
 import { ElectionsClient } from '../substrate/elections';
+import { StakingClient } from '../substrate/staking';
+import type { ChainInfo } from '../types/chain-info';
+import type { SubstrateAddress } from '../types/common';
+import type { Balance } from '../types/common';
+import type { SubstrateTransaction } from '../types/substrate';
+import { UnifiedAccountManager } from '../unified/accounts';
+
+import type { SDKConfig } from './index';
 
 /**
  * Client for Substrate-specific operations

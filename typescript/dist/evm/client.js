@@ -10,9 +10,9 @@ exports.createEvmClient = createEvmClient;
 exports.createWebSocketProvider = createWebSocketProvider;
 exports.createHttpProvider = createHttpProvider;
 const events_1 = require("events");
-const transaction_1 = require("./transaction");
-const contract_1 = require("./contract");
 const config_1 = require("./config");
+const contract_1 = require("./contract");
+const transaction_1 = require("./transaction");
 /**
  * EVM client implementation with ethers.js v6 compatibility
  */

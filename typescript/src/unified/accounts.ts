@@ -9,8 +9,9 @@
  */
 
 import { ApiPromise } from '@polkadot/api';
-import { decodeAddress, encodeAddress } from '@polkadot/util-crypto';
 import { u8aToHex, hexToU8a, isHex } from '@polkadot/util';
+import { decodeAddress, encodeAddress } from '@polkadot/util-crypto';
+
 import type { Address, Balance } from '../types/common';
 import type { EIP712TypedData } from '../types/signature';
 
@@ -257,7 +258,7 @@ export class UnifiedAccountManager {
    */
   async getSubstrateAddressFromMapping(evmAddress: string): Promise<string | null> {
     try {
-      if (!this.api.query.unifiedAccounts || !this.api.query.unifiedAccounts.evmToNative) {
+      if (!this.api.query.unifiedAccounts?.evmToNative) {
         console.warn('UnifiedAccounts pallet not available');
         return null;
       }
@@ -280,7 +281,7 @@ export class UnifiedAccountManager {
    */
   async getEvmAddressFromMapping(substrateAddress: string): Promise<string | null> {
     try {
-      if (!this.api.query.unifiedAccounts || !this.api.query.unifiedAccounts.nativeToEvm) {
+      if (!this.api.query.unifiedAccounts?.nativeToEvm) {
         console.warn('UnifiedAccounts pallet not available');
         return null;
       }
@@ -319,7 +320,7 @@ export class UnifiedAccountManager {
    * WARNING: Once claimed, mapping cannot be changed
    */
   async claimDefaultEvmAddress(signer: any) {
-    if (!this.api.tx.unifiedAccounts || !this.api.tx.unifiedAccounts.claimDefaultEvmAddress) {
+    if (!this.api.tx.unifiedAccounts?.claimDefaultEvmAddress) {
       throw new Error('UnifiedAccounts pallet not available');
     }
 
@@ -376,7 +377,7 @@ export class UnifiedAccountManager {
    * 3. Pass resulting signature to this method
    */
   async claimEvmAddress(signer: any, evmAddress: string, evmSignature: string) {
-    if (!this.api.tx.unifiedAccounts || !this.api.tx.unifiedAccounts.claimEvmAddress) {
+    if (!this.api.tx.unifiedAccounts?.claimEvmAddress) {
       throw new Error('UnifiedAccounts pallet not available');
     }
 

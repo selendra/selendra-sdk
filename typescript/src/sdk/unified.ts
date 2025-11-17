@@ -10,8 +10,9 @@ import type {
   EvmAddress,
   SubstrateAddress
 } from '../types';
-import type { SubstrateClient } from './substrate';
+
 import type { EvmClient } from './evm';
+import type { SubstrateClient } from './substrate';
 
 /**
  * Client for unified cross-chain operations

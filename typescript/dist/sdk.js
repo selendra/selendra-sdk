@@ -2,7 +2,7 @@
 /**
  * Selendra SDK - Main Class
  *
- * Comprehensive SDK for interacting with the Selendra blockchain.
+ * SDK for interacting with the Selendra blockchain.
  * Supports both Substrate and EVM chains with unified interface.
  *
  * @author Selendra Team <team@selendra.org>
@@ -197,8 +197,7 @@ class SelendraSDK extends eventemitter3_1.EventEmitter {
             const keyring = new keyring_1.Keyring({ type: 'sr25519' });
             const sender = keyring.addFromUri(transaction.signer);
             return new Promise((resolve, reject) => {
-                this.api.tx.balances
-                    .transferKeepAlive(transaction.to, transaction.amount)
+                this.api.tx.balances.transferKeepAlive(transaction.to, transaction.amount)
                     .signAndSend(sender, ({ status, txHash, events }) => {
                     if (status.isFinalized) {
                         resolve({
