@@ -1,0 +1,38 @@
+{
+  "name": "example-test",
+  "version": "1.0.0",
+  "description": "Example test for @selendrajs/sdk",
+  "type": "commonjs",
+  "main": "dist/index.js",
+  "scripts": {
+    "start": "tsx src/index.ts",
+    "connect": "tsx src/examples/core-sdk/connect.ts",
+    "disconnect": "tsx src/examples/core-sdk/disconnect.ts",
+    "destroy": "tsx src/examples/core-sdk/destroy.ts",
+    "lifecycle": "tsx src/examples/core-sdk/lifecycle.ts",
+    "get-account": "tsx src/examples/core-sdk/get-account.ts",
+    "get-balance": "tsx src/examples/core-sdk/get-balance.ts",
+    "all": "tsx src/index.ts all",
+    "build": "tsc",
+    "dev": "tsx src/index.ts",
+    "test": "npm run build && node dist/index.js"
+  },
+  "keywords": [
+    "selendra",
+    "blockchain",
+    "sdk",
+    "test"
+  ],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@selendrajs/sdk": "^1.0.2",
+    "dotenv": "^17.2.3"
+  },
+  "devDependencies": {
+    "@types/node": "^24.10.1",
+    "ts-node": "^10.9.2",
+    "tsx": "^4.20.6",
+    "typescript": "^5.9.3"
+  }
+}
