@@ -4,12 +4,12 @@
  * @module utils/config
  */
 
-import { ChainType, Network, type SDKConfig } from '../types';
+import { ChainType, Network, type SDKConfig } from '../types/index.js';
 
 /**
  * Default SDK configuration
  */
-export const DEFAULT_CONFIG: Required<Omit<SDKConfig, keyof Record<string, any>>> = {
+export const DEFAULT_CONFIG = {
   endpoint: 'wss://rpc.selendra.org',
   network: Network.Selendra,
   chainType: ChainType.Substrate,
@@ -18,7 +18,7 @@ export const DEFAULT_CONFIG: Required<Omit<SDKConfig, keyof Record<string, any>>
   retryDelay: 1000,
   autoReconnect: true,
   debug: false,
-};
+} as const;
 
 /**
  * Merge user config with defaults

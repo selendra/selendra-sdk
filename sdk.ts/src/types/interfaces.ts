@@ -4,7 +4,7 @@
  * @module types/interfaces
  */
 
-import { Network, ChainType } from './enums';
+import { Network, ChainType } from './enums.js';
 
 /**
  * SDK Configuration

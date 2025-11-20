@@ -4,5 +4,5 @@
  * @module core
  */
 
-export * from './sdk';
-export * from './factory';
+export * from './sdk.js';
+export * from './factory.js';

@@ -1,11 +1,11 @@
 /**
- * Factory functions for creating SDK instances
+ * Factory functions for SDK creation
  * 
  * @module core/factory
  */
 
-import { SelendraSDK } from './sdk';
-import type { SDKConfig } from '../types';
+import { SelendraSDK } from './sdk.js';
+import type { SDKConfig } from '../types/index.js';
 
 /**
  * Create a new SelendraSDK instance

@@ -10,9 +10,9 @@ import EventEmitter from 'eventemitter3';
 import type { ApiPromise } from '@polkadot/api';
 import type { JsonRpcProvider } from 'ethers';
 
-import { ChainType, type SDKConfig, type ConnectionInfo, type SDKEvents } from '../types';
-import { SubstrateProvider, EvmProvider } from '../providers';
-import { mergeConfig, validateConfig, Logger } from '../utils';
+import { ChainType, type SDKConfig, type ConnectionInfo, type SDKEvents } from '../types/index.js';
+import { SubstrateProvider, EvmProvider } from '../providers/index.js';
+import { mergeConfig, validateConfig, Logger } from '../utils/index.js';
 
 /**
  * Main Selendra SDK class
@@ -188,8 +188,22 @@ export class SelendraSDK extends EventEmitter<SDKEvents> {
    */
   async destroy(): Promise<void> {
     this.logger.debug('Destroying SDK instance');
+    
+    // Clear reconnect timer
+    if (this.reconnectTimer) {
+      clearTimeout(this.reconnectTimer);
+      this.reconnectTimer = undefined;
+    }
+    
     await this.disconnect();
     this.removeAllListeners();
+    
+    // Ensure provider is fully cleaned up
+    if (this.provider) {
+      this.provider.removeAllListeners();
+      this.provider = null;
+    }
+    
     this.logger.debug('SDK destroyed');
   }
 

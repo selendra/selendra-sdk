@@ -7,8 +7,8 @@
  */
 
 import { ethers } from 'ethers';
-import { BaseProvider } from './base';
-import type { SDKConfig } from '../types';
+import { BaseProvider } from './base.js';
+import type { SDKConfig } from '../types/index.js';
 
 /**
  * EVM chain provider

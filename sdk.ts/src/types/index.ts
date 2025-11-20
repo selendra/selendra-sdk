@@ -4,5 +4,5 @@
  * @module types
  */
 
-export * from './enums';
-export * from './interfaces';
+export * from './enums.js';
+export * from './interfaces.js';

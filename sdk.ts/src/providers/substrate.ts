@@ -1,14 +1,14 @@
 /**
  * Substrate Provider
  * 
- * Handles connections to Substrate-based chains using Polkadot.js
+ * Provider implementation for Substrate-based chains using Polkadot.js API
  * 
  * @module providers/substrate
  */
 
 import { ApiPromise, WsProvider } from '@polkadot/api';
-import { BaseProvider } from './base';
-import type { SDKConfig } from '../types';
+import { BaseProvider } from './base.js';
+import type { SDKConfig } from '../types/index.js';
 
 /**
  * Substrate chain provider
@@ -36,15 +36,20 @@ export class SubstrateProvider extends BaseProvider {
     this.log('Connecting to Substrate chain...');
 
     try {
-      // Create WebSocket provider
+      // Create WebSocket provider with quiet mode
       const wsProvider = new WsProvider(
         this.config.endpoint,
-        this.config.retryAttempts || 3
+        this.config.retryAttempts || 3,
+        undefined,
+        this.config.timeout || 30000
       );
 
-      // Create API instance with timeout
+      // Create API instance with timeout and suppress warnings
       this.api = await Promise.race([
-        ApiPromise.create({ provider: wsProvider }),
+        ApiPromise.create({ 
+          provider: wsProvider,
+          noInitWarn: true,  // Suppress initialization warnings
+        }),
         new Promise<never>((_, reject) =>
           setTimeout(
             () => reject(new Error('Connection timeout')),

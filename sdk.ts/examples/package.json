@@ -1,0 +1,20 @@
+{
+  "name": "sdk-examples",
+  "version": "1.0.0",
+  "type": "module",
+  "description": "Examples testing the local Selendra SDK",
+  "scripts": {
+    "build": "tsc",
+    "example:substrate": "npm run build && node dist/connect/01-substrate-connection.js",
+    "example:evm": "npm run build && node dist/connect/02-evm-connection.js",
+    "example:unified": "npm run build && node dist/connect/03-unified-connection.js"
+  },
+  "dependencies": {
+    "@selendrajs/sdk-core": "file:.."
+  },
+  "devDependencies": {
+    "@types/node": "^24.10.1",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.4.5"
+  }
+}

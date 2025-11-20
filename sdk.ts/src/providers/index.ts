@@ -4,6 +4,6 @@
  * @module providers
  */
 
-export * from './base';
-export * from './substrate';
-export * from './evm';
+export * from './base.js';
+export * from './substrate.js';
+export * from './evm.js';

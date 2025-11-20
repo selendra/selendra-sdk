@@ -7,7 +7,7 @@
  */
 
 import EventEmitter from 'eventemitter3';
-import type { SDKConfig } from '../types';
+import type { SDKConfig } from '../types/index.js';
 
 /**
  * Base provider events
