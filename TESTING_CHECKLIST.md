@@ -8,8 +8,8 @@ This checklist provides a comprehensive list of all functions in the Selendra Ty
 ## 1. Core SDK (`src/sdk.ts`, `src/sdk/index.ts`)
 
 ### Main SDK Class (`SelendraSDK`)
-- [x] `connect()` - Connect to the network
-- [x] `disconnect()` - Disconnect from the network
+- [x] `connect()` - Connect to the network ✅ **NEW SDK CREATED in `/sdk.ts/sdk.ts`**
+- [x] `disconnect()` - Disconnect from the network ✅ **NEW SDK CREATED in `/sdk.ts/sdk.ts`**
 - [x] `destroy()` - Clean up SDK resources
 - [x] `getAccount(address?)` - Get account information
 - [-] `getBalance(address?, chainType?)` - Get account balance (substrate work but EVM balance query not fully implemented: Error: createType(Vec<StorageKey>):: createType(Lookup0):: Invalid AccountId provided, expected 32 bytes, found 20)

@@ -1,0 +1,62 @@
+{
+  "name": "@selendrajs/sdk-core",
+  "version": "1.0.0",
+  "description": "Core SDK for interacting with the Selendra blockchain - connect and disconnect only",
+  "type": "module",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    },
+    "./core": {
+      "import": "./dist/core/index.js",
+      "types": "./dist/core/index.d.ts"
+    },
+    "./providers": {
+      "import": "./dist/providers/index.js",
+      "types": "./dist/providers/index.d.ts"
+    },
+    "./types": {
+      "import": "./dist/types/index.js",
+      "types": "./dist/types/index.d.ts"
+    },
+    "./utils": {
+      "import": "./dist/utils/index.js",
+      "types": "./dist/utils/index.d.ts"
+    }
+  },
+  "scripts": {
+    "build": "tsc",
+    "build:watch": "tsc --watch",
+    "lint": "tsc --noEmit",
+    "clean": "rm -rf dist",
+    "prepublishOnly": "npm run clean && npm run build"
+  },
+  "keywords": [
+    "blockchain",
+    "substrate",
+    "polkadot",
+    "selendra",
+    "sdk",
+    "evm",
+    "typescript"
+  ],
+  "author": "Selendra Team <team@selendra.org>",
+  "license": "Apache-2.0",
+  "dependencies": {
+    "@polkadot/api": "^16.5.2",
+    "@polkadot/keyring": "^13.5.8",
+    "@polkadot/rpc-provider": "^16.5.2",
+    "@polkadot/types": "^16.5.2",
+    "@polkadot/util": "^13.5.8",
+    "@polkadot/util-crypto": "^13.5.8",
+    "ethers": "^6.13.2",
+    "eventemitter3": "^5.0.1"
+  },
+  "devDependencies": {
+    "@types/node": "^24.10.1",
+    "typescript": "^5.4.5"
+  }
+}
