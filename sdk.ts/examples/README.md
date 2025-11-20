@@ -35,20 +35,39 @@ npm run example:unified
 
 ## Examples Overview
 
-### 1. Substrate Connection (`01-substrate-connection.ts`)
-- Connect to Selendra Substrate chain
-- Query chain information
-- Get current block number
+### Connection Examples
 
-### 2. EVM Connection (`02-evm-connection.ts`)
-- Connect to Selendra EVM chain
-- Query network information
-- Get gas prices and block number
+1. **Substrate Connection** (`connect/01-substrate-connection.ts`)
+   - Connect to Selendra Substrate chain
+   - Query chain information
+   - Get current block number
 
-### 3. Unified Connection (`03-unified-connection.ts`)
-- Connect to both Substrate and EVM chains
-- Switch between chain types dynamically
-- Use helper functions for chain connections
+2. **EVM Connection** (`connect/02-evm-connection.ts`)
+   - Connect to Selendra EVM chain
+   - Query network information
+   - Get gas prices and block number
+
+3. **Unified Connection** (`connect/03-unified-connection.ts`)
+   - Connect to both Substrate and EVM chains
+   - Switch between chain types dynamically
+   - Use helper functions for chain connections
+
+### Balance Examples
+
+1. **Substrate Balance** (`balance/01-substrate-balance.ts`)
+   - Check account balance on Substrate chain
+   - Get raw balance (planck)
+   - Get formatted balance (SEL)
+
+2. **EVM Balance** (`balance/02-evm-balance.ts`)
+   - Check account balance on EVM chain
+   - Get raw balance (wei)
+   - Get formatted balance (SEL)
+
+3. **Unified Balance** (`balance/03-unified-balance.ts`)
+   - Check balances on both chains
+   - Compare Substrate and EVM balances
+   - Unified balance checking
 
 ## Expected Output
 

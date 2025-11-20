@@ -7,7 +7,10 @@
     "build": "tsc",
     "example:substrate": "npm run build && node dist/connect/01-substrate-connection.js",
     "example:evm": "npm run build && node dist/connect/02-evm-connection.js",
-    "example:unified": "npm run build && node dist/connect/03-unified-connection.js"
+    "example:unified": "npm run build && node dist/connect/03-unified-connection.js",
+    "balance:substrate": "npm run build && node dist/balance/01-substrate-balance.js",
+    "balance:evm": "npm run build && node dist/balance/02-evm-balance.js",
+    "balance:unified": "npm run build && node dist/balance/03-unified-balance.js"
   },
   "dependencies": {
     "@selendrajs/sdk-core": "file:.."

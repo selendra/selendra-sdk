@@ -234,6 +234,95 @@ export class SelendraSDK extends EventEmitter<SDKEvents> {
     return this.isConnected;
   }
 
+  // ==========================================================================
+  // Account & Balance Methods
+  // ==========================================================================
+
+  /**
+   * Get account balance
+   * 
+   * For Substrate: Returns free balance in planck (smallest unit)
+   * For EVM: Returns balance in wei (smallest unit)
+   * 
+   * @param address - Account address (SS58 for Substrate, 0x for EVM)
+   * @returns Balance as bigint or string
+   * 
+   * @example
+   * ```typescript
+   * // Substrate
+   * const balance = await sdk.getBalance('5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY');
+   * console.log('Balance:', balance.toString(), 'planck');
+   * 
+   * // EVM
+   * const balance = await sdk.getBalance('0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb');
+   * console.log('Balance:', balance.toString(), 'wei');
+   * ```
+   */
+  async getBalance(address: string): Promise<bigint | string> {
+    if (!this.isConnected || !this.provider) {
+      throw new Error('SDK is not connected. Call connect() first.');
+    }
+
+    const chainType = this.config.chainType || ChainType.Substrate;
+
+    if (chainType === ChainType.Substrate) {
+      const api = this.getApi();
+      if (!api) {
+        throw new Error('Substrate API not available');
+      }
+
+      try {
+        const account: any = await api.query.system.account(address);
+        return account.data.free.toBigInt();
+      } catch (error) {
+        throw new Error(
+          `Failed to get Substrate balance: ${error instanceof Error ? error.message : String(error)}`
+        );
+      }
+    } else {
+      const provider = this.getEvmProvider();
+      if (!provider) {
+        throw new Error('EVM provider not available');
+      }
+
+      try {
+        const balance = await provider.getBalance(address);
+        return balance;
+      } catch (error) {
+        throw new Error(
+          `Failed to get EVM balance: ${error instanceof Error ? error.message : String(error)}`
+        );
+      }
+    }
+  }
+
+  /**
+   * Get formatted balance with decimals
+   * 
+   * Converts balance from smallest unit to main unit
+   * For Substrate: planck to SEL (18 decimals)
+   * For EVM: wei to SEL (18 decimals)
+   * 
+   * @param address - Account address
+   * @param decimals - Number of decimals (default: 18)
+   * @returns Formatted balance as number
+   * 
+   * @example
+   * ```typescript
+   * const balance = await sdk.getFormattedBalance('5GrwvaEF...');
+   * console.log('Balance:', balance, 'SEL');
+   * ```
+   */
+  async getFormattedBalance(address: string, decimals: number = 18): Promise<number> {
+    const balance = await this.getBalance(address);
+    const balanceNum = typeof balance === 'bigint' ? balance : BigInt(balance);
+    return Number(balanceNum) / Math.pow(10, decimals);
+  }
+
+  // ==========================================================================
+  // Provider Access Methods
+  // ==========================================================================
+
   /**
    * Get the Polkadot API instance (Substrate only)
    * 
