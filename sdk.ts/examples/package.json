@@ -10,7 +10,10 @@
     "example:unified": "npm run build && node dist/connect/03-unified-connection.js",
     "balance:substrate": "npm run build && node dist/balance/01-substrate-balance.js",
     "balance:evm": "npm run build && node dist/balance/02-evm-balance.js",
-    "balance:unified": "npm run build && node dist/balance/03-unified-balance.js"
+    "balance:unified": "npm run build && node dist/balance/03-unified-balance.js",
+    "transfer:native": "npm run build && node dist/transfer/01-native-transfer.js",
+    "transfer:erc20": "npm run build && node dist/transfer/02-erc20-transfer.js",
+    "transfer:contract": "npm run build && node dist/transfer/03-contract-interaction.js"
   },
   "dependencies": {
     "@selendrajs/sdk-core": "file:.."

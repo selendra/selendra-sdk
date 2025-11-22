@@ -10,6 +10,14 @@ examples/
 │   ├── 01-substrate-connection.ts
 │   ├── 02-evm-connection.ts
 │   ├── 03-unified-connection.ts
+├── balance/            # Balance checking examples
+│   ├── 01-substrate-balance.ts
+│   ├── 02-evm-balance.ts
+│   ├── 03-unified-balance.ts
+├── transfer/           # Transaction examples
+│   ├── 01-native-transfer.ts
+│   ├── 02-erc20-transfer.ts
+│   ├── 03-contract-interaction.ts
 └── README.md
 ```
 
@@ -22,6 +30,7 @@ npm install
 
 ## Running Examples
 
+### Connection Examples
 ```bash
 # Substrate connection
 npm run example:substrate
@@ -31,6 +40,37 @@ npm run example:evm
 
 # Unified connection (both chains)
 npm run example:unified
+```
+
+### Balance Examples
+```bash
+# Check Substrate balance
+npm run balance:substrate
+
+# Check EVM balance
+npm run balance:evm
+
+# Check both balances
+npm run balance:unified
+```
+
+### Transfer Examples
+```bash
+# Native SEL transfer
+npm run transfer:native
+
+# ERC20 token transfer
+npm run transfer:erc20
+
+# Custom contract interaction
+npm run transfer:contract
+```
+
+**⚠️ Important:** Transfer examples require environment variables:
+```bash
+export PRIVATE_KEY="0x..."           # Required for all transfers
+export TOKEN_CONTRACT="0x..."        # Required for ERC20
+export CONTRACT_ADDRESS="0x..."      # Required for contract interaction
 ```
 
 ## Examples Overview
@@ -68,6 +108,24 @@ npm run example:unified
    - Check balances on both chains
    - Compare Substrate and EVM balances
    - Unified balance checking
+
+### Transfer Examples
+
+1. **Native Transfer** (`transfer/01-native-transfer.ts`)
+   - Send native SEL tokens
+   - Check balance before/after transfer
+   - Transaction confirmation
+
+2. **ERC20 Transfer** (`transfer/02-erc20-transfer.ts`)
+   - Transfer ERC20 tokens
+   - Custom contract addresses
+   - Token information (name, symbol, decimals)
+
+3. **Contract Interaction** (`transfer/03-contract-interaction.ts`)
+   - Call custom contract functions
+   - Read-only calls (no gas)
+   - Write transactions (state changes)
+   - Transactions with native token value
 
 ## Expected Output
 
