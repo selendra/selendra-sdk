@@ -521,6 +521,159 @@ export class SelendraSDK extends EventEmitter<SDKEvents> {
   }
 
   // ==========================================================================
+  // Contract Methods
+  // ==========================================================================
+
+  /**
+   * Get a contract instance (EVM only)
+   * 
+   * @param address - Contract address
+   * @param abi - Contract ABI
+   * @param chainType - Optional chain type (defaults to current config)
+   * @returns ethers.Contract instance
+   * 
+   * @example
+   * ```typescript
+   * const contract = await sdk.getContract(
+   *   '0x1234...',
+   *   erc20ABI
+   * );
+   * const balance = await contract.balanceOf('0x...');
+   * ```
+   */
+  async getContract(address: string, abi: string[], chainType?: ChainType): Promise<any> {
+    const targetChainType = chainType || this.config.chainType;
+    
+    if (targetChainType !== ChainType.EVM) {
+      throw new Error('getContract() is only available for EVM chains');
+    }
+    
+    if (!(this.provider instanceof EvmProvider)) {
+      throw new Error('EVM provider not initialized');
+    }
+    
+    const { ethers } = await import('ethers');
+    const provider = this.provider.getProvider();
+    
+    if (!provider) {
+      throw new Error('EVM provider not connected');
+    }
+    
+    return new ethers.Contract(address, abi, provider);
+  }
+
+  /**
+   * Get a contract instance by address (EVM only)
+   * Convenience method that uses a minimal ABI for basic interactions
+   * 
+   * @param address - Contract address
+   * @param chainType - Optional chain type (defaults to current config)
+   * @returns ethers.Contract instance with minimal ABI
+   * 
+   * @example
+   * ```typescript
+   * const contract = await sdk.getContractInstance('0x1234...');
+   * // Use for basic contract checks
+   * const code = await contract.getDeployedCode();
+   * ```
+   */
+  async getContractInstance(address: string, chainType?: ChainType): Promise<any> {
+    const targetChainType = chainType || this.config.chainType;
+    
+    if (targetChainType !== ChainType.EVM) {
+      throw new Error('getContractInstance() is only available for EVM chains');
+    }
+    
+    if (!(this.provider instanceof EvmProvider)) {
+      throw new Error('EVM provider not initialized');
+    }
+    
+    // Minimal ABI for basic contract interactions
+    const minimalABI = [
+      'function name() view returns (string)',
+      'function symbol() view returns (string)',
+      'function decimals() view returns (uint8)',
+      'function totalSupply() view returns (uint256)',
+      'function balanceOf(address) view returns (uint256)'
+    ];
+    
+    return this.getContract(address, minimalABI, chainType);
+  }
+
+  // ==========================================================================
+  // Block Information Methods
+  // ==========================================================================
+
+  /**
+   * Get current block information
+   * Returns different data based on chain type
+   * 
+   * @returns Block information object
+   * 
+   * @example
+   * ```typescript
+   * const block = await sdk.getCurrentBlock();
+   * console.log('Block number:', block.number);
+   * console.log('Block hash:', block.hash);
+   * ```
+   */
+  async getCurrentBlock(): Promise<any> {
+    if (!this.isConnected) {
+      throw new Error('SDK not connected');
+    }
+
+    if (this.config.chainType === ChainType.EVM) {
+      if (!(this.provider instanceof EvmProvider)) {
+        throw new Error('EVM provider not initialized');
+      }
+      
+      const provider = this.provider.getProvider();
+      if (!provider) {
+        throw new Error('EVM provider not connected');
+      }
+      
+      const blockNumber = await provider.getBlockNumber();
+      const block = await provider.getBlock(blockNumber);
+      
+      return {
+        number: block?.number,
+        hash: block?.hash,
+        timestamp: block?.timestamp,
+        parentHash: block?.parentHash,
+        transactions: block?.transactions,
+        gasLimit: block?.gasLimit?.toString(),
+        gasUsed: block?.gasUsed?.toString(),
+        miner: block?.miner,
+        chainType: ChainType.EVM
+      };
+    } else {
+      // Substrate chain
+      if (!(this.provider instanceof SubstrateProvider)) {
+        throw new Error('Substrate provider not initialized');
+      }
+      
+      const api = this.provider.getApi();
+      if (!api) {
+        throw new Error('Substrate API not initialized');
+      }
+      
+      const [header, hash] = await Promise.all([
+        api.rpc.chain.getHeader(),
+        api.rpc.chain.getBlockHash()
+      ]);
+      
+      return {
+        number: header.number.toNumber(),
+        hash: hash.toString(),
+        parentHash: header.parentHash.toString(),
+        stateRoot: header.stateRoot.toString(),
+        extrinsicsRoot: header.extrinsicsRoot.toString(),
+        chainType: ChainType.Substrate
+      };
+    }
+  }
+
+  // ==========================================================================
   // Provider Access Methods
   // ==========================================================================
 

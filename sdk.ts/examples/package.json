@@ -13,7 +13,11 @@
     "balance:unified": "npm run build && node dist/balance/03-unified-balance.js",
     "transfer:native": "npm run build && node dist/transfer/01-native-transfer.js",
     "transfer:erc20": "npm run build && node dist/transfer/02-erc20-transfer.js",
-    "transfer:contract": "npm run build && node dist/transfer/03-contract-interaction.js"
+    "transfer:contract": "npm run build && node dist/transfer/03-contract-interaction.js",
+    "contract:get": "npm run build && node dist/contract/01-get-contract.js",
+    "contract:instance": "npm run build && node dist/contract/02-get-contract-instance.js",
+    "block:current": "npm run build && node dist/block/01-current-block.js",
+    "block:monitor": "npm run build && node dist/block/02-block-monitoring.js"
   },
   "dependencies": {
     "@selendrajs/sdk-core": "file:.."
