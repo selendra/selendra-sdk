@@ -13,6 +13,7 @@ import type { JsonRpcProvider } from 'ethers';
 import { ChainType, type SDKConfig, type ConnectionInfo, type SDKEvents } from '../types/index.js';
 import { SubstrateProvider, EvmProvider } from '../providers/index.js';
 import { mergeConfig, validateConfig, Logger } from '../utils/index.js';
+import { UnifiedAccountsManager } from '../unified/index.js';
 
 /**
  * Main Selendra SDK class
@@ -42,6 +43,13 @@ export class SelendraSDK extends EventEmitter<SDKEvents> {
   private connectedAt?: number;
   private reconnectTimer?: ReturnType<typeof setTimeout>;
   private currentRetryAttempt = 0;
+  
+  /**
+   * Unified Accounts Manager (optional, only available when both Substrate and EVM providers exist)
+   * Note: The SDK currently only supports one chain type at a time.
+   * This will be enabled in a future update that supports dual-provider mode.
+   */
+  public unifiedAccounts?: UnifiedAccountsManager;
 
   /**
    * Create a new SelendraSDK instance
@@ -102,6 +110,13 @@ export class SelendraSDK extends EventEmitter<SDKEvents> {
 
       // Initialize provider based on chain type
       await this.initializeProvider();
+      
+      // Initialize unified accounts if this is a Substrate connection
+      // Note: Unified accounts require both Substrate and EVM providers
+      // For now, we can only initialize when connected to Substrate
+      if (this.config.chainType === ChainType.Substrate && this.provider instanceof SubstrateProvider) {
+        await this.initializeUnifiedAccounts();
+      }
 
       // Connection successful
       this.isConnected = true;
@@ -849,6 +864,67 @@ export class SelendraSDK extends EventEmitter<SDKEvents> {
 
     // Connect the provider
     await this.provider.connect();
+  }
+  
+  /**
+   * Initialize Unified Accounts Manager
+   * 
+   * Note: Currently, this creates a mock EVM provider to enable unified accounts
+   * functionality when connected to Substrate. In the future, the SDK will support
+   * dual-provider mode where both chains can be active simultaneously.
+   * 
+   * @private
+   */
+  private async initializeUnifiedAccounts(): Promise<void> {
+    try {
+      if (!(this.provider instanceof SubstrateProvider)) {
+        this.logger.debug('Unified accounts only available for Substrate connections');
+        return;
+      }
+      
+      // Create a temporary EVM provider for unified accounts
+      // This uses the same endpoint but switches to HTTP/HTTPS for EVM
+      const evmEndpoint = this.config.endpoint
+        ?.replace('wss://', 'https://')
+        .replace('ws://', 'http://');
+      
+      if (!evmEndpoint) {
+        this.logger.debug('Cannot determine EVM endpoint for unified accounts');
+        return;
+      }
+      
+      const evmConfig: SDKConfig = {
+        ...this.config,
+        endpoint: evmEndpoint,
+        chainType: ChainType.EVM,
+        debug: this.config.debug,
+      };
+      
+      const evmProvider = new EvmProvider(evmConfig);
+      
+      // Note: We don't actually connect the EVM provider here
+      // UnifiedAccountsManager only needs it for signing operations
+      
+      // Initialize unified accounts manager
+      const chainId = this.config.chainId || 1961;  // Selendra testnet chain ID
+      const ss58Prefix = 204;  // Selendra SS58 prefix
+      
+      this.unifiedAccounts = new UnifiedAccountsManager(
+        this.provider,
+        evmProvider,
+        chainId,
+        ss58Prefix
+      );
+      
+      // Initialize the signature helper
+      await this.unifiedAccounts.initialize();
+      
+      this.logger.debug('Unified accounts initialized');
+    } catch (error) {
+      this.logger.warn('Failed to initialize unified accounts:', error);
+      // Don't throw - unified accounts is optional
+      this.unifiedAccounts = undefined;
+    }
   }
 
   /**

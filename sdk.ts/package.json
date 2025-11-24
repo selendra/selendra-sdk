@@ -32,7 +32,12 @@
     "build:watch": "tsc --watch",
     "lint": "tsc --noEmit",
     "clean": "rm -rf dist",
-    "prepublishOnly": "npm run clean && npm run build"
+    "prepublishOnly": "npm run clean && npm run build",
+    "unified:check-mapping": "node --loader ts-node/esm examples/unified/01-check-mapping.ts",
+    "unified:claim-default": "node --loader ts-node/esm examples/unified/02-claim-default.ts",
+    "unified:claim-derived": "node --loader ts-node/esm examples/unified/03-claim-derived.ts",
+    "unified:claim-custom": "node --loader ts-node/esm examples/unified/04-claim-custom.ts",
+    "unified:check-eligibility": "node --loader ts-node/esm examples/unified/05-check-eligibility.ts"
   },
   "keywords": [
     "blockchain",
@@ -52,11 +57,13 @@
     "@polkadot/types": "^16.5.2",
     "@polkadot/util": "^13.5.8",
     "@polkadot/util-crypto": "^13.5.8",
+    "dotenv": "^16.6.1",
     "ethers": "^6.13.2",
     "eventemitter3": "^5.0.1"
   },
   "devDependencies": {
     "@types/node": "^24.10.1",
+    "ts-node": "^10.9.2",
     "typescript": "^5.4.5"
   }
 }

@@ -20,6 +20,29 @@ export { ChainType, Network } from './types/index.js';
 export { BaseProvider, SubstrateProvider, EvmProvider } from './providers/index.js';
 export type { BaseProviderEvents } from './providers/index.js';
 
+// Export Unified Accounts
+export { UnifiedAccountsManager, UnifiedAccountSignature } from './unified/index.js';
+export type {
+  EvmMappingResult,
+  SubstrateMappingResult,
+  MappingInfo,
+  ClaimResult,
+  ClaimEvent,
+  EligibilityCheck,
+  CostEstimate,
+  TransactionOptions,
+  EIP712Domain,
+  ClaimMessage,
+} from './unified/index.js';
+export { UnifiedAccountError } from './unified/index.js';
+export {
+  calculateDefaultEvmAddress,
+  calculateDefaultSubstrateAddress,
+  isValidSubstrateAddress,
+  isValidEvmAddress,
+  getAddressType,
+} from './unified/index.js';
+
 // Export utilities for advanced usage
 export { Logger, mergeConfig, validateConfig, DEFAULT_CONFIG } from './utils/index.js';
 
