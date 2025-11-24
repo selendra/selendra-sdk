@@ -33,6 +33,7 @@
     "lint": "tsc --noEmit",
     "clean": "rm -rf dist",
     "prepublishOnly": "npm run clean && npm run build",
+    "wallet:demo": "node --loader ts-node/esm examples/wallet-demo.ts",
     "unified:check-mapping": "node --loader ts-node/esm examples/unified/01-check-mapping.ts",
     "unified:claim-default": "node --loader ts-node/esm examples/unified/02-claim-default.ts",
     "unified:claim-derived": "node --loader ts-node/esm examples/unified/03-claim-derived.ts",

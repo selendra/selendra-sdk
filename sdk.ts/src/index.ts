@@ -45,6 +45,8 @@ export {
 
 // Export utilities for advanced usage
 export { Logger, mergeConfig, validateConfig, DEFAULT_CONFIG } from './utils/index.js';
+export { SelendraWallet, WalletUtils } from './utils/index.js';
+export type { WalletType, EncryptedJson, ProgressCallback } from './utils/index.js';
 
 // Re-export commonly used types from dependencies for convenience
 export type { ApiPromise } from '@polkadot/api';
