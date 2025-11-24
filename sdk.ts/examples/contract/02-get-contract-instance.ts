@@ -7,13 +7,14 @@
  * Run: npm run contract:instance
  */
 
+import 'dotenv/config';
 import { createSDK } from '@selendrajs/sdk-core';
 import { ChainType } from '@selendrajs/sdk-core/types';
 
 async function main() {
   console.log('=== Get Contract Instance (Minimal ABI) Example ===\n');
 
-  // Replace with actual contract address
+  // Get contract address from environment
   const CONTRACT_ADDRESS = process.env.CONTRACT_ADDRESS || '0x0000000000000000000000000000000000000000';
   const ACCOUNT_ADDRESS = '0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb';
 
@@ -21,8 +22,8 @@ async function main() {
     // Create and connect to Selendra EVM
     const sdk = createSDK({
       chainType: ChainType.EVM,
-      endpoint: 'https://rpc.selendra.org',
-      network: 'selendra',
+      endpoint: 'https://rpc-testnet.selendra.org',
+      network: 'selendra-testnet',
       debug: true
     });
 

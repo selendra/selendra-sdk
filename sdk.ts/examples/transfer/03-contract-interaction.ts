@@ -7,6 +7,7 @@
  * Run: npm run example:transfer:contract
  */
 
+import 'dotenv/config';
 import { createSDK } from '@selendrajs/sdk-core';
 import { ChainType } from '@selendrajs/sdk-core/types';
 
@@ -28,15 +29,15 @@ const DEX_CONTRACT_ABI = [
 async function main() {
   console.log('=== Custom Contract Interaction Example ===\n');
 
-  const PRIVATE_KEY = process.env.PRIVATE_KEY || '0x0000000000000000000000000000000000000000000000000000000000000000';
+  const PRIVATE_KEY = process.env.EVM_PRIVATE_KEY || process.env.PRIVATE_KEY || '0x0000000000000000000000000000000000000000000000000000000000000000';
   const CONTRACT_ADDRESS = process.env.CONTRACT_ADDRESS || '0x0000000000000000000000000000000000000000';
 
   try {
     // Create and connect to Selendra EVM
     const sdk = await createSDK({
       chainType: ChainType.EVM,
-      endpoint: 'https://rpc.selendra.org',
-      network: 'selendra',
+      endpoint: 'https://rpc-testnet.selendra.org',
+      network: 'selendra-testnet',
       debug: true
     });
 

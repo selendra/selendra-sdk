@@ -4,6 +4,7 @@
  * Demonstrates how to check balances on both chains
  */
 
+import 'dotenv/config';
 import { SelendraSDK, ChainType } from '@selendrajs/sdk-core';
 
 async function checkUnifiedBalance() {
@@ -14,7 +15,7 @@ async function checkUnifiedBalance() {
   console.log('─'.repeat(50));
   
   const substrateSDK = new SelendraSDK({
-    endpoint: 'wss://rpc.selendra.org',
+    endpoint: 'wss://rpc-testnet.selendra.org',
     chainType: ChainType.Substrate,
   });
 
@@ -38,7 +39,7 @@ async function checkUnifiedBalance() {
   console.log('─'.repeat(50));
   
   const evmSDK = new SelendraSDK({
-    endpoint: 'https://rpc.selendra.org',
+    endpoint: 'https://rpc-testnet.selendra.org',
     chainType: ChainType.EVM,
   });
 

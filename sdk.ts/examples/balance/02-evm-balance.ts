@@ -4,13 +4,14 @@
  * Demonstrates how to check account balance on Selendra EVM chain
  */
 
+import 'dotenv/config';
 import { SelendraSDK, ChainType } from '@selendrajs/sdk-core';
 
 async function checkEvmBalance() {
   console.log('📝 Check EVM Balance Example\n');
 
   const sdk = new SelendraSDK({
-    endpoint: 'https://rpc.selendra.org',
+    endpoint: 'https://rpc-testnet.selendra.org',
     chainType: ChainType.EVM,
   });
 

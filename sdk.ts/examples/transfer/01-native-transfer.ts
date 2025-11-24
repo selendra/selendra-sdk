@@ -7,14 +7,15 @@
  * Run: npm run example:transfer:native
  */
 
+import 'dotenv/config';
 import { createSDK } from '@selendrajs/sdk-core';
 import { ChainType } from '@selendrajs/sdk-core/types';
 
 async function main() {
   console.log('=== Native SEL Transfer Example ===\n');
 
-  // Replace with your actual private key (NEVER commit this!)
-  const PRIVATE_KEY = process.env.PRIVATE_KEY || '0x0000000000000000000000000000000000000000000000000000000000000000';
+  // Get private key from environment (EVM_PRIVATE_KEY or PRIVATE_KEY)
+  const PRIVATE_KEY = process.env.EVM_PRIVATE_KEY || process.env.PRIVATE_KEY || '0x0000000000000000000000000000000000000000000000000000000000000000';
   
   // Recipient address
   const RECIPIENT = '0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb';
@@ -24,10 +25,11 @@ async function main() {
 
   try {
     // Create and connect to Selendra EVM
+    const endpoint = process.env.SELENDRA_RPC_URL || 'https://rpc-testnet.selendra.org';
     const sdk = await createSDK({
       chainType: ChainType.EVM,
-      endpoint: 'https://rpc.selendra.org',
-      network: 'selendra',
+      endpoint: endpoint,
+      network: 'selendra-testnet',
       debug: true
     });
 

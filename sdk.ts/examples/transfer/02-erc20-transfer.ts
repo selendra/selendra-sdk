@@ -7,24 +7,26 @@
  * Run: npm run example:transfer:erc20
  */
 
+import 'dotenv/config';
 import { createSDK } from '@selendrajs/sdk-core';
 import { ChainType } from '@selendrajs/sdk-core/types';
 
 async function main() {
   console.log('=== ERC20 Token Transfer Example ===\n');
 
-  // Replace with your actual values
-  const PRIVATE_KEY = process.env.PRIVATE_KEY || '0x0000000000000000000000000000000000000000000000000000000000000000';
+  // Get configuration from environment
+  const PRIVATE_KEY = process.env.EVM_PRIVATE_KEY || process.env.PRIVATE_KEY || '0x0000000000000000000000000000000000000000000000000000000000000000';
   const TOKEN_CONTRACT = process.env.TOKEN_CONTRACT || '0x0000000000000000000000000000000000000000'; // Replace with actual ERC20 contract
   const RECIPIENT = '0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb';
   const AMOUNT = '10'; // Amount in token units (will be converted based on decimals)
 
   try {
     // Create and connect to Selendra EVM
+    const endpoint = process.env.SELENDRA_RPC_URL || 'https://rpc-testnet.selendra.org';
     const sdk = await createSDK({
       chainType: ChainType.EVM,
-      endpoint: 'https://rpc.selendra.org',
-      network: 'selendra',
+      endpoint: endpoint,
+      network: 'selendra-testnet',
       debug: true
     });
 

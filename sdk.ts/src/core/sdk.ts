@@ -341,14 +341,85 @@ export class SelendraSDK extends EventEmitter<SDKEvents> {
    * console.log('Transaction:', txHash);
    * ```
    */
-  async sendTransfer(privateKey: string, to: string, amount: string): Promise<string> {
-    if (this.config.chainType !== ChainType.EVM) {
-      throw new Error('sendTransfer() is only available for EVM chains');
+  async sendTransfer(privateKey: string, to: string, amount: string): Promise<string>;
+  
+  /**
+   * Send native SEL token transfer (Substrate only)
+   * 
+   * @param from - Sender's KeyringPair
+   * @param to - Recipient address
+   * @param amount - Amount in planck (smallest unit)
+   * @returns Transaction hash
+   * 
+   * @example
+   * ```typescript
+   * import { Keyring } from '@polkadot/api';
+   * const keyring = new Keyring({ type: 'sr25519' });
+   * const pair = keyring.addFromUri('//Alice');
+   * const txHash = await sdk.sendTransfer(pair, '5GrwvaEF...', '1000000000000');
+   * ```
+   */
+  async sendTransfer(from: any, to: string, amount: string | bigint): Promise<string>;
+  
+  async sendTransfer(fromOrPrivateKey: any, to: string, amount: string | bigint): Promise<string> {
+    if (this.config.chainType === ChainType.EVM) {
+      if (!(this.provider instanceof EvmProvider)) {
+        throw new Error('EVM provider not initialized');
+      }
+      return this.provider.sendTransfer(fromOrPrivateKey as string, to, amount as string);
+    } else {
+      if (!(this.provider instanceof SubstrateProvider)) {
+        throw new Error('Substrate provider not initialized');
+      }
+      return this.provider.sendTransfer(fromOrPrivateKey, to, amount);
     }
-    if (!(this.provider instanceof EvmProvider)) {
-      throw new Error('EVM provider not initialized');
+  }
+
+  /**
+   * Send native token transfer without waiting for finalization (Substrate only)
+   * 
+   * @param from - Sender's KeyringPair
+   * @param to - Recipient address
+   * @param amount - Amount in planck (smallest unit)
+   * @returns Transaction hash
+   * 
+   * @example
+   * ```typescript
+   * const txHash = await sdk.sendTransferNoWait(pair, '5GrwvaEF...', '1000000000000');
+   * console.log('Transaction submitted:', txHash);
+   * ```
+   */
+  async sendTransferNoWait(from: any, to: string, amount: string | bigint): Promise<string> {
+    if (this.config.chainType !== ChainType.Substrate) {
+      throw new Error('sendTransferNoWait() is only available for Substrate chains');
     }
-    return this.provider.sendTransfer(privateKey, to, amount);
+    if (!(this.provider instanceof SubstrateProvider)) {
+      throw new Error('Substrate provider not initialized');
+    }
+    return this.provider.sendTransferNoWait(from, to, amount);
+  }
+
+  /**
+   * Transfer all available balance (Substrate only)
+   * 
+   * @param from - Sender's KeyringPair
+   * @param to - Recipient address
+   * @returns Transaction hash
+   * 
+   * @example
+   * ```typescript
+   * const txHash = await sdk.transferAll(pair, '5GrwvaEF...');
+   * console.log('All funds transferred:', txHash);
+   * ```
+   */
+  async transferAll(from: any, to: string): Promise<string> {
+    if (this.config.chainType !== ChainType.Substrate) {
+      throw new Error('transferAll() is only available for Substrate chains');
+    }
+    if (!(this.provider instanceof SubstrateProvider)) {
+      throw new Error('Substrate provider not initialized');
+    }
+    return this.provider.transferAll(from, to);
   }
 
   /**

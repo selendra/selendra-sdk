@@ -4,20 +4,23 @@
  * Demonstrates the simplest way to connect to Selendra EVM chain
  */
 
+import 'dotenv/config';
 import { SelendraSDK, ChainType } from '@selendrajs/sdk-core';
 
 async function basicEvmExample() {
   console.log('📝 Basic EVM Connection Example\n');
 
   // Create SDK instance
+  const endpoint = process.env.SELENDRA_RPC_URL || 'https://rpc-testnet.selendra.org';
   const sdk = new SelendraSDK({
-    endpoint: 'https://rpc.selendra.org',
+    endpoint: endpoint,
     chainType: ChainType.EVM,
   });
 
   try {
     // Connect
-    console.log('🔌 Connecting to Selendra EVM...');
+    console.log('🔌 Connecting to Selendra EVM Testnet...');
+    console.log('   Endpoint:', endpoint);
     await sdk.connect();
     console.log('✅ Connected!\n');
 

@@ -14,13 +14,17 @@
     "transfer:native": "npm run build && node dist/transfer/01-native-transfer.js",
     "transfer:erc20": "npm run build && node dist/transfer/02-erc20-transfer.js",
     "transfer:contract": "npm run build && node dist/transfer/03-contract-interaction.js",
+    "transfer:substrate": "npm run build && node dist/transfer/04-substrate-transfer.js",
+    "transfer:substrate-nowait": "npm run build && node dist/transfer/05-substrate-transfer-nowait.js",
+    "transfer:substrate-all": "npm run build && node dist/transfer/06-substrate-transfer-all.js",
     "contract:get": "npm run build && node dist/contract/01-get-contract.js",
     "contract:instance": "npm run build && node dist/contract/02-get-contract-instance.js",
     "block:current": "npm run build && node dist/block/01-current-block.js",
     "block:monitor": "npm run build && node dist/block/02-block-monitoring.js"
   },
   "dependencies": {
-    "@selendrajs/sdk-core": "file:.."
+    "@selendrajs/sdk-core": "file:..",
+    "dotenv": "^17.2.3"
   },
   "devDependencies": {
     "@types/node": "^24.10.1",

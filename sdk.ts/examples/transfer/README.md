@@ -1,16 +1,18 @@
 # Transfer Examples
 
-This directory contains examples demonstrating EVM transaction capabilities of the Selendra SDK.
+This directory contains examples demonstrating transaction capabilities of the Selendra SDK for both EVM and Substrate chains.
 
 ## Examples
 
-### 01. Native SEL Transfer
+### EVM Chain Examples
+
+### 01. Native SEL Transfer (EVM)
 **File:** `01-native-transfer.ts`
 
-Demonstrates how to send native SEL tokens from one address to another.
+Demonstrates how to send native SEL tokens on the EVM chain.
 
 ```bash
-npm run example:transfer:native
+npm run transfer:native
 ```
 
 **Features:**
@@ -32,7 +34,7 @@ export PRIVATE_KEY="0x..."  # Your private key
 Shows how to transfer ERC20 tokens using custom contract addresses.
 
 ```bash
-npm run example:transfer:erc20
+npm run transfer:erc20
 ```
 
 **Features:**
@@ -55,7 +57,7 @@ export TOKEN_CONTRACT="0x..."        # ERC20 contract address
 Demonstrates advanced contract interactions with custom ABIs.
 
 ```bash
-npm run example:transfer:contract
+npm run transfer:contract
 ```
 
 **Features:**
@@ -78,12 +80,89 @@ export CONTRACT_ADDRESS="0x..."      # Smart contract address
 
 ---
 
+### Substrate Chain Examples
+
+### 04. Substrate Native Transfer
+**File:** `04-substrate-transfer.ts`
+
+Demonstrates how to send native SEL tokens on the Substrate chain.
+
+```bash
+npm run transfer:substrate
+```
+
+**Features:**
+- Connect to Selendra Substrate
+- Create keypair from seed/mnemonic
+- Send native SEL tokens (in planck)
+- Wait for transaction finalization
+- Verify with balance checks
+
+**Required Environment Variables:**
+```bash
+export SENDER_URI="//Alice"                    # Sender seed/mnemonic
+export RECIPIENT="5FHneW46xGXgs5m..."          # Recipient address
+```
+
+**Notes:**
+- Waits for finalization (12-60 seconds)
+- Amount in planck (1 SEL = 10^18 planck)
+- Uses Polkadot Keyring for signing
+
+---
+
+### 05. Substrate Transfer (No Wait)
+**File:** `05-substrate-transfer-nowait.ts`
+
+Send transfer without waiting for finalization.
+
+```bash
+npm run transfer:substrate-nowait
+```
+
+**Features:**
+- Submit transaction immediately
+- Returns transaction hash without waiting
+- Useful for batch operations
+- Continues execution without blocking
+
+**Required Environment Variables:**
+```bash
+export SENDER_URI="//Alice"
+export RECIPIENT="5FHneW46xGXgs5m..."
+```
+
+---
+
+### 06. Substrate Transfer All
+**File:** `06-substrate-transfer-all.ts`
+
+Transfer all available balance while keeping account alive.
+
+```bash
+npm run transfer:substrate-all
+```
+
+**Features:**
+- Transfer maximum available balance
+- Leaves existential deposit
+- Keeps account active
+- Automatic fee calculation
+
+**Required Environment Variables:**
+```bash
+export SENDER_URI="//Alice"
+export RECIPIENT="5FHneW46xGXgs5m..."
+```
+
+---
+
 ## SDK Methods Used
 
-### Transfer Methods
+### EVM Transfer Methods
 
-#### `sendTransfer(privateKey, to, amount)`
-Send native SEL tokens.
+#### `sendTransfer(privateKey, to, amount)` - EVM
+Send native SEL tokens on EVM chain.
 
 ```typescript
 const txHash = await sdk.sendTransfer(
@@ -92,6 +171,47 @@ const txHash = await sdk.sendTransfer(
   '1.5' // Amount in SEL
 );
 ```
+
+### Substrate Transfer Methods
+
+#### `sendTransfer(from, to, amount)` - Substrate
+Send native SEL tokens on Substrate chain (waits for finalization).
+
+```typescript
+import { Keyring } from '@polkadot/api';
+const keyring = new Keyring({ type: 'sr25519' });
+const pair = keyring.addFromUri('//Alice');
+
+const txHash = await sdk.sendTransfer(
+  pair,
+  '5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY',
+  '1000000000000000000' // Amount in planck (1 SEL)
+);
+```
+
+#### `sendTransferNoWait(from, to, amount)` - Substrate
+Send transfer without waiting for finalization.
+
+```typescript
+const txHash = await sdk.sendTransferNoWait(
+  pair,
+  '5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY',
+  '500000000000000000' // 0.5 SEL in planck
+);
+// Returns immediately with tx hash
+```
+
+#### `transferAll(from, to)` - Substrate
+Transfer all available balance (keeps existential deposit).
+
+```typescript
+const txHash = await sdk.transferAll(
+  pair,
+  '5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY'
+);
+```
+
+### ERC20 Methods
 
 #### `sendERC20Transfer(privateKey, contractAddress, to, amount, decimals)`
 Transfer ERC20 tokens with custom contract.

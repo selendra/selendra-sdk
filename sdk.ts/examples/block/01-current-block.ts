@@ -7,6 +7,7 @@
  * Run: npm run block:current
  */
 
+import 'dotenv/config';
 import { createSDK } from '@selendrajs/sdk-core';
 import { ChainType } from '@selendrajs/sdk-core/types';
 
@@ -20,8 +21,8 @@ async function main() {
     console.log('--- EVM Chain ---');
     const evmSdk = createSDK({
       chainType: ChainType.EVM,
-      endpoint: 'https://rpc.selendra.org',
-      network: 'selendra',
+      endpoint: 'https://rpc-testnet.selendra.org',
+      network: 'selendra-testnet',
       debug: false
     });
 
@@ -54,8 +55,8 @@ async function main() {
     console.log('\n--- Substrate Chain ---');
     const substrateSdk = createSDK({
       chainType: ChainType.Substrate,
-      endpoint: 'wss://rpc.selendra.org',
-      network: 'selendra',
+      endpoint: 'wss://rpc-testnet.selendra.org',
+      network: 'selendra-testnet',
       debug: false
     });
 

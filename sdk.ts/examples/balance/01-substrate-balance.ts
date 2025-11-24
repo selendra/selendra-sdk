@@ -4,13 +4,16 @@
  * Demonstrates how to check account balance on Selendra Substrate chain
  */
 
+import 'dotenv/config';
 import { SelendraSDK, ChainType } from '@selendrajs/sdk-core';
+import { Keyring } from '@polkadot/api';
+import { cryptoWaitReady } from '@polkadot/util-crypto';
 
 async function checkSubstrateBalance() {
   console.log('📝 Check Substrate Balance Example\n');
 
   const sdk = new SelendraSDK({
-    endpoint: 'wss://rpc.selendra.org',
+    endpoint: 'wss://rpc-testnet.selendra.org',
     chainType: ChainType.Substrate,
   });
 
@@ -18,11 +21,33 @@ async function checkSubstrateBalance() {
     await sdk.connect();
     console.log('✅ Connected to Selendra Substrate\n');
 
-    // Example addresses (replace with actual addresses)
-    const addresses = [
-      '5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY',  // Alice
-      '5FHneW46xGXgs5mUiveU4sbTyGBzmstUspZC92UhjJM694ty',  // Bob
-    ];
+    // Get addresses to check
+    const addresses: string[] = [];
+    
+    // Check balance for account from SUBSTRATE_PRIVATE_KEY
+    const substrateKey = process.env.SUBSTRATE_PRIVATE_KEY;
+    if (substrateKey && substrateKey !== '0x0000000000000000000000000000000000000000000000000000000000000000') {
+      await cryptoWaitReady();
+      const keyring = new Keyring({ type: 'sr25519' });
+      const cleanKey = substrateKey.startsWith('0x') ? substrateKey.slice(2) : substrateKey;
+      const account = keyring.addFromSeed(Buffer.from(cleanKey, 'hex'));
+      addresses.push(account.address);
+      console.log('🔑 Using account from SUBSTRATE_PRIVATE_KEY');
+    }
+    
+    // Add target addresses from .env if available
+    if (process.env.SUB_TARGET_ADDRESS_1) {
+      addresses.push(process.env.SUB_TARGET_ADDRESS_1);
+    }
+    if (process.env.SUB_TARGET_ADDRESS_2) {
+      addresses.push(process.env.SUB_TARGET_ADDRESS_2);
+    }
+    
+    // Fallback to example addresses if no env vars set
+    if (addresses.length === 0) {
+      addresses.push('5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY');  // Alice
+      addresses.push('5FHneW46xGXgs5mUiveU4sbTyGBzmstUspZC92UhjJM694ty');  // Bob
+    }
 
     for (const address of addresses) {
       console.log(`Address: ${address}`);

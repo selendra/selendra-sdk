@@ -4,6 +4,7 @@
  * Demonstrates how to use a single SDK instance for both Substrate and EVM chains
  */
 
+import 'dotenv/config';
 import { SelendraSDK, ChainType } from '@selendrajs/sdk-core';
 
 console.log('🚀 Unified SDK Example\n');
@@ -15,13 +16,15 @@ async function connectToSubstrate() {
   console.log('📦 Example 1: Substrate Chain');
   console.log('─'.repeat(50));
 
+  const endpoint = process.env.SELENDRA_WS_URL || 'wss://rpc-testnet.selendra.org';
   const sdk = new SelendraSDK({
-    endpoint: 'wss://rpc.selendra.org',
+    endpoint: endpoint,
     chainType: ChainType.Substrate,  // ← Automatically uses SubstrateProvider
   });
 
   await sdk.connect();
-  console.log('✅ Connected to Substrate chain');
+  console.log('✅ Connected to Substrate Testnet');
+  console.log('   Endpoint:', endpoint);
 
   const info = sdk.getConnectionInfo();
   console.log('Chain Type:', info.chainType);
@@ -45,13 +48,15 @@ async function connectToEvm() {
   console.log('📦 Example 2: EVM Chain');
   console.log('─'.repeat(50));
 
+  const endpoint = process.env.SELENDRA_RPC_URL || 'https://rpc-testnet.selendra.org';
   const sdk = new SelendraSDK({
-    endpoint: 'https://rpc.selendra.org',
+    endpoint: endpoint,
     chainType: ChainType.EVM,  // ← Automatically uses EvmProvider
   });
 
   await sdk.connect();
-  console.log('✅ Connected to EVM chain');
+  console.log('✅ Connected to EVM Testnet');
+  console.log('   Endpoint:', endpoint);
 
   const info = sdk.getConnectionInfo();
   console.log('Chain Type:', info.chainType);
@@ -79,7 +84,7 @@ async function switchBetweenChains() {
 
   // Connect to Substrate first
   const sdk = new SelendraSDK({
-    endpoint: 'wss://rpc.selendra.org',
+    endpoint: 'wss://rpc-testnet.selendra.org',
     chainType: ChainType.Substrate,
   });
 
@@ -88,7 +93,7 @@ async function switchBetweenChains() {
   await sdk.disconnect();
 
   // Reconfigure for EVM and connect again
-  sdk.withEndpoint('https://rpc.selendra.org')
+  sdk.withEndpoint('https://rpc-testnet.selendra.org')
      .withChainType(ChainType.EVM);
 
   await sdk.connect();
@@ -129,8 +134,8 @@ async function runExamples() {
     await switchBetweenChains();
     
     // Your desired usage pattern
-    await connectToChain('wss://rpc.selendra.org', 'substrate');
-    await connectToChain('https://rpc.selendra.org', 'evm');
+    await connectToChain('wss://rpc-testnet.selendra.org', 'substrate');
+    await connectToChain('https://rpc-testnet.selendra.org', 'evm');
 
     console.log('✅ All examples completed successfully!');
     process.exit(0);  // Force exit

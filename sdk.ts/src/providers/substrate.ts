@@ -7,6 +7,7 @@
  */
 
 import { ApiPromise, WsProvider } from '@polkadot/api';
+import type { ISubmittableResult } from '@polkadot/types/types';
 import { BaseProvider } from './base.js';
 import type { SDKConfig } from '../types/index.js';
 
@@ -142,4 +143,148 @@ export class SubstrateProvider extends BaseProvider {
       this.emit('error', error);
     });
   }
+
+  // ==========================================================================
+  // Transfer Methods
+  // ==========================================================================
+
+  /**
+   * Send native token transfer on Substrate chain
+   * 
+   * @param from - Sender's address or KeyringPair
+   * @param to - Recipient's address
+   * @param amount - Amount in planck (smallest unit)
+   * @returns Transaction hash
+   */
+  async sendTransfer(from: any, to: string, amount: string | bigint): Promise<string> {
+    if (!this.api) {
+      throw new Error('API not connected');
+    }
+
+    try {
+      this.log(`Sending transfer: ${amount} from ${from.address || from} to ${to}`);
+
+      // Create transfer extrinsic
+      const transfer = this.api.tx.balances.transferKeepAlive(to, amount);
+
+      // Sign and send transaction
+      const hash = await new Promise<string>((resolve, reject) => {
+        transfer
+          .signAndSend(from, (result: ISubmittableResult) => {
+            const { status, dispatchError } = result;
+            
+            if (status.isInBlock) {
+              this.log(`Transaction included in block: ${status.asInBlock.toString()}`);
+            }
+
+            if (status.isFinalized) {
+              if (dispatchError) {
+                if (dispatchError.isModule) {
+                  const decoded = this.api!.registry.findMetaError(dispatchError.asModule);
+                  const { docs, name, section } = decoded;
+                  reject(new Error(`${section}.${name}: ${docs.join(' ')}`));
+                } else {
+                  reject(new Error(dispatchError.toString()));
+                }
+              } else {
+                this.log(`Transaction finalized: ${status.asFinalized.toString()}`);
+                resolve(status.asFinalized.toString());
+              }
+            }
+          })
+          .catch(reject);
+      });
+
+      return hash;
+    } catch (error) {
+      this.log('Transfer error:', error);
+      throw new Error(
+        `Failed to send transfer: ${error instanceof Error ? error.message : String(error)}`
+      );
+    }
+  }
+
+  /**
+   * Send transfer and return immediately with transaction hash (don't wait for finalization)
+   * 
+   * @param from - Sender's address or KeyringPair
+   * @param to - Recipient's address
+   * @param amount - Amount in planck (smallest unit)
+   * @returns Transaction hash
+   */
+  async sendTransferNoWait(from: any, to: string, amount: string | bigint): Promise<string> {
+    if (!this.api) {
+      throw new Error('API not connected');
+    }
+
+    try {
+      this.log(`Sending transfer (no wait): ${amount} from ${from.address || from} to ${to}`);
+
+      // Create transfer extrinsic
+      const transfer = this.api.tx.balances.transferKeepAlive(to, amount);
+
+      // Sign and send, return hash immediately
+      const hash = await transfer.signAndSend(from);
+      
+      this.log(`Transaction submitted: ${hash.toString()}`);
+      return hash.toString();
+    } catch (error) {
+      this.log('Transfer error:', error);
+      throw new Error(
+        `Failed to send transfer: ${error instanceof Error ? error.message : String(error)}`
+      );
+    }
+  }
+
+  /**
+   * Transfer all available balance (leaving only existential deposit)
+   * 
+   * @param from - Sender's address or KeyringPair
+   * @param to - Recipient's address
+   * @returns Transaction hash
+   */
+  async transferAll(from: any, to: string): Promise<string> {
+    if (!this.api) {
+      throw new Error('API not connected');
+    }
+
+    try {
+      this.log(`Transferring all from ${from.address || from} to ${to}`);
+
+      // Create transfer all extrinsic
+      const transfer = this.api.tx.balances.transferAll(to, false); // false = keep account alive
+
+      // Sign and send transaction
+      const hash = await new Promise<string>((resolve, reject) => {
+        transfer
+          .signAndSend(from, (result: ISubmittableResult) => {
+            const { status, dispatchError } = result;
+            
+            if (status.isFinalized) {
+              if (dispatchError) {
+                if (dispatchError.isModule) {
+                  const decoded = this.api!.registry.findMetaError(dispatchError.asModule);
+                  const { docs, name, section } = decoded;
+                  reject(new Error(`${section}.${name}: ${docs.join(' ')}`));
+                } else {
+                  reject(new Error(dispatchError.toString()));
+                }
+              } else {
+                this.log(`Transaction finalized: ${status.asFinalized.toString()}`);
+                resolve(status.asFinalized.toString());
+              }
+            }
+          })
+          .catch(reject);
+      });
+
+      return hash;
+    } catch (error) {
+      this.log('Transfer all error:', error);
+      throw new Error(
+        `Failed to transfer all: ${error instanceof Error ? error.message : String(error)}`
+      );
+    }
+  }
 }
+

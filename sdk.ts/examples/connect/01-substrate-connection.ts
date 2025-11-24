@@ -4,20 +4,23 @@
  * Demonstrates the simplest way to connect to Selendra Substrate chain
  */
 
+import 'dotenv/config';
 import { SelendraSDK, ChainType } from '@selendrajs/sdk-core';
 
 async function basicSubstrateExample() {
   console.log('📝 Basic Substrate Connection Example\n');
 
   // Create SDK instance
+  const endpoint = process.env.SELENDRA_WS_URL || 'wss://rpc-testnet.selendra.org';
   const sdk = new SelendraSDK({
-    endpoint: 'wss://rpc.selendra.org',
+    endpoint: endpoint,
     chainType: ChainType.Substrate,
   });
 
   try {
     // Connect
-    console.log('🔌 Connecting to Selendra Substrate...');
+    console.log('🔌 Connecting to Selendra Substrate Testnet...');
+    console.log('   Endpoint:', endpoint);
     await sdk.connect();
     console.log('✅ Connected!\n');
 
