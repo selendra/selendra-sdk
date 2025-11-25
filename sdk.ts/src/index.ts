@@ -81,6 +81,43 @@ export type {
   WithdrawEvent,
 } from './pallets/balances/index.js';
 
+// Export Staking pallet
+export { StakingManager, StakingQueries, RewardDestination } from './pallets/staking/index.js';
+export type {
+  ValidatorPrefs,
+  StakingLedger,
+  UnlockChunk,
+  ActiveEraInfo,
+  EraRewardPoints,
+  Exposure,
+  IndividualExposure,
+  Nominations,
+  SlashingSpans,
+  StakingInfo,
+  BondParams,
+  BondExtraParams,
+  UnbondParams,
+  WithdrawUnbondedParams,
+  NominateParams,
+  ValidateParams,
+  SetPayeeParams,
+  SetControllerParams,
+  PayoutStakersParams,
+  RebondParams,
+  ChillOtherParams,
+  ForceUnstakeParams,
+  ForceNewEraParams,
+  BondedEvent,
+  UnbondedEvent,
+  WithdrawnEvent,
+  RewardedEvent,
+  SlashedEvent,
+  ChilledEvent,
+  PayeeSetEvent,
+  PendingRewards,
+  EraRewards,
+} from './pallets/staking/index.js';
+
 
 // Re-export commonly used types from dependencies for convenience
 export type { ApiPromise } from '@polkadot/api';
