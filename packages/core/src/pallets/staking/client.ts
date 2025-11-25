@@ -25,7 +25,7 @@ import {
   RewardDestination,
   PendingRewards,
   EraRewards,
-} from './types';
+} from './types.js';
 
 /**
  * Staking Manager - Main interface for Staking pallet

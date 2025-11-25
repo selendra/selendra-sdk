@@ -14,7 +14,7 @@ import {
   Exposure,
   SlashingSpans,
   RewardDestination,
-} from './types';
+} from './types.js';
 
 /**
  * Staking storage queries

@@ -8,7 +8,7 @@ import type { ApiPromise } from '@polkadot/api';
 import type { SubmittableExtrinsic } from '@polkadot/api/types';
 import type { ISubmittableResult } from '@polkadot/types/types';
 import { BalancesQueries } from './queries.js';
-import type {
+import {
   TransferParams,
   TransferAllParams,
   ForceTransferParams,
@@ -22,7 +22,7 @@ import type {
   UnreservedEvent,
   DepositEvent,
   WithdrawEvent,
-} from './types';
+} from './types.js';
 
 /**
  * Balances Manager - Main interface for Balances pallet
