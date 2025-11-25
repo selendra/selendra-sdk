@@ -22,7 +22,8 @@
     "block:current": "npm run build && node dist/block/01-current-block.js",
     "block:monitor": "npm run build && node dist/block/02-block-monitoring.js",
     "pallet:balances": "node --import tsx pallets/balances-demo.ts",
-    "pallet:staking": "node --import tsx pallets/staking-demo.ts"
+    "pallet:staking": "node --import tsx pallets/staking-demo.ts",
+    "pallet:session": "node --import tsx pallets/session-demo.ts"
   },
   "dependencies": {
     "@selendrajs/sdk-core": "file:..",

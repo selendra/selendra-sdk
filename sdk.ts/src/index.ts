@@ -118,6 +118,17 @@ export type {
   EraRewards,
 } from './pallets/staking/index.js';
 
+// Export Session pallet
+export { SessionManager, SessionQueries } from './pallets/session/index.js';
+export type {
+  SessionKeys,
+  QueuedKey,
+  SetKeysParams,
+  SessionInfo,
+  ValidatorKeys,
+  NewSessionEvent,
+} from './pallets/session/index.js';
+
 
 // Re-export commonly used types from dependencies for convenience
 export type { ApiPromise } from '@polkadot/api';
