@@ -1,13 +1,13 @@
 /**
  * Staking Pallet Client
- * 
+ *
  * Main client for interacting with the Staking pallet
  */
 
-import type { ApiPromise } from '@polkadot/api';
-import type { SubmittableExtrinsic } from '@polkadot/api/types';
-import type { ISubmittableResult } from '@polkadot/types/types';
-import { StakingQueries } from './queries.js';
+import type { ApiPromise } from "@polkadot/api";
+import type { SubmittableExtrinsic } from "@polkadot/api/types";
+import type { ISubmittableResult } from "@polkadot/types/types";
+import { StakingQueries } from "./queries.js";
 import {
   BondParams,
   BondExtraParams,
@@ -25,7 +25,7 @@ import {
   RewardDestination,
   PendingRewards,
   EraRewards,
-} from './types.js';
+} from "./types.js";
 
 /**
  * Staking Manager - Main interface for Staking pallet
@@ -46,7 +46,9 @@ export class StakingManager {
    * @param params - Bond parameters
    * @returns Submittable extrinsic
    */
-  bond(params: BondParams): SubmittableExtrinsic<'promise', ISubmittableResult> {
+  bond(
+    params: BondParams
+  ): SubmittableExtrinsic<"promise", ISubmittableResult> {
     // In newer Polkadot SDK, controller is deprecated and should be same as stash
     // The API handles this automatically
     return this.api.tx.staking.bond(params.value, params.payee);
@@ -57,7 +59,9 @@ export class StakingManager {
    * @param params - Bond extra parameters
    * @returns Submittable extrinsic
    */
-  bondExtra(params: BondExtraParams): SubmittableExtrinsic<'promise', ISubmittableResult> {
+  bondExtra(
+    params: BondExtraParams
+  ): SubmittableExtrinsic<"promise", ISubmittableResult> {
     return this.api.tx.staking.bondExtra(params.maxAdditional);
   }
 
@@ -66,7 +70,9 @@ export class StakingManager {
    * @param params - Unbond parameters
    * @returns Submittable extrinsic
    */
-  unbond(params: UnbondParams): SubmittableExtrinsic<'promise', ISubmittableResult> {
+  unbond(
+    params: UnbondParams
+  ): SubmittableExtrinsic<"promise", ISubmittableResult> {
     return this.api.tx.staking.unbond(params.value);
   }
 
@@ -75,7 +81,9 @@ export class StakingManager {
    * @param params - Withdraw parameters
    * @returns Submittable extrinsic
    */
-  withdrawUnbonded(params: WithdrawUnbondedParams): SubmittableExtrinsic<'promise', ISubmittableResult> {
+  withdrawUnbonded(
+    params: WithdrawUnbondedParams
+  ): SubmittableExtrinsic<"promise", ISubmittableResult> {
     return this.api.tx.staking.withdrawUnbonded(params.numSlashingSpans);
   }
 
@@ -84,7 +92,9 @@ export class StakingManager {
    * @param params - Nominate parameters
    * @returns Submittable extrinsic
    */
-  nominate(params: NominateParams): SubmittableExtrinsic<'promise', ISubmittableResult> {
+  nominate(
+    params: NominateParams
+  ): SubmittableExtrinsic<"promise", ISubmittableResult> {
     return this.api.tx.staking.nominate(params.targets);
   }
 
@@ -93,7 +103,9 @@ export class StakingManager {
    * @param params - Validate parameters
    * @returns Submittable extrinsic
    */
-  validate(params: ValidateParams): SubmittableExtrinsic<'promise', ISubmittableResult> {
+  validate(
+    params: ValidateParams
+  ): SubmittableExtrinsic<"promise", ISubmittableResult> {
     return this.api.tx.staking.validate(params.prefs);
   }
 
@@ -101,7 +113,7 @@ export class StakingManager {
    * Stop nominating or validating
    * @returns Submittable extrinsic
    */
-  chill(): SubmittableExtrinsic<'promise', ISubmittableResult> {
+  chill(): SubmittableExtrinsic<"promise", ISubmittableResult> {
     return this.api.tx.staking.chill();
   }
 
@@ -110,7 +122,9 @@ export class StakingManager {
    * @param params - Set payee parameters
    * @returns Submittable extrinsic
    */
-  setPayee(params: SetPayeeParams): SubmittableExtrinsic<'promise', ISubmittableResult> {
+  setPayee(
+    params: SetPayeeParams
+  ): SubmittableExtrinsic<"promise", ISubmittableResult> {
     return this.api.tx.staking.setPayee(params.payee);
   }
 
@@ -119,7 +133,9 @@ export class StakingManager {
    * @param params - Set controller parameters
    * @returns Submittable extrinsic
    */
-  setController(params: SetControllerParams): SubmittableExtrinsic<'promise', ISubmittableResult> {
+  setController(
+    params: SetControllerParams
+  ): SubmittableExtrinsic<"promise", ISubmittableResult> {
     return this.api.tx.staking.setController(params.controller);
   }
 
@@ -128,7 +144,9 @@ export class StakingManager {
    * @param params - Payout parameters
    * @returns Submittable extrinsic
    */
-  payoutStakers(params: PayoutStakersParams): SubmittableExtrinsic<'promise', ISubmittableResult> {
+  payoutStakers(
+    params: PayoutStakersParams
+  ): SubmittableExtrinsic<"promise", ISubmittableResult> {
     return this.api.tx.staking.payoutStakers(params.validatorStash, params.era);
   }
 
@@ -137,7 +155,9 @@ export class StakingManager {
    * @param params - Rebond parameters
    * @returns Submittable extrinsic
    */
-  rebond(params: RebondParams): SubmittableExtrinsic<'promise', ISubmittableResult> {
+  rebond(
+    params: RebondParams
+  ): SubmittableExtrinsic<"promise", ISubmittableResult> {
     return this.api.tx.staking.rebond(params.value);
   }
 
@@ -146,7 +166,9 @@ export class StakingManager {
    * @param params - Chill other parameters
    * @returns Submittable extrinsic
    */
-  chillOther(params: ChillOtherParams): SubmittableExtrinsic<'promise', ISubmittableResult> {
+  chillOther(
+    params: ChillOtherParams
+  ): SubmittableExtrinsic<"promise", ISubmittableResult> {
     return this.api.tx.staking.chillOther(params.controller);
   }
 
@@ -155,15 +177,20 @@ export class StakingManager {
    * @param params - Force unstake parameters
    * @returns Submittable extrinsic
    */
-  forceUnstake(params: ForceUnstakeParams): SubmittableExtrinsic<'promise', ISubmittableResult> {
-    return this.api.tx.staking.forceUnstake(params.stash, params.numSlashingSpans);
+  forceUnstake(
+    params: ForceUnstakeParams
+  ): SubmittableExtrinsic<"promise", ISubmittableResult> {
+    return this.api.tx.staking.forceUnstake(
+      params.stash,
+      params.numSlashingSpans
+    );
   }
 
   /**
    * Force a new era (sudo only)
    * @returns Submittable extrinsic
    */
-  forceNewEra(): SubmittableExtrinsic<'promise', ISubmittableResult> {
+  forceNewEra(): SubmittableExtrinsic<"promise", ISubmittableResult> {
     return this.api.tx.staking.forceNewEra();
   }
 
@@ -254,11 +281,12 @@ export class StakingManager {
       // Get reward points
       const rewardPoints = await this.queries.erasRewardPoints(era);
       const validatorPoints = rewardPoints.individual.get(stash) || BigInt(0);
-      
+
       if (validatorPoints === BigInt(0)) continue;
 
       // Calculate validator's share of rewards
-      const validatorReward = (eraReward * validatorPoints) / rewardPoints.total;
+      const validatorReward =
+        (eraReward * validatorPoints) / rewardPoints.total;
 
       eras.push({ era, amount: validatorReward });
       total += validatorReward;
@@ -329,7 +357,10 @@ export class StakingManager {
     const info = await this.getStakingInfo(address);
     if (!info.ledger) return BigInt(0);
 
-    return info.ledger.unlocking.reduce((sum, chunk) => sum + chunk.value, BigInt(0));
+    return info.ledger.unlocking.reduce(
+      (sum, chunk) => sum + chunk.value,
+      BigInt(0)
+    );
   }
 
   /**
@@ -345,7 +376,9 @@ export class StakingManager {
     if (currentEra === null) return null;
 
     // Find earliest unlock era
-    const earliestUnlock = Math.min(...info.ledger.unlocking.map(chunk => chunk.era));
+    const earliestUnlock = Math.min(
+      ...info.ledger.unlocking.map((chunk) => chunk.era)
+    );
     return Math.max(0, earliestUnlock - currentEra);
   }
 
@@ -372,7 +405,10 @@ export class StakingManager {
    * @param fromAddress - Sender address
    * @returns Estimated fee
    */
-  async estimateNominateFee(targets: string[], fromAddress: string): Promise<bigint> {
+  async estimateNominateFee(
+    targets: string[],
+    fromAddress: string
+  ): Promise<bigint> {
     const tx = this.nominate({ targets });
     const info = await tx.paymentInfo(fromAddress);
     return BigInt(info.partialFee.toString());
@@ -387,11 +423,13 @@ export class StakingManager {
    * @param callback - Event callback
    * @returns Unsubscribe function
    */
-  async onBonded(callback: (event: { stash: string; amount: bigint }) => void): Promise<() => void> {
+  async onBonded(
+    callback: (event: { stash: string; amount: bigint }) => void
+  ): Promise<() => void> {
     const unsub: any = await this.api.query.system.events((events: any) => {
       events.forEach((record: any) => {
         const { event } = record;
-        if (event.section === 'staking' && event.method === 'Bonded') {
+        if (event.section === "staking" && event.method === "Bonded") {
           const [stash, amount] = event.data as any;
           callback({
             stash: stash.toString(),
@@ -408,11 +446,13 @@ export class StakingManager {
    * @param callback - Event callback
    * @returns Unsubscribe function
    */
-  async onUnbonded(callback: (event: { stash: string; amount: bigint }) => void): Promise<() => void> {
+  async onUnbonded(
+    callback: (event: { stash: string; amount: bigint }) => void
+  ): Promise<() => void> {
     const unsub: any = await this.api.query.system.events((events: any) => {
       events.forEach((record: any) => {
         const { event } = record;
-        if (event.section === 'staking' && event.method === 'Unbonded') {
+        if (event.section === "staking" && event.method === "Unbonded") {
           const [stash, amount] = event.data as any;
           callback({
             stash: stash.toString(),
@@ -429,11 +469,13 @@ export class StakingManager {
    * @param callback - Event callback
    * @returns Unsubscribe function
    */
-  async onRewarded(callback: (event: { stash: string; amount: bigint }) => void): Promise<() => void> {
+  async onRewarded(
+    callback: (event: { stash: string; amount: bigint }) => void
+  ): Promise<() => void> {
     const unsub: any = await this.api.query.system.events((events: any) => {
       events.forEach((record: any) => {
         const { event } = record;
-        if (event.section === 'staking' && event.method === 'Rewarded') {
+        if (event.section === "staking" && event.method === "Rewarded") {
           const [stash, amount] = event.data as any;
           callback({
             stash: stash.toString(),
@@ -450,11 +492,13 @@ export class StakingManager {
    * @param callback - Event callback
    * @returns Unsubscribe function
    */
-  async onSlashed(callback: (event: { validator: string; amount: bigint }) => void): Promise<() => void> {
+  async onSlashed(
+    callback: (event: { validator: string; amount: bigint }) => void
+  ): Promise<() => void> {
     const unsub: any = await this.api.query.system.events((events: any) => {
       events.forEach((record: any) => {
         const { event } = record;
-        if (event.section === 'staking' && event.method === 'Slashed') {
+        if (event.section === "staking" && event.method === "Slashed") {
           const [validator, amount] = event.data as any;
           callback({
             validator: validator.toString(),

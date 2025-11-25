@@ -1,13 +1,13 @@
 /**
  * Balances Pallet Client
- * 
+ *
  * Main client for interacting with the Balances pallet
  */
 
-import type { ApiPromise } from '@polkadot/api';
-import type { SubmittableExtrinsic } from '@polkadot/api/types';
-import type { ISubmittableResult } from '@polkadot/types/types';
-import { BalancesQueries } from './queries.js';
+import type { ApiPromise } from "@polkadot/api";
+import type { SubmittableExtrinsic } from "@polkadot/api/types";
+import type { ISubmittableResult } from "@polkadot/types/types";
+import { BalancesQueries } from "./queries.js";
 import {
   TransferParams,
   TransferAllParams,
@@ -22,7 +22,7 @@ import {
   UnreservedEvent,
   DepositEvent,
   WithdrawEvent,
-} from './types.js';
+} from "./types.js";
 
 /**
  * Balances Manager - Main interface for Balances pallet
@@ -43,9 +43,12 @@ export class BalancesManager {
    * @param params - Transfer parameters
    * @returns Submittable extrinsic
    */
-  transfer(params: TransferParams): SubmittableExtrinsic<'promise', ISubmittableResult> {
+  transfer(
+    params: TransferParams
+  ): SubmittableExtrinsic<"promise", ISubmittableResult> {
     // Use transferAllowDeath (newer API) or transfer (older API)
-    const transferFn = this.api.tx.balances.transferAllowDeath || this.api.tx.balances.transfer;
+    const transferFn =
+      this.api.tx.balances.transferAllowDeath || this.api.tx.balances.transfer;
     return transferFn(params.dest, params.value);
   }
 
@@ -54,7 +57,9 @@ export class BalancesManager {
    * @param params - Transfer parameters
    * @returns Submittable extrinsic
    */
-  transferKeepAlive(params: TransferParams): SubmittableExtrinsic<'promise', ISubmittableResult> {
+  transferKeepAlive(
+    params: TransferParams
+  ): SubmittableExtrinsic<"promise", ISubmittableResult> {
     return this.api.tx.balances.transferKeepAlive(params.dest, params.value);
   }
 
@@ -63,7 +68,9 @@ export class BalancesManager {
    * @param params - Transfer all parameters
    * @returns Submittable extrinsic
    */
-  transferAll(params: TransferAllParams): SubmittableExtrinsic<'promise', ISubmittableResult> {
+  transferAll(
+    params: TransferAllParams
+  ): SubmittableExtrinsic<"promise", ISubmittableResult> {
     return this.api.tx.balances.transferAll(params.dest, params.keepAlive);
   }
 
@@ -72,8 +79,14 @@ export class BalancesManager {
    * @param params - Force transfer parameters
    * @returns Submittable extrinsic
    */
-  forceTransfer(params: ForceTransferParams): SubmittableExtrinsic<'promise', ISubmittableResult> {
-    return this.api.tx.balances.forceTransfer(params.source, params.dest, params.value);
+  forceTransfer(
+    params: ForceTransferParams
+  ): SubmittableExtrinsic<"promise", ISubmittableResult> {
+    return this.api.tx.balances.forceTransfer(
+      params.source,
+      params.dest,
+      params.value
+    );
   }
 
   /**
@@ -81,7 +94,9 @@ export class BalancesManager {
    * @param params - Force unreserve parameters
    * @returns Submittable extrinsic
    */
-  forceUnreserve(params: ForceUnreserveParams): SubmittableExtrinsic<'promise', ISubmittableResult> {
+  forceUnreserve(
+    params: ForceUnreserveParams
+  ): SubmittableExtrinsic<"promise", ISubmittableResult> {
     return this.api.tx.balances.forceUnreserve(params.who, params.amount);
   }
 
@@ -90,9 +105,12 @@ export class BalancesManager {
    * @param params - Set balance parameters
    * @returns Submittable extrinsic
    */
-  setBalance(params: SetBalanceParams): SubmittableExtrinsic<'promise', ISubmittableResult> {
+  setBalance(
+    params: SetBalanceParams
+  ): SubmittableExtrinsic<"promise", ISubmittableResult> {
     // Use forceSetBalance (newer API) or setBalance (older API)
-    const setBalanceFn = this.api.tx.balances.forceSetBalance || this.api.tx.balances.setBalance;
+    const setBalanceFn =
+      this.api.tx.balances.forceSetBalance || this.api.tx.balances.setBalance;
     return setBalanceFn(params.who, params.newFree, params.newReserved);
   }
 
@@ -115,10 +133,12 @@ export class BalancesManager {
     }, 0n);
 
     // Transferable = free - max(frozen, locked)
-    const frozenOrLocked = accountData.frozen > locked ? accountData.frozen : locked;
-    const transferable = accountData.free > frozenOrLocked 
-      ? accountData.free - frozenOrLocked 
-      : 0n;
+    const frozenOrLocked =
+      accountData.frozen > locked ? accountData.frozen : locked;
+    const transferable =
+      accountData.free > frozenOrLocked
+        ? accountData.free - frozenOrLocked
+        : 0n;
 
     return {
       free: accountData.free,
@@ -169,7 +189,11 @@ export class BalancesManager {
    * @param amount - Amount to transfer
    * @returns Fee estimate
    */
-  async estimateTransferFee(from: string, to: string, amount: bigint): Promise<FeeEstimate> {
+  async estimateTransferFee(
+    from: string,
+    to: string,
+    amount: bigint
+  ): Promise<FeeEstimate> {
     const tx = this.transfer({ dest: to, value: amount });
     const paymentInfo = await tx.paymentInfo(from);
 
@@ -209,20 +233,27 @@ export class BalancesManager {
    * @param keepAlive - Whether to keep account alive
    * @returns Maximum transferable amount
    */
-  async getMaxTransferable(from: string, keepAlive: boolean = true): Promise<bigint> {
+  async getMaxTransferable(
+    from: string,
+    keepAlive: boolean = true
+  ): Promise<bigint> {
     const balanceInfo = await this.getBalance(from);
-    
+
     if (!keepAlive) {
       return balanceInfo.transferable;
     }
 
     const ed = await this.getExistentialDeposit();
-    const fee = await this.estimateTransferFee(from, from, balanceInfo.transferable);
-    
+    const fee = await this.estimateTransferFee(
+      from,
+      from,
+      balanceInfo.transferable
+    );
+
     // Max = transferable - fee - ED (to keep alive)
     const required = fee.partialFee + ed;
-    return balanceInfo.transferable > required 
-      ? balanceInfo.transferable - required 
+    return balanceInfo.transferable > required
+      ? balanceInfo.transferable - required
       : 0n;
   }
 
@@ -235,7 +266,9 @@ export class BalancesManager {
    * @param callback - Callback function for transfer events
    * @returns Unsubscribe function
    */
-  async onTransfer(callback: (event: TransferEvent) => void): Promise<() => void> {
+  async onTransfer(
+    callback: (event: TransferEvent) => void
+  ): Promise<() => void> {
     return this.api.query.system.events((events: any) => {
       events.forEach((record: any) => {
         const { event } = record;
@@ -256,7 +289,9 @@ export class BalancesManager {
    * @param callback - Callback function for balance set events
    * @returns Unsubscribe function
    */
-  async onBalanceSet(callback: (event: BalanceSetEvent) => void): Promise<() => void> {
+  async onBalanceSet(
+    callback: (event: BalanceSetEvent) => void
+  ): Promise<() => void> {
     return this.api.query.system.events((events: any) => {
       events.forEach((record: any) => {
         const { event } = record;
@@ -277,7 +312,9 @@ export class BalancesManager {
    * @param callback - Callback function for reserved events
    * @returns Unsubscribe function
    */
-  async onReserved(callback: (event: ReservedEvent) => void): Promise<() => void> {
+  async onReserved(
+    callback: (event: ReservedEvent) => void
+  ): Promise<() => void> {
     return this.api.query.system.events((events: any) => {
       events.forEach((record: any) => {
         const { event } = record;
@@ -297,7 +334,9 @@ export class BalancesManager {
    * @param callback - Callback function for unreserved events
    * @returns Unsubscribe function
    */
-  async onUnreserved(callback: (event: UnreservedEvent) => void): Promise<() => void> {
+  async onUnreserved(
+    callback: (event: UnreservedEvent) => void
+  ): Promise<() => void> {
     return this.api.query.system.events((events: any) => {
       events.forEach((record: any) => {
         const { event } = record;
@@ -317,7 +356,9 @@ export class BalancesManager {
    * @param callback - Callback function for deposit events
    * @returns Unsubscribe function
    */
-  async onDeposit(callback: (event: DepositEvent) => void): Promise<() => void> {
+  async onDeposit(
+    callback: (event: DepositEvent) => void
+  ): Promise<() => void> {
     return this.api.query.system.events((events: any) => {
       events.forEach((record: any) => {
         const { event } = record;
@@ -337,7 +378,9 @@ export class BalancesManager {
    * @param callback - Callback function for withdraw events
    * @returns Unsubscribe function
    */
-  async onWithdraw(callback: (event: WithdrawEvent) => void): Promise<() => void> {
+  async onWithdraw(
+    callback: (event: WithdrawEvent) => void
+  ): Promise<() => void> {
     return this.api.query.system.events((events: any) => {
       events.forEach((record: any) => {
         const { event } = record;

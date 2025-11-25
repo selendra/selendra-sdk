@@ -161,16 +161,10 @@ program
   .action(stakeCommand);
 
 // ========================================
-// Error Handling
+// Parse and Execute
 // ========================================
 
-program.exitOverride();
-
-try {
-  await program.parseAsync(process.argv);
-} catch (error: any) {
-  if (error.code !== "commander.help" && error.code !== "commander.version") {
-    console.error(chalk.red("\nError:"), error.message);
-    process.exit(1);
-  }
-}
+program.parseAsync(process.argv).catch((error: any) => {
+  console.error(chalk.red("\nError:"), error.message);
+  process.exit(1);
+});

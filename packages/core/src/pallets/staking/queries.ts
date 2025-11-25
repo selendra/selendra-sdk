@@ -1,10 +1,10 @@
 /**
  * Staking Pallet Storage Queries
- * 
+ *
  * Query functions for Staking pallet storage
  */
 
-import type { ApiPromise } from '@polkadot/api';
+import type { ApiPromise } from "@polkadot/api";
 import {
   StakingLedger,
   ValidatorPrefs,
@@ -14,7 +14,7 @@ import {
   Exposure,
   SlashingSpans,
   RewardDestination,
-} from './types.js';
+} from "./types.js";
 
 /**
  * Staking storage queries
@@ -63,7 +63,7 @@ export class StakingQueries {
   async validators(stash: string): Promise<ValidatorPrefs | null> {
     const result = await this.api.query.staking.validators(stash);
     const prefs = result as any;
-    
+
     if (!prefs || prefs.isEmpty) return null;
 
     return {
@@ -100,7 +100,9 @@ export class StakingQueries {
     const activeEra = result.unwrap() as any;
     return {
       index: activeEra.index.toNumber(),
-      start: activeEra.start.isSome ? BigInt(activeEra.start.unwrap().toString()) : null,
+      start: activeEra.start.isSome
+        ? BigInt(activeEra.start.unwrap().toString())
+        : null,
     };
   }
 
@@ -160,7 +162,10 @@ export class StakingQueries {
    * @param stash - Validator stash account
    * @returns Validator preferences
    */
-  async erasValidatorPrefs(era: number, stash: string): Promise<ValidatorPrefs> {
+  async erasValidatorPrefs(
+    era: number,
+    stash: string
+  ): Promise<ValidatorPrefs> {
     const result = await this.api.query.staking.erasValidatorPrefs(era, stash);
     const prefs = result as any;
 
