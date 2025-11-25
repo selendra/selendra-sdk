@@ -2,357 +2,194 @@
 
 SDK for building applications on Selendra blockchain.
 
-[![npm version](https://img.shields.io/npm/v/@selendrajs/sdk.svg)](https://www.npmjs.com/package/@selendrajs/sdk)
+[![npm version](https://img.shields.io/npm/v/@selendrajs/sdk-core.svg)](https://www.npmjs.com/package/@selendrajs/sdk-core)
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 
 ## Overview
 
-TypeScript and Rust SDK for Selendra blockchain. Wraps Substrate pallets, provides React hooks.
+TypeScript SDK for Selendra blockchain with full support for:
 
-**What Works:**
-- ✅ Substrate features (staking, council, democracy, treasury, elections)
-- ✅ React hooks (15 production hooks)
-- ✅ Account conversion (Substrate ↔ EVM)
-- 🚧 EVM support (beta - basic queries only)
+- ✅ **30 Pallets** - Complete coverage of all Selendra runtime pallets
+- ✅ **EVM Support** - Full Ethereum compatibility via Frontier
+- ✅ **React Hooks** - Production-ready hooks for dApp development
+- ✅ **Unified Accounts** - Seamless Substrate ↔ EVM account mapping
+- ✅ **Type Safety** - Full TypeScript with comprehensive types
 
-**Status:**
-- **TypeScript:** ✅ Production ready (129 tests, 70 passing)
-- **Rust:** ⚠️ In development (not ready for production)
+## Packages
 
-**📚 Full Documentation:** [selendra.org/docs/sdk](https://selendra.org/docs/sdk)
+| Package | Description | NPM |
+|---------|-------------|-----|
+| `@selendrajs/sdk-core` | Core SDK with all pallets | [![npm](https://img.shields.io/npm/v/@selendrajs/sdk-core.svg)](https://www.npmjs.com/package/@selendrajs/sdk-core) |
 
 ## Installation
 
-### TypeScript/JavaScript
-
 ```bash
-npm install @selendrajs/sdk
+npm install @selendrajs/sdk-core
 ```
-
-### Rust
-
-```toml
-[dependencies]
-selendra-sdk = "1.0.0"
-tokio = { version = "1.0", features = ["full"] }
-```
-
-> **Note:** Crates.io publication coming soon. For now, use path dependency or git.
 
 ## Quick Start
 
-### Rust
-
-```rust
-use selendra_sdk::substrate::{Connection, keypair_from_string};
-use sp_runtime::AccountId32;
-
-#[tokio::main]
-async fn main() -> Result<(), Box<dyn std::error::Error>> {
-    // Connect to network
-    let conn = Connection::new("wss://rpc-testnet.selendra.org").await?;
-    let keypair = keypair_from_string("//Alice");
-    let signed = conn.sign(&keypair)?;
-
-    // Query balance
-    let balance = signed.get_balance().await?;
-    println!("Balance: {}", balance);
-
-    // Get full account info
-    let account_info = signed.get_account_info().await?;
-    println!("Nonce: {}, Free: {}", account_info.nonce, account_info.data.free);
-
-    // Transfer tokens
-    let recipient = AccountId32::from([0u8; 32]);
-    let tx_hash = signed.transfer(recipient, 1_000_000_000_000u128).await?;
-    println!("Transfer: {}", tx_hash);
-
-    Ok(())
-}
-```
-
-**Staking operations:**
-
-```rust
-// Bond tokens
-let tx = signed.stake_bond(1_000_000_000_000u128).await?;
-
-// Nominate validators
-let validators = vec![/* validator addresses */];
-let tx = signed.stake_nominate(validators).await?;
-
-// Register as validator
-let tx = signed.stake_validate(10 /* commission % */).await?;
-
-// Stop staking
-let tx = signed.stake_chill().await?;
-```
-
-**Governance operations:**
-
-```rust
-// Query treasury
-let proposals_count = conn.get_treasury_proposals_count().await?;
-let approvals = conn.get_treasury_approvals().await?;
-
-// Propose treasury spend
-let tx = signed.treasury_propose_spend(100_000u128, beneficiary).await?;
-
-// Query validators
-let current_validators = conn.get_current_era_validators().await?;
-```
-
-### TypeScript
-
 ```typescript
-import { SelendraSDK, ChainType } from "@selendrajs/sdk";
+import { createSDK } from '@selendrajs/sdk-core';
 
-async function main() {
-  // Connect to network
-  const sdk = new SelendraSDK({
-    endpoint: "wss://rpc-testnet.selendra.org",
-    chainType: ChainType.Substrate,
-  });
-  await sdk.connect();
+// Connect to Selendra
+const sdk = createSDK({ rpcUrl: 'wss://rpc.selendra.org' });
+await sdk.connect();
 
-  // Query account
-  const address = "5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY";
-  const account = await sdk.getAccount(address);
-  console.log("Balance:", account.balance);
+// Query balance
+const balance = await sdk.pallets.balances.queries.getBalance('5GrwvaEF...');
+console.log(`Balance: ${balance.free}`);
 
-  // Transfer tokens
-  const tx = await sdk.submitTransaction({
-    signer: "//Alice",
-    to: address,
-    amount: "1000000000000",
-  });
-  console.log("Transaction:", tx.hash);
+// Transfer tokens
+const result = await sdk.pallets.balances.manager.transfer(
+  signer,
+  signerAddress,
+  { dest: '5FHneW46...', value: '1000000000000000000' }
+);
 
-  await sdk.disconnect();
-}
-
-main().catch(console.error);
+// Disconnect
+await sdk.disconnect();
 ```
 
-**Staking with StakingClient:**
-
-```typescript
-import { StakingClient } from "@selendrajs/sdk";
-
-const staking = new StakingClient(api);
-
-// Bond tokens
-await staking.bond("1000000000000", controller, signer);
-
-// Nominate validators
-await staking.nominate([validator1, validator2], signer);
-
-// Query staking info
-const info = await staking.getStakingInfo(address);
-console.log("Bonded:", info.bonded);
-```
-
-### React
+## React Integration
 
 ```tsx
-import { SelendraProvider, useSelendra } from "@selendrajs/sdk/react";
+import { SelendraProvider, useSelendra, useBalance } from '@selendrajs/sdk-core/react';
 
 function App() {
   return (
-    <SelendraProvider endpoint="wss://rpc.selendra.org">
-      <WalletComponent />
+    <SelendraProvider config={{ rpcUrl: 'wss://rpc.selendra.org' }}>
+      <Wallet />
     </SelendraProvider>
   );
 }
 
-function WalletComponent() {
-  const { isConnected, getBalance } = useSelendra();
-  const [balance, setBalance] = React.useState<string>();
+function Wallet() {
+  const { isConnected } = useSelendra();
+  const { balance, isLoading } = useBalance('5GrwvaEF...');
 
-  React.useEffect(() => {
-    if (isConnected) {
-      getBalance("5GrwvaEF...").then(setBalance);
-    }
-  }, [isConnected]);
+  if (!isConnected) return <div>Connecting...</div>;
+  if (isLoading) return <div>Loading...</div>;
 
-  return <div>Balance: {balance}</div>;
+  return <div>Balance: {balance?.free}</div>;
 }
 ```
 
-## API Overview
+## Supported Pallets
 
-### Rust SDK
+### Core
+- **Balances** - Token transfers and queries
+- **Staking** - Validator nomination and rewards
+- **Session** - Session key management
 
-**Substrate Module (`selendra_sdk::substrate`)**
+### Governance
+- **Democracy** - Proposals and referenda
+- **Council** - Collective decision-making
+- **Technical Committee** - Technical governance
+- **Treasury** - Community funding
+- **Elections** - Council elections (Phragmen)
 
-- `Connection::new(url)` - Connect to Substrate node
-- `Connection::sign(keypair)` - Create signed connection
-- `SignedConnection::get_balance()` - Query balance
-- `SignedConnection::get_account_info()` - Get full account info
-- `SignedConnection::transfer(to, amount)` - Transfer tokens
-- `SignedConnection::stake_bond(amount)` - Bond for staking
-- `SignedConnection::stake_nominate(validators)` - Nominate validators
-- `SignedConnection::stake_validate(commission)` - Register as validator
-- `SignedConnection::stake_chill()` - Stop staking
-- `Connection::get_treasury_proposals_count()` - Query treasury
-- `SignedConnection::treasury_propose_spend(value, beneficiary)` - Propose spend
+### Account Management
+- **Identity** - On-chain identity
+- **Multisig** - Multi-signature accounts
+- **Proxy** - Account delegation
+- **Vesting** - Token vesting schedules
+- **Utility** - Batch transactions
 
-### TypeScript SDK
+### Smart Contracts
+- **Contracts** - ink! WASM contracts
+- **EVM** - Ethereum Virtual Machine
+- **Ethereum** - Ethereum transaction compatibility
+- **XVM** - Cross-VM calls
 
-**Core Classes**
+### Selendra-Specific
+- **Aleph** - Consensus and finality
+- **Elections** - Validator elections
+- **Committee Management** - Validator performance
+- **Operations** - Account maintenance
+- **Unified Accounts** - Substrate ↔ EVM mapping
 
-- `SelendraSDK` - Main SDK class
-- `StakingClient` - Staking operations
-- `AlephClient` - Aleph consensus queries
-- `ElectionsClient` - Elections and voting
-- `DemocracyClient` - Democracy governance
-- `UnifiedAccountManager` - Address conversion
-
-**React Hooks**
-
-- `useSelendra()` - SDK instance and connection state
-- `useStaking()` - Staking operations
-- `useBalance()` - Balance queries
-- `useAccount()` - Account management
-
-## Examples
-
-### Rust Examples
-
-Located in `rust/examples/`:
-
-```bash
-cd rust
-
-# Basic connection and transfers
-cargo run --example substrate_connection --features substrate
-
-# Staking operations
-cargo run --example substrate_staking --features substrate
-
-# Governance queries
-cargo run --example substrate_governance --features substrate
-
-# Smart contracts
-cargo run --example substrate_contracts --features substrate
-```
-
-### TypeScript Examples
-
-Located in `typescript/examples/`:
-
-```bash
-cd typescript
-
-# Basic operations
-npx ts-node examples/substrate-basic.ts
-
-# Staking
-npx ts-node examples/substrate-staking.ts
-```
-
-## Network Endpoints
-
-**Mainnet:**
-
-- WebSocket: `wss://rpc.selendra.org`
-- HTTP: `https://rpc.selendra.org`
-- HTTP: `https://rpcx.selendra.org`
-
-**Testnet:**
-
-- WebSocket: `wss://rpc-testnet.selendra.org`
-
-## Development
-
-### Setup
-
-```bash
-git clone https://github.com/selendra/selendra-sdk.git
-cd selendra-sdk
-
-# Install dependencies
-make install
-
-# Run tests
-make test
-
-# Build
-make build
-```
-
-### Testing
-
-```bash
-# All tests
-make test
-
-# Rust tests only
-cd rust && cargo test --features substrate
-
-# TypeScript tests only
-cd typescript && npm test
-```
-
-### Development Commands
-
-```bash
-# Format code
-make format
-
-# Lint
-make lint
-
-# Generate docs
-make docs
-
-# Development build
-make build-dev
-```
+### Administration
+- **Sudo** - Privileged operations
+- **Safe Mode** - Emergency protection
+- **Tx Pause** - Transaction pausing
+- **Scheduler** - Scheduled calls
+- **Preimage** - Preimage storage
 
 ## Project Structure
 
 ```
 selendra-sdk/
-├── rust/           # Rust SDK
-│   ├── src/
-│   │   ├── substrate/  # Substrate client
-│   │   ├── evm/        # EVM client
-│   │   ├── unified/    # Unified API
-│   │   └── types/      # Type definitions
-│   └── examples/
-├── typescript/     # TypeScript SDK
-│   ├── src/
-│   │   ├── substrate/  # Substrate client
-│   │   ├── evm/        # EVM client
-│   │   ├── unified/    # Unified API
-│   │   ├── react/      # React hooks
-│   │   └── types/      # Type definitions
-│   └── examples/
-└── docs/          # Documentation
+├── packages/
+│   └── core/                  # @selendrajs/sdk-core
+│       ├── src/
+│       │   ├── core/          # SDK core classes
+│       │   ├── pallets/       # All 30 pallet implementations
+│       │   ├── providers/     # Connection providers
+│       │   ├── react/         # React hooks
+│       │   ├── unified/       # Unified accounts
+│       │   ├── types/         # TypeScript types
+│       │   └── utils/         # Utilities
+│       ├── tests/             # Jest tests
+│       └── examples/          # Usage examples
+├── package.json               # Workspace root
+└── README.md
 ```
 
-## Contributing
+## Examples
 
-1. Fork the repository
-2. Create feature branch (`git checkout -b feature/name`)
-3. Commit changes (`git commit -m 'Add feature'`)
-4. Push to branch (`git push origin feature/name`)
-5. Open Pull Request
+See the `packages/core/examples/` directory for comprehensive examples:
 
-See [CONTRIBUTING.md](./CONTRIBUTING.md) for guidelines.
+- `balance/` - Balance queries and transfers
+- `staking/` - Staking operations
+- `governance/` - Democracy, Council, Treasury
+- `pools/` - Nomination pools
+- `evm/` - EVM interactions
+- `contracts/` - ink! smart contracts
+- `unified/` - Unified accounts
+
+## Development
+
+```bash
+# Install dependencies
+npm install
+
+# Build all packages
+npm run build
+
+# Run tests
+npm test
+
+# Build core package only
+npm run build:core
+```
+
+## Documentation
+
+- [Quick Start Guide](packages/core/QUICK_START.md)
+- [Implementation Plan](packages/core/IMPLEMENTATION_PLAN.md)
+- [Pallet Reference](packages/core/SELENDRA_PALLETS.md)
+- [Task Tracker](packages/core/TASKS.md)
+
+## Legacy Code
+
+The legacy Rust and old TypeScript implementations are preserved in the `legacy` branch:
+
+```bash
+git checkout legacy
+```
 
 ## License
 
-Apache License 2.0 - see [LICENSE](./LICENSE) file.
+Apache-2.0 - see [LICENSE](LICENSE)
+
+## Contributing
+
+Contributions welcome! Please read our contributing guidelines before submitting PRs.
 
 ## Links
 
-- [Documentation](https://selendra.org/docs/sdk)
+- [Selendra Website](https://selendra.org)
+- [Documentation](https://docs.selendra.org)
+- [GitHub](https://github.com/selendra/selendra-sdk)
 - [Discord](https://discord.gg/selendra)
-- [GitHub Issues](https://github.com/selendra/selendra-sdk/issues)
-- [Selendra Blockchain](https://selendra.org)
-
-## Acknowledgments
-
-Built with [Substrate](https://substrate.io), [Polkadot.js](https://polkadot.js.org), and [Ethers.js](https://ethers.org).
