@@ -133,7 +133,7 @@ SENDER_URI="word1 word2 word3 ... word12"  # Your mnemonic
 
 # Recipient address
 RECIPIENT=5GYpxi1Gq4VP5631a1TbmjtpJ2wmPGAw4PaE83r2Sp9585Qb
-SUB_TARGET_ADDRESS_1=5GYpxi1Gq4VP5631a1TbmjtpJ2wmPGAw4PaE83r2Sp9585Qb
+SUB_ADDRESS_1=5GYpxi1Gq4VP5631a1TbmjtpJ2wmPGAw4PaE83r2Sp9585Qb
 ```
 
 **Note:** If both `SUBSTRATE_PRIVATE_KEY` and `SENDER_URI` are set, the private key takes priority.

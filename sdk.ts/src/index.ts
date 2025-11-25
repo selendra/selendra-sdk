@@ -9,6 +9,9 @@
  * @version 1.0.0
  */
 
+// Import logger FIRST to suppress warnings before anything else loads
+import './utils/logger.js';
+
 // Export main SDK class and factory functions
 export { SelendraSDK, createSDK, createAndConnect, sdk } from './core/index.js';
 
@@ -47,6 +50,37 @@ export {
 export { Logger, mergeConfig, validateConfig, DEFAULT_CONFIG } from './utils/index.js';
 export { SelendraWallet, WalletUtils } from './utils/index.js';
 export type { WalletType, EncryptedJson, ProgressCallback } from './utils/index.js';
+
+// Export logger configuration
+export { 
+  configureLogger, 
+  suppressNodeWarnings, 
+  getLoggerConfig, 
+  resetLogger 
+} from './utils/logger.js';
+export type { LoggerConfig } from './utils/logger.js';
+
+// Export Pallets
+export { BalancesManager, BalancesQueries } from './pallets/balances/index.js';
+export type {
+  AccountData,
+  BalanceLock,
+  ReserveData,
+  BalanceInfo,
+  TransferParams,
+  TransferAllParams,
+  ForceTransferParams,
+  SetBalanceParams,
+  ForceUnreserveParams,
+  FeeEstimate,
+  TransferEvent,
+  BalanceSetEvent,
+  ReservedEvent,
+  UnreservedEvent,
+  DepositEvent,
+  WithdrawEvent,
+} from './pallets/balances/index.js';
+
 
 // Re-export commonly used types from dependencies for convenience
 export type { ApiPromise } from '@polkadot/api';

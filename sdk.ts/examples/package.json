@@ -20,7 +20,8 @@
     "contract:get": "npm run build && node dist/contract/01-get-contract.js",
     "contract:instance": "npm run build && node dist/contract/02-get-contract-instance.js",
     "block:current": "npm run build && node dist/block/01-current-block.js",
-    "block:monitor": "npm run build && node dist/block/02-block-monitoring.js"
+    "block:monitor": "npm run build && node dist/block/02-block-monitoring.js",
+    "pallet:balances": "node --import tsx pallets/balances-demo.ts"
   },
   "dependencies": {
     "@selendrajs/sdk-core": "file:..",
@@ -29,6 +30,7 @@
   "devDependencies": {
     "@types/node": "^24.10.1",
     "ts-node": "^10.9.2",
+    "tsx": "^4.20.6",
     "typescript": "^5.4.5"
   }
 }

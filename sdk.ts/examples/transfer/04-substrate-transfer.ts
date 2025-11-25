@@ -38,7 +38,7 @@ async function main() {
     console.log('Using seed/URI from SENDER_URI:', senderUri, '\n');
   }
   
-  const RECIPIENT = process.env.SUB_TARGET_ADDRESS_1 || '5GYpxi1Gq4VP5631a1TbmjtpJ2wmPGAw4PaE83r2Sp9585Qb';
+  const RECIPIENT = process.env.SUB_ADDRESS_1 || '5GYpxi1Gq4VP5631a1TbmjtpJ2wmPGAw4PaE83r2Sp9585Qb';
   
   // Amount in planck (1 SEL = 10^18 planck)
   const AMOUNT = '1000000000000000000'; // 1 SEL

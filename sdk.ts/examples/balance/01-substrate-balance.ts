@@ -36,11 +36,11 @@ async function checkSubstrateBalance() {
     }
     
     // Add target addresses from .env if available
-    if (process.env.SUB_TARGET_ADDRESS_1) {
-      addresses.push(process.env.SUB_TARGET_ADDRESS_1);
+    if (process.env.SUB_ADDRESS_1) {
+      addresses.push(process.env.SUB_ADDRESS_1);
     }
-    if (process.env.SUB_TARGET_ADDRESS_2) {
-      addresses.push(process.env.SUB_TARGET_ADDRESS_2);
+    if (process.env.SUB_ADDRESS_2) {
+      addresses.push(process.env.SUB_ADDRESS_2);
     }
     
     // Fallback to example addresses if no env vars set
