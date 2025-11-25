@@ -1,0 +1,54 @@
+{
+  "$schema": "https://typedoc.org/schema.json",
+  "entryPoints": ["./src/index.ts"],
+  "out": "./docs/api",
+  "name": "@selendrajs/sdk",
+  "readme": "./README.md",
+  "includeVersion": true,
+  "excludePrivate": true,
+  "excludeProtected": true,
+  "excludeInternal": true,
+  "excludeExternals": true,
+  "skipErrorChecking": true,
+  "theme": "default",
+  "categorizeByGroup": true,
+  "categoryOrder": [
+    "Core",
+    "Pallets",
+    "React",
+    "Types",
+    "Utils",
+    "*"
+  ],
+  "navigation": {
+    "includeCategories": true,
+    "includeGroups": true
+  },
+  "plugin": ["typedoc-plugin-markdown"],
+  "outputFileStrategy": "modules",
+  "entryFileName": "index",
+  "hidePageHeader": false,
+  "hideBreadcrumbs": false,
+  "hidePageTitle": false,
+  "useCodeBlocks": true,
+  "expandObjects": true,
+  "expandParameters": true,
+  "parametersFormat": "table",
+  "propertiesFormat": "table",
+  "enumMembersFormat": "table",
+  "typeDeclarationFormat": "table",
+  "indexFormat": "table",
+  "exclude": [
+    "**/node_modules/**",
+    "**/*.test.ts",
+    "**/*.spec.ts",
+    "**/tests/**"
+  ],
+  "externalPattern": ["**/node_modules/**"],
+  "sort": ["source-order"],
+  "validation": {
+    "notExported": false,
+    "invalidLink": false,
+    "notDocumented": false
+  }
+}

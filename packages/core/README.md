@@ -1,4 +1,10 @@
-# Selendra SDK - Core (TypeScript)
+# @selendrajs/sdk
+
+[![npm version](https://img.shields.io/npm/v/@selendrajs/sdk.svg)](https://www.npmjs.com/package/@selendrajs/sdk)
+[![npm downloads](https://img.shields.io/npm/dm/@selendrajs/sdk.svg)](https://www.npmjs.com/package/@selendrajs/sdk)
+[![License](https://img.shields.io/npm/l/@selendrajs/sdk.svg)](https://github.com/selendra/selendra-sdk/blob/main/LICENSE)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5.0+-blue.svg)](https://www.typescriptlang.org/)
+[![Node.js](https://img.shields.io/badge/Node.js-18+-green.svg)](https://nodejs.org/)
 
 A modular, extensible TypeScript SDK for connecting to the Selendra blockchain.
 

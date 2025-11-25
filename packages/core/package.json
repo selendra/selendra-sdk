@@ -29,17 +29,42 @@
     "./react": {
       "import": "./dist/react/index.js",
       "types": "./dist/react/index.d.ts"
+    },
+    "./unified": {
+      "import": "./dist/unified/index.js",
+      "types": "./dist/unified/index.d.ts"
+    },
+    "./pallets/*": {
+      "import": "./dist/pallets/*/index.js",
+      "types": "./dist/pallets/*/index.d.ts"
     }
   },
+  "files": [
+    "dist",
+    "README.md",
+    "CHANGELOG.md",
+    "LICENSE"
+  ],
   "scripts": {
     "build": "tsc",
     "build:watch": "tsc --watch",
     "lint": "tsc --noEmit",
-    "clean": "rm -rf dist",
+    "clean": "rm -rf dist docs/api",
     "test": "node --experimental-vm-modules node_modules/jest/bin/jest.js",
     "test:watch": "node --experimental-vm-modules node_modules/jest/bin/jest.js --watch",
     "test:coverage": "node --experimental-vm-modules node_modules/jest/bin/jest.js --coverage",
+    "docs": "typedoc",
+    "docs:watch": "typedoc --watch",
     "prepublishOnly": "npm run clean && npm run build"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/selendra/selendra-sdk.git",
+    "directory": "packages/core"
+  },
+  "homepage": "https://github.com/selendra/selendra-sdk#readme",
+  "bugs": {
+    "url": "https://github.com/selendra/selendra-sdk/issues"
   },
   "keywords": [
     "blockchain",
@@ -48,7 +73,11 @@
     "sdk",
     "evm",
     "typescript",
-    "react"
+    "react",
+    "polkadot",
+    "web3",
+    "defi",
+    "dapp"
   ],
   "author": "Selendra Team <info@selendra.org>",
   "license": "Apache-2.0",
@@ -71,6 +100,8 @@
     "jest": "^29.7.0",
     "ts-jest": "^29.2.0",
     "ts-node": "^10.9.2",
+    "typedoc": "^0.28.14",
+    "typedoc-plugin-markdown": "^4.9.0",
     "typescript": "^5.4.5"
   },
   "peerDependencies": {

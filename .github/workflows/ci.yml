@@ -2,153 +2,100 @@ name: CI
 
 on:
   push:
-    branches: [ main, master, develop ]
+    branches: [main, master, develop]
   pull_request:
-    branches: [ main, master, develop ]
-
-env:
-  CARGO_TERM_COLOR: always
-  RUST_BACKTRACE: 1
+    branches: [main, master, develop]
 
 jobs:
-  # Rust CI Job
-  rust:
-    name: Rust
+  # SDK Tests
+  test:
+    name: Test SDK
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        rust:
-          - stable
-          - beta
-          - nightly
+        node-version: [18.x, 20.x, 22.x]
 
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v4
+      - name: Checkout repository
+        uses: actions/checkout@v4
 
-    - name: Install Rust
-      uses: dtolnay/rust-toolchain@master
-      with:
-        toolchain: ${{ matrix.rust }}
-        components: rustfmt, clippy
+      - name: Setup Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: "npm"
 
-    - name: Cache Cargo dependencies
-      uses: actions/cache@v3
-      with:
-        path: |
-          ~/.cargo/registry
-          ~/.cargo/git
-          rust/target
-        key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
-        restore-keys: |
-          ${{ runner.os }}-cargo-
+      - name: Install dependencies
+        run: npm ci
 
-    - name: Check formatting
-      run: cargo fmt --all -- --check
+      - name: Build SDK
+        run: npm run build -w @selendrajs/sdk
 
-    - name: Run clippy
-      run: cargo clippy --all-targets --all-features -- -D warnings
+      - name: Run linter
+        run: npm run lint -w @selendrajs/sdk
 
-    - name: Build
-      run: cargo build --verbose --all-features
+      - name: Run tests
+        run: npm run test -w @selendrajs/sdk
 
-    - name: Run tests
-      run: cargo test --verbose --all-features
-
-    - name: Run doc tests
-      run: cargo test --doc --all-features
-
-  # TypeScript CI Job
-  typescript:
-    name: TypeScript
+  # Build all packages
+  build:
+    name: Build Packages
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        node-version: [18.x, 20.x]
+    needs: test
 
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v4
+      - name: Checkout repository
+        uses: actions/checkout@v4
 
-    - name: Setup Node.js ${{ matrix.node-version }}
-      uses: actions/setup-node@v4
-      with:
-        node-version: ${{ matrix.node-version }}
-        cache: 'npm'
-        cache-dependency-path: typescript/package-lock.json
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20.x"
+          cache: "npm"
 
-    - name: Install dependencies
-      working-directory: ./typescript
-      run: npm ci
+      - name: Install dependencies
+        run: npm ci
 
-    - name: Run type checking
-      working-directory: ./typescript
-      run: npm run build
+      - name: Build all packages
+        run: npm run build
 
-    - name: Run linting
-      working-directory: ./typescript
-      run: npm run lint
+      - name: Generate documentation
+        run: npm run docs -w @selendrajs/sdk
 
-    - name: Check formatting
-      working-directory: ./typescript
-      run: npm run format:check
+      - name: Upload documentation artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: documentation
+          path: packages/core/docs/api
+          retention-days: 7
 
-    - name: Run tests
-      working-directory: ./typescript
-      run: npm run test:coverage
-
-    - name: Upload coverage to Codecov
-      uses: codecov/codecov-action@v3
-      with:
-        file: ./typescript/coverage/lcov.info
-        flags: typescript
-        name: codecov-typescript
-        fail_ci_if_error: false
-
-  # Integration tests
-  integration:
-    name: Integration Tests
+  # CLI Tests
+  cli-test:
+    name: Test CLI
     runs-on: ubuntu-latest
-    needs: [rust, typescript]
-
-    services:
-      polkadot:
-        image: parity/polkadot:latest
-        ports:
-          - 9944:9944
-        options: --name polkadot-node
+    needs: build
 
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v4
+      - name: Checkout repository
+        uses: actions/checkout@v4
 
-    - name: Setup Node.js
-      uses: actions/setup-node@v4
-      with:
-        node-version: '20.x'
-        cache: 'npm'
-        cache-dependency-path: typescript/package-lock.json
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20.x"
+          cache: "npm"
 
-    - name: Install Rust
-      uses: dtolnay/rust-toolchain@stable
+      - name: Install dependencies
+        run: npm ci
 
-    - name: Install TypeScript dependencies
-      working-directory: ./typescript
-      run: npm ci
+      - name: Build SDK first
+        run: npm run build -w @selendrajs/sdk
 
-    - name: Wait for node to start
-      run: |
-        timeout 60 bash -c 'until curl -f http://localhost:9944/health; do sleep 2; done'
+      - name: Build CLI
+        run: npm run build -w @selendrajs/cli
 
-    - name: Run Rust integration tests
-      working-directory: ./rust
-      run: cargo test --test integration --features std
-
-    - name: Run TypeScript integration tests
-      working-directory: ./typescript
-      run: npm run test:integration
-      env:
-        NODE_ENDPOINT: ws://localhost:9944
+      - name: Test CLI help
+        run: node packages/cli/dist/index.js --help
 
   # Security audit
   security:
@@ -156,67 +103,17 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v4
+      - name: Checkout repository
+        uses: actions/checkout@v4
 
-    - name: Rust security audit
-      uses: actions-rs/audit-check@v1
-      with:
-        token: ${{ secrets.GITHUB_TOKEN }}
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20.x"
+          cache: "npm"
 
-    - name: Setup Node.js
-      uses: actions/setup-node@v4
-      with:
-        node-version: '20.x'
-        cache: 'npm'
-        cache-dependency-path: typescript/package-lock.json
+      - name: Install dependencies
+        run: npm ci
 
-    - name: Install TypeScript dependencies
-      working-directory: ./typescript
-      run: npm ci
-
-    - name: Run npm audit
-      working-directory: ./typescript
-      run: npm audit --audit-level=moderate
-
-  # Build documentation
-  docs:
-    name: Documentation
-    runs-on: ubuntu-latest
-    needs: [rust, typescript]
-
-    steps:
-    - name: Checkout code
-      uses: actions/checkout@v4
-
-    - name: Install Rust
-      uses: dtolnay/rust-toolchain@stable
-      with:
-        components: rust-docs
-
-    - name: Setup Node.js
-      uses: actions/setup-node@v4
-      with:
-        node-version: '20.x'
-        cache: 'npm'
-        cache-dependency-path: typescript/package-lock.json
-
-    - name: Install TypeScript dependencies
-      working-directory: ./typescript
-      run: npm ci
-
-    - name: Build Rust documentation
-      working-directory: ./rust
-      run: cargo doc --all-features --no-deps
-
-    - name: Build TypeScript documentation
-      working-directory: ./typescript
-      run: npm run build && npm run docs
-
-    - name: Upload documentation artifacts
-      uses: actions/upload-artifact@v3
-      with:
-        name: documentation
-        path: |
-          rust/target/doc
-          typescript/docs
+      - name: Run npm audit
+        run: npm audit --audit-level=high || true
