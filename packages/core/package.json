@@ -1,6 +1,6 @@
 {
   "name": "@selendrajs/sdk",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "TypeScript SDK for interacting with the Selendra blockchain - Substrate, EVM, and unified accounts",
   "type": "module",
   "main": "dist/index.js",
@@ -82,12 +82,12 @@
   "author": "Selendra Team <info@selendra.org>",
   "license": "Apache-2.0",
   "dependencies": {
-    "@polkadot/api": "^16.5.2",
-    "@polkadot/keyring": "^13.5.8",
-    "@polkadot/rpc-provider": "^16.5.2",
-    "@polkadot/types": "^16.5.2",
-    "@polkadot/util": "^13.5.8",
-    "@polkadot/util-crypto": "^13.5.8",
+    "@polkadot/api": "^16.5.3",
+    "@polkadot/keyring": "^13.5.9",
+    "@polkadot/rpc-provider": "^16.5.3",
+    "@polkadot/types": "^16.5.3",
+    "@polkadot/util": "^13.5.9",
+    "@polkadot/util-crypto": "^13.5.9",
     "dotenv": "^16.6.1",
     "ethers": "^6.13.2",
     "eventemitter3": "^5.0.1"

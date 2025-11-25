@@ -39,5 +39,8 @@
   "homepage": "https://github.com/selendra/selendra-sdk#readme",
   "engines": {
     "node": ">=18.0.0"
+  },
+  "overrides": {
+    "@substrate/connect": "^2.2.0"
   }
 }

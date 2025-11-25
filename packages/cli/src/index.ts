@@ -4,8 +4,8 @@ import { Command } from "commander";
 import chalk from "chalk";
 import dotenv from "dotenv";
 
-// Load environment variables
-dotenv.config();
+// Load environment variables silently
+dotenv.config({ debug: false });
 
 // Import commands
 import { statusCommand } from "./commands/status.js";
@@ -24,7 +24,7 @@ const program = new Command();
 program
   .name("selendra")
   .description("CLI tool for Selendra blockchain development")
-  .version("0.2.0");
+  .version("0.2.1");
 
 // ========================================
 // Project Commands
