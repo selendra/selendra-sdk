@@ -1,6 +1,6 @@
 {
   "name": "@selendrajs/sdk",
-  "version": "1.0.0",
+  "version": "1.0.3",
   "description": "TypeScript SDK for interacting with the Selendra blockchain - Substrate, EVM, and unified accounts",
   "type": "module",
   "main": "dist/index.js",
