@@ -202,6 +202,445 @@ export type {
   CleanDefunctVotersParams,
 } from "./pallets/elections-phragmen/index.js";
 
+// Export EVM pallet (Frontier)
+export { EvmManager, EvmQueries } from "./pallets/evm/index.js";
+export type {
+  H160,
+  H256,
+  U256,
+  EvmCallParams,
+  EvmCreateParams,
+  EvmCreate2Params,
+  AccessListItem,
+  EvmLog,
+  ExitReason as EvmExitReason,
+  EvmAccountInfo,
+  AccountCodesResult,
+  AccountStorageResult,
+  EvmBalanceInfo,
+  TransactionCountInfo,
+  EvmTxResult,
+  EvmCallResult,
+  EvmCreateResult,
+  DeployContractOptions,
+  CallContractOptions,
+} from "./pallets/evm/index.js";
+
+// Export Ethereum pallet (Frontier)
+export { EthereumManager, EthereumQueries } from "./pallets/ethereum/index.js";
+export type {
+  LegacyTransaction,
+  EIP2930Transaction,
+  EIP1559Transaction,
+  EIP4844Transaction,
+  EthereumTransaction,
+  TransactionAction,
+  AccessListEntry,
+  EthereumSignature,
+  EthereumBlockHeader,
+  EthereumBlock,
+  ReceiptStatus,
+  ReceiptLog,
+  EthereumReceipt,
+  TransactParams,
+  EthereumTxOptions,
+  EthereumExecutedEvent,
+  ExitReason as EthereumExitReason,
+  BlockInfo,
+  PendingInfo,
+  TransactionInfo,
+  EthereumTxResult,
+} from "./pallets/ethereum/index.js";
+
+// Export Session pallet
+export { SessionManager, SessionQueries } from "./pallets/session/index.js";
+export type {
+  SessionKeys,
+  SessionInfo,
+  ValidatorInfo,
+  SetKeysParams,
+  PurgeKeysParams,
+  RotateSessionParams,
+  KeysChangedEvent,
+  NewSessionEvent,
+  SessionTxResult,
+} from "./pallets/session/index.js";
+
+// Export Nomination Pools pallet
+export {
+  NominationPoolsManager,
+  NominationPoolsQueries,
+  PoolState,
+} from "./pallets/nomination-pools/index.js";
+export type {
+  PoolInfo,
+  PoolMember,
+  BondedPoolInner,
+  RewardPool,
+  SubPools,
+  UnbondPool,
+  PoolCommission,
+  CommissionChangeRate,
+  PoolRoles,
+  PoolMetadata,
+  CreatePoolParams,
+  JoinPoolParams,
+  BondExtraPoolParams,
+  ClaimPayoutParams,
+  UnbondPoolParams,
+  WithdrawUnbondedPoolParams,
+  NominatePoolParams,
+  SetPoolStateParams,
+  SetPoolMetadataParams,
+  SetPoolConfigsParams,
+  ChillPoolParams,
+  ClaimCommissionParams,
+  PoolClaimPayoutEvent,
+  PoolBondedEvent,
+  PoolUnbondedEvent,
+  PoolWithdrawnEvent,
+  PoolCreatedEvent,
+  PoolStateChangedEvent,
+  PoolsTxResult,
+} from "./pallets/nomination-pools/index.js";
+
+// Export Aleph pallet (Selendra consensus)
+export { AlephManager, AlephQueries } from "./pallets/aleph/index.js";
+export type {
+  AuthorityInfo,
+  AlephSessionInfo,
+  FinalityState,
+  BlockTimingInfo,
+  AlephConstants,
+  SessionChangeData,
+  EraChangeData,
+  FinalityData,
+} from "./pallets/aleph/index.js";
+
+// Export Elections pallet (Selendra validator elections)
+export {
+  ElectionsManager,
+  ElectionsQueries,
+  ElectionOpenness,
+  ElectionsError,
+} from "./pallets/elections/index.js";
+export type {
+  CommitteeSeats,
+  EraValidators,
+  ValidatorRewardInfo,
+  ValidatorSetInfo,
+  ChangeValidatorsParams,
+  SetElectionsOpennessParams,
+  ValidatorSupport,
+  ElectionResults,
+  ChangeValidatorsEvent,
+  ElectionsConfig,
+  ValidatorEligibility,
+  ElectionsTxResult,
+} from "./pallets/elections/index.js";
+
+// Export Committee Management pallet (Selendra ban/performance management)
+export {
+  CommitteeManagementManager,
+  CommitteeManagementQueries,
+  BanReasonType,
+  CommitteeManagementError,
+  DEFAULT_BAN_CONFIG,
+  DEFAULT_LENIENT_THRESHOLD,
+} from "./pallets/committee-management/index.js";
+export type {
+  BanReason,
+  BanInfo,
+  ProductionBanConfig,
+  FinalityBanConfig,
+  SessionValidators,
+  CurrentAndNextSessionValidators,
+  ValidatorBlockCount,
+  ValidatorPerformance,
+  ValidatorReward,
+  SetProductionBanConfigParams,
+  SetFinalityBanConfigParams,
+  BanFromCommitteeParams,
+  CancelBanParams,
+  SetLenientThresholdParams,
+  SetBanConfigEvent,
+  SetFinalityBanConfigEvent,
+  BanValidatorsEvent,
+  CommitteeManagementConfig,
+  BannedValidatorsInfo,
+  CommitteeManagementTxResult,
+} from "./pallets/committee-management/index.js";
+
+// Export Identity pallet
+export { IdentityManager, IdentityQueries } from "./pallets/identity/index.js";
+export type {
+  IdentityInfo,
+  SimpleIdentityInfo,
+  IdentityData,
+  Registration,
+  RegistrarInfo,
+  SubsInfo,
+  SuperInfo,
+  Judgement,
+  FullIdentityInfo,
+  IdentityConstants,
+  IdentityTxResult,
+} from "./pallets/identity/index.js";
+
+// Export Multisig pallet
+export { MultisigManager, MultisigQueries } from "./pallets/multisig/index.js";
+export type {
+  Timepoint,
+  MultisigInfo,
+  MultisigAccount,
+  MultisigCall,
+  PendingMultisig,
+  MultisigResult,
+  MultisigConstants,
+  MultisigStatus,
+  ApprovalStatus,
+  MultisigOperationDetails,
+  MultisigTxResult,
+} from "./pallets/multisig/index.js";
+
+// Export Proxy pallet
+export { ProxyManager, ProxyQueries } from "./pallets/proxy/index.js";
+export { PROXY_TYPE_HIERARCHY } from "./pallets/proxy/index.js";
+export type {
+  ProxyType,
+  ProxyDefinition,
+  ProxyInfo,
+  Announcement,
+  AnnouncementsInfo,
+  PureProxyInfo,
+  ProxyConstants,
+  ProxyCheckResult,
+  ProxyFilter,
+  ProxyDelegation,
+  ProxySummary,
+  ProxyCallOptions,
+  ProxyTxResult,
+} from "./pallets/proxy/index.js";
+
+// Export Vesting pallet
+export { VestingManager, VestingQueries } from "./pallets/vesting/index.js";
+export {
+  calculateEndBlock,
+  calculateVestedAt,
+  calculateLockedAt,
+} from "./pallets/vesting/index.js";
+export type {
+  VestingSchedule,
+  VestingInfo,
+  VestingStatus,
+  VestingParams,
+  VestingConstants,
+  VestingScheduleWithInfo,
+  VestingAccountInfo,
+  MergeSchedulesParams,
+  VestingEventType,
+  VestingEvent,
+  VestedTransferParams,
+  VestingTxResult,
+} from "./pallets/vesting/index.js";
+
+// Export Utility pallet
+export { UtilityManager, UtilityQueries } from "./pallets/utility/index.js";
+export type {
+  BatchCallItem,
+  BatchResult,
+  BatchCallResult,
+  UtilityConstants,
+  DispatchWeight,
+  DerivativeOptions,
+  DispatchAsOptions,
+  DispatchOrigin,
+  BatchType,
+  BatchExecutionOptions,
+  CallInfo,
+  BatchSummary,
+  UtilityEventType,
+  UtilityEvent,
+  UtilityTxResult,
+} from "./pallets/utility/index.js";
+
+// ============================================================================
+// P3 Priority Pallets - Smart Contracts & Advanced Features
+// ============================================================================
+
+// Export Contracts pallet (ink! smart contracts)
+export {
+  ContractsManager,
+  ContractsQueries,
+} from "./pallets/contracts/index.js";
+export type {
+  ContractInfo,
+  CodeInfo,
+  OwnerInfo,
+  GasEstimate,
+  WeightV2,
+  DepositLimit,
+  StorageDeposit,
+  InstantiateParams,
+  InstantiateWithCodeParams,
+  CallParams,
+  DryRunResult,
+  ContractExecResult,
+  CodeUploadResult,
+  InstantiateResult,
+  ContractCallResult,
+  ContractConstants,
+  ContractEvent,
+  ContractTxResult,
+} from "./pallets/contracts/index.js";
+
+// Export XVM pallet (Cross-Virtual Machine calls)
+export { XvmManager, XvmQueries, XvmContext } from "./pallets/xvm/index.js";
+export type {
+  XvmCallParams,
+  XvmCallResult,
+  XvmResult,
+  XvmConstants,
+  EvmCallInput,
+  WasmCallInput,
+  XvmTxResult,
+} from "./pallets/xvm/index.js";
+
+// Export Dynamic EVM Base Fee pallet
+export {
+  DynamicEvmBaseFeeManager,
+  DynamicEvmBaseFeeQueries,
+} from "./pallets/dynamic-evm-base-fee/index.js";
+export type {
+  BaseFeeConfig,
+  BaseFeeInfo,
+  BaseFeeHistory,
+  BaseFeeConstants,
+  SetBaseFeeParams,
+  BaseFeeChangeEvent,
+  DynamicBaseFeeEvent,
+  DynamicBaseFeeResult,
+} from "./pallets/dynamic-evm-base-fee/index.js";
+
+// Export Ethereum Checked pallet
+export {
+  EthereumCheckedManager,
+  EthereumCheckedQueries,
+} from "./pallets/ethereum-checked/index.js";
+export type {
+  CheckedEthereumTx,
+  CheckedTransactionResult,
+  ValidationResult,
+  TransactionValidationError,
+  CheckedTransactionInfo,
+  EthereumCheckedEvent,
+  EthereumCheckedTxResult,
+} from "./pallets/ethereum-checked/index.js";
+
+// Export Scheduler pallet
+export {
+  SchedulerManager,
+  SchedulerQueries,
+} from "./pallets/scheduler/index.js";
+export type {
+  ScheduledCall,
+  AgendaEntry,
+  ScheduleParams,
+  ScheduleNamedParams,
+  CancelParams,
+  PeriodicSchedule,
+  SchedulerConstants,
+  SchedulerEventType,
+  SchedulerEvent,
+  SchedulerTxResult,
+} from "./pallets/scheduler/index.js";
+
+// Export Preimage pallet
+export { PreimageManager, PreimageQueries } from "./pallets/preimage/index.js";
+export type {
+  PreimageStatus,
+  PreimageInfo,
+  PreimageData,
+  PreimageConstants,
+  PreimageTxResult,
+} from "./pallets/preimage/index.js";
+
+// Export Operations pallet (Selendra account maintenance)
+export {
+  OperationsManager,
+  OperationsQueries,
+} from "./pallets/operations/index.js";
+export type {
+  AccountConsumers,
+  AccountBalanceDetails,
+  AccountValidation,
+  FixConsumersResult,
+  BatchFixResult,
+  OperationsConstants,
+  ConsumerEvent,
+} from "./pallets/operations/index.js";
+
+// ============================================================================
+// P4 Priority Pallets - Administration & Safety
+// ============================================================================
+
+// Export Sudo pallet (privileged operations)
+export { SudoManager, SudoQueries } from "./pallets/sudo/index.js";
+export type {
+  SudoKey,
+  SudoKeyInfo,
+  SudoCallParams,
+  SudoResult,
+  SudoUncheckedWeightParams,
+  SudoAsParams,
+  SetKeyParams,
+  SudoEventType,
+  SudoEvent,
+  SudoTxResult,
+} from "./pallets/sudo/index.js";
+
+// Export Safe Mode pallet (emergency network protection)
+export { SafeModeManager, SafeModeQueries } from "./pallets/safe-mode/index.js";
+export type {
+  SafeModeStatus,
+  SafeModeConfig,
+  SafeModeConstants,
+  SafeModeEventType,
+  SafeModeEvent,
+  SafeModeTxResult,
+} from "./pallets/safe-mode/index.js";
+
+// Export Tx Pause pallet (transaction pausing)
+export { TxPauseManager, TxPauseQueries } from "./pallets/tx-pause/index.js";
+export type {
+  FullTransactionName,
+  PausedTransaction,
+  TxPauseConfig,
+  TxPauseConstants,
+  TxPauseEventType,
+  TxPauseEvent,
+  TxPauseTxResult,
+} from "./pallets/tx-pause/index.js";
+
+// Export Technical Committee pallet (governance collective)
+export {
+  TechCommitteeManager,
+  TechCommitteeQueries,
+} from "./pallets/technical-committee/index.js";
+export type {
+  ProposalHash,
+  ProposalIndex,
+  TechCommitteeVote,
+  TechCommitteeMember,
+  TechCommitteeProposalStatus,
+  TechCommitteeInfo,
+  TechCommitteeProposalParams,
+  TechCommitteeVoteParams,
+  TechCommitteeCloseParams,
+  TechCommitteeSetMembersParams,
+} from "./pallets/technical-committee/index.js";
+export type { TechCommitteeResult } from "./pallets/technical-committee/client.js";
+
 // Re-export commonly used types from dependencies for convenience
 export type { ApiPromise } from "@polkadot/api";
 export type { JsonRpcProvider } from "ethers";
