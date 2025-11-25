@@ -43,15 +43,17 @@ export class StakingQueries {
     if (result.isNone) return null;
 
     const ledger = result.unwrap() as any;
+    if (!ledger || !ledger.stash) return null;
+    
     return {
       stash: ledger.stash.toString(),
       total: BigInt(ledger.total.toString()),
       active: BigInt(ledger.active.toString()),
-      unlocking: ledger.unlocking.map((chunk: any) => ({
+      unlocking: ledger.unlocking ? ledger.unlocking.map((chunk: any) => ({
         value: BigInt(chunk.value.toString()),
         era: chunk.era.toNumber(),
-      })),
-      claimedRewards: ledger.claimedRewards.map((era: any) => era.toNumber()),
+      })) : [],
+      claimedRewards: ledger.claimedRewards ? ledger.claimedRewards.map((era: any) => era.toNumber()) : [],
     };
   }
 

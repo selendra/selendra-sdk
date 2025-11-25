@@ -21,7 +21,8 @@
     "contract:instance": "npm run build && node dist/contract/02-get-contract-instance.js",
     "block:current": "npm run build && node dist/block/01-current-block.js",
     "block:monitor": "npm run build && node dist/block/02-block-monitoring.js",
-    "pallet:balances": "node --import tsx pallets/balances-demo.ts"
+    "pallet:balances": "node --import tsx pallets/balances-demo.ts",
+    "pallet:staking": "node --import tsx pallets/staking-demo.ts"
   },
   "dependencies": {
     "@selendrajs/sdk-core": "file:..",
