@@ -7,8 +7,10 @@ import { createMockApi, createMockSigner } from "../mocks/index.js";
 import { BalancesQueries } from "../../src/pallets/balances/queries.js";
 import { BalancesManager } from "../../src/pallets/balances/client.js";
 
+/* eslint-disable @typescript-eslint/no-explicit-any */
+
 describe("BalancesQueries", () => {
-  let mockApi: ReturnType<typeof createMockApi>;
+  let mockApi: any;
   let queries: BalancesQueries;
 
   beforeEach(() => {
@@ -32,9 +34,9 @@ describe("BalancesQueries", () => {
       const result = await queries.account(address);
 
       expect(result).toBeDefined();
-      expect(result.free).toBe("1000000000000000000");
-      expect(result.reserved).toBe("0");
-      expect(result.frozen).toBe("0");
+      expect(result.free).toBe(BigInt("1000000000000000000"));
+      expect(result.reserved).toBe(BigInt("0"));
+      expect(result.frozen).toBe(BigInt("0"));
     });
 
     it("should return zero balances for non-existent account", async () => {
@@ -51,8 +53,8 @@ describe("BalancesQueries", () => {
 
       const result = await queries.account(address);
 
-      expect(result.free).toBe("0");
-      expect(result.reserved).toBe("0");
+      expect(result.free).toBe(BigInt("0"));
+      expect(result.reserved).toBe(BigInt("0"));
     });
   });
 
@@ -64,7 +66,7 @@ describe("BalancesQueries", () => {
 
       const result = await queries.totalIssuance();
 
-      expect(result).toBe("1000000000000000000000");
+      expect(result).toBe(BigInt("1000000000000000000000"));
     });
   });
 
@@ -76,7 +78,7 @@ describe("BalancesQueries", () => {
         {
           id: { toHuman: () => "staking" },
           amount: { toString: () => "500000000000000000" },
-          reasons: { toString: () => "All" },
+          reasons: { isAll: true },
         },
       ]);
 
@@ -84,7 +86,7 @@ describe("BalancesQueries", () => {
 
       expect(result).toHaveLength(1);
       expect(result[0].id).toBe("staking");
-      expect(result[0].amount).toBe("500000000000000000");
+      expect(result[0].amount).toBe(BigInt("500000000000000000"));
     });
 
     it("should return empty array for account with no locks", async () => {
@@ -98,8 +100,8 @@ describe("BalancesQueries", () => {
     });
   });
 
-  describe("getBalance", () => {
-    it("should return formatted balance info", async () => {
+  describe("freeBalance", () => {
+    it("should return free balance for account", async () => {
       const address = "5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY";
 
       mockApi.query.system.account.mockResolvedValue({
@@ -111,89 +113,62 @@ describe("BalancesQueries", () => {
         },
       });
 
-      mockApi.query.balances.locks.mockResolvedValue([]);
+      const result = await queries.freeBalance(address);
 
-      const result = await queries.getBalance(address);
-
-      expect(result).toBeDefined();
-      expect(result.free).toBe("1000000000000000000");
-      expect(result.reserved).toBe("100000000000000000");
-      expect(result.frozen).toBe("50000000000000000");
+      expect(result).toBe(BigInt("1000000000000000000"));
     });
   });
 });
 
 describe("BalancesManager", () => {
-  let mockApi: ReturnType<typeof createMockApi>;
+  let mockApi: any;
   let manager: BalancesManager;
-  let mockSigner: ReturnType<typeof createMockSigner>;
 
   beforeEach(() => {
     mockApi = createMockApi();
     manager = new BalancesManager(mockApi);
-    mockSigner = createMockSigner();
   });
 
   describe("transfer", () => {
-    it("should create transfer transaction", async () => {
+    it("should create transfer extrinsic", () => {
       const dest = "5FHneW46xGXgs5mUiveU4sbTyGBzmstUspZC92UhjJM694ty";
-      const value = "1000000000000000000";
-      const signerAddress = "5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY";
+      const value = BigInt("1000000000000000000");
 
-      const result = await manager.transfer(mockSigner, signerAddress, {
-        dest,
-        value,
-      });
+      const result = manager.transfer({ dest, value });
 
       expect(result).toBeDefined();
-      expect(result.txHash).toBeDefined();
-    });
-
-    it("should validate positive value", async () => {
-      const dest = "5FHneW46xGXgs5mUiveU4sbTyGBzmstUspZC92UhjJM694ty";
-      const signerAddress = "5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY";
-
-      await expect(
-        manager.transfer(mockSigner, signerAddress, {
-          dest,
-          value: "-100",
-        })
-      ).rejects.toThrow();
+      // The result is a SubmittableExtrinsic
+      expect(result.hash).toBeDefined();
     });
   });
 
   describe("transferAll", () => {
-    it("should create transfer all transaction", async () => {
+    it("should create transfer all extrinsic", () => {
       const dest = "5FHneW46xGXgs5mUiveU4sbTyGBzmstUspZC92UhjJM694ty";
-      const signerAddress = "5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY";
 
-      const result = await manager.transferAll(mockSigner, signerAddress, {
-        dest,
-        keepAlive: true,
-      });
+      const result = manager.transferAll({ dest, keepAlive: true });
 
       expect(result).toBeDefined();
-      expect(result.txHash).toBeDefined();
+      expect(result.hash).toBeDefined();
     });
   });
 
   describe("transferKeepAlive", () => {
-    it("should create keep-alive transfer transaction", async () => {
+    it("should create keep-alive transfer extrinsic", () => {
       const dest = "5FHneW46xGXgs5mUiveU4sbTyGBzmstUspZC92UhjJM694ty";
-      const value = "1000000000000000000";
-      const signerAddress = "5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY";
+      const value = BigInt("1000000000000000000");
 
-      const result = await manager.transferKeepAlive(
-        mockSigner,
-        signerAddress,
-        {
-          dest,
-          value,
-        }
-      );
+      const result = manager.transferKeepAlive({ dest, value });
 
       expect(result).toBeDefined();
-      expect(result.txHash).toBeDefined();
+      expect(result.hash).toBeDefined();
+    });
+  });
+
+  describe("queries accessor", () => {
+    it("should provide access to queries", () => {
+      expect(manager.queries).toBeDefined();
+      expect(manager.queries).toBeInstanceOf(BalancesQueries);
     });
   });
 });

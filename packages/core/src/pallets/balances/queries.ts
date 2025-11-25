@@ -1,11 +1,11 @@
 /**
  * Balances Pallet Storage Queries
- * 
+ *
  * Query functions for the Balances pallet storage
  */
 
-import type { ApiPromise } from '@polkadot/api';
-import type { AccountData, BalanceLock, ReserveData } from './types';
+import type { ApiPromise } from "@polkadot/api";
+import type { AccountData, BalanceLock, ReserveData } from "./types";
 
 /**
  * Balances storage queries
@@ -34,8 +34,8 @@ export class BalancesQueries {
     return {
       free: BigInt(data.free.toString()),
       reserved: BigInt(data.reserved.toString()),
-      frozen: BigInt(data.frozen?.toString() || '0'),
-      flags: BigInt(data.flags?.toString() || '0'),
+      frozen: BigInt(data.frozen?.toString() || "0"),
+      flags: BigInt(data.flags?.toString() || "0"),
     };
   }
 
@@ -46,7 +46,7 @@ export class BalancesQueries {
    */
   async locks(accountId: string): Promise<BalanceLock[]> {
     const locks: any = await this.api.query.balances.locks(accountId);
-    
+
     return locks.map((lock: any) => ({
       id: lock.id.toHuman() as string,
       amount: BigInt(lock.amount.toString()),
@@ -61,7 +61,7 @@ export class BalancesQueries {
    */
   async reserves(accountId: string): Promise<ReserveData[]> {
     const reserves: any = await this.api.query.balances.reserves(accountId);
-    
+
     return reserves.map((reserve: any) => ({
       id: reserve.id.toHuman() as string,
       amount: BigInt(reserve.amount.toString()),
@@ -111,9 +111,9 @@ export class BalancesQueries {
    * Parse lock reasons from chain data
    */
   private parseReasons(reasons: any): any {
-    if (reasons.isFee) return 'Fee';
-    if (reasons.isMisc) return 'Misc';
-    if (reasons.isAll) return 'All';
-    return 'All';
+    if (reasons.isFee) return "Fee";
+    if (reasons.isMisc) return "Misc";
+    if (reasons.isAll) return "All";
+    return "All";
   }
 }

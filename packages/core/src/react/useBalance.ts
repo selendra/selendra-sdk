@@ -243,9 +243,8 @@ export function useBalance(
       if (!api) return () => {};
 
       // Subscribe to account changes - use .then() instead of await
-      api.query.system.account(
-        address,
-        async (accountInfo: unknown) => {
+      api.query.system
+        .account(address, async (accountInfo: unknown) => {
           try {
             // Extract data from accountInfo
             const info = accountInfo as { data?: AccountData };
@@ -256,11 +255,11 @@ export function useBalance(
           } catch (err) {
             console.error("Error processing balance update:", err);
           }
-        }
-      ).then((unsub) => {
-        // Store unsubscribe function
-        unsubscribeRef.current = unsub as unknown as () => void;
-      });
+        })
+        .then((unsub) => {
+          // Store unsubscribe function
+          unsubscribeRef.current = unsub as unknown as () => void;
+        });
 
       // Return cleanup function
       return () => {

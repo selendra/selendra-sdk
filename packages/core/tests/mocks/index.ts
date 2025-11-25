@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+// @ts-nocheck - Mock file uses jest.fn() extensively which causes TS issues with ESM
 /**
  * Mock Providers for Testing
  *
@@ -6,6 +8,7 @@
  * @packageDocumentation
  */
 
+import { jest } from "@jest/globals";
 import type { ApiPromise } from "@polkadot/api";
 import type { SubmittableExtrinsic } from "@polkadot/api/types";
 import type { ISubmittableResult } from "@polkadot/types/types";
