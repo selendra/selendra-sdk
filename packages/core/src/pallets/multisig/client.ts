@@ -477,8 +477,8 @@ export class MultisigManager {
       );
 
       return {
-        refTime: BigInt(info.weight.refTime.toString()),
-        proofSize: BigInt(info.weight.proofSize.toString()),
+        refTime: BigInt((info as any).weight.refTime.toString()),
+        proofSize: BigInt((info as any).weight.proofSize.toString()),
       };
     } catch (error) {
       // Return a default safe weight

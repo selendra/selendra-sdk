@@ -1090,7 +1090,7 @@ npm run test:coverage # With coverage report
 
 **Implemented:**
 
-- [x] Finalize package.json exports (added unified, pallets/*)
+- [x] Finalize package.json exports (added unified, pallets/\*)
 - [x] Create CHANGELOG.md with version history
 - [x] Set up npm publishing workflow (`.github/workflows/publish.yml`)
 - [x] GitHub Actions CI workflow (`.github/workflows/ci.yml`)

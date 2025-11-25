@@ -147,11 +147,12 @@ export class SubstrateClient {
   async getBalance(address: string) {
     const api = await this.connect();
     const account = await api.query.system.account(address);
+    const accountData = (account as any).data;
 
     return {
-      free: account.data.free.toString(),
-      reserved: account.data.reserved.toString(),
-      frozen: account.data.frozen?.toString() || "0",
+      free: accountData.free.toString(),
+      reserved: accountData.reserved.toString(),
+      frozen: accountData.frozen?.toString() || "0",
     };
   }
 

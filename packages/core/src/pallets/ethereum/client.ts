@@ -342,8 +342,8 @@ export class EthereumManager {
             const hasError = events.some(
               (e) =>
                 this.api.events.system.ExtrinsicFailed.is(e) ||
-                (e.section === "ethereum" &&
-                  e.method === "Executed" &&
+                ((e as any).section === "ethereum" &&
+                  (e as any).method === "Executed" &&
                   executedEvent?.exitReason?.type !== "Succeed")
             );
 

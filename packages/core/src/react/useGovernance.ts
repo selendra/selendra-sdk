@@ -338,7 +338,7 @@ export function useGovernance(
     ): Promise<string> => {
       if (!sdk) throw new Error("SDK not connected");
 
-      const democracyManager = sdk.pallets.democracy?.manager;
+      const democracyManager = sdk.pallets.democracy;
       if (!democracyManager) throw new Error("Democracy pallet not available");
 
       const result = await democracyManager.propose(signer, signerAddress, {
@@ -361,7 +361,7 @@ export function useGovernance(
     ): Promise<string> => {
       if (!sdk) throw new Error("SDK not connected");
 
-      const democracyManager = sdk.pallets.democracy?.manager;
+      const democracyManager = sdk.pallets.democracy;
       if (!democracyManager) throw new Error("Democracy pallet not available");
 
       const result = await democracyManager.second(signer, signerAddress, {
@@ -386,7 +386,7 @@ export function useGovernance(
     ): Promise<string> => {
       if (!sdk) throw new Error("SDK not connected");
 
-      const democracyManager = sdk.pallets.democracy?.manager;
+      const democracyManager = sdk.pallets.democracy;
       if (!democracyManager) throw new Error("Democracy pallet not available");
 
       const result = await democracyManager.vote(signer, signerAddress, {
@@ -416,7 +416,7 @@ export function useGovernance(
     ): Promise<string> => {
       if (!sdk) throw new Error("SDK not connected");
 
-      const democracyManager = sdk.pallets.democracy?.manager;
+      const democracyManager = sdk.pallets.democracy;
       if (!democracyManager) throw new Error("Democracy pallet not available");
 
       const result = await democracyManager.delegate(signer, signerAddress, {
@@ -436,7 +436,7 @@ export function useGovernance(
     async (signer: Signer, signerAddress: string): Promise<string> => {
       if (!sdk) throw new Error("SDK not connected");
 
-      const democracyManager = sdk.pallets.democracy?.manager;
+      const democracyManager = sdk.pallets.democracy;
       if (!democracyManager) throw new Error("Democracy pallet not available");
 
       const result = await democracyManager.undelegate(signer, signerAddress);
@@ -457,7 +457,7 @@ export function useGovernance(
     ): Promise<string> => {
       if (!sdk) throw new Error("SDK not connected");
 
-      const treasuryManager = sdk.pallets.treasury?.manager;
+      const treasuryManager = sdk.pallets.treasury;
       if (!treasuryManager) throw new Error("Treasury pallet not available");
 
       const result = await treasuryManager.proposeSpend(signer, signerAddress, {

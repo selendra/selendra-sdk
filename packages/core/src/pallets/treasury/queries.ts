@@ -170,8 +170,8 @@ export class TreasuryQueries {
     return {
       proposalBond: codecToNumber(consts.proposalBond) / 1_000_000, // Permill to decimal
       proposalBondMinimum: codecToBigInt(consts.proposalBondMinimum),
-      proposalBondMaximum: consts.proposalBondMaximum?.isSome
-        ? codecToBigInt(consts.proposalBondMaximum.unwrap())
+      proposalBondMaximum: (consts.proposalBondMaximum as any)?.isSome
+        ? codecToBigInt((consts.proposalBondMaximum as any).unwrap())
         : null,
       spendPeriod: codecToNumber(consts.spendPeriod),
       burn: codecToNumber(consts.burn) / 1_000_000, // Permill to decimal

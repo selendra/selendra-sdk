@@ -161,7 +161,7 @@ export function useBalance(
             locks = await balancesQueries.locks(addressRef.current);
             reserves = await balancesQueries.reserves(addressRef.current);
             existentialDeposit = formatBalance(
-              await balancesQueries.existentialDeposit(),
+              balancesQueries.getExistentialDeposit(),
               decimals
             );
           }
@@ -242,8 +242,8 @@ export function useBalance(
       const api = sdk.getSubstrateApi();
       if (!api) return () => {};
 
-      // Subscribe to account changes
-      const unsub = api.query.system.account(
+      // Subscribe to account changes - use .then() instead of await
+      api.query.system.account(
         address,
         async (accountInfo: unknown) => {
           try {
@@ -257,11 +257,9 @@ export function useBalance(
             console.error("Error processing balance update:", err);
           }
         }
-      );
-
-      // Store unsubscribe function
-      unsub.then((unsubFn) => {
-        unsubscribeRef.current = unsubFn;
+      ).then((unsub) => {
+        // Store unsubscribe function
+        unsubscribeRef.current = unsub as unknown as () => void;
       });
 
       // Return cleanup function

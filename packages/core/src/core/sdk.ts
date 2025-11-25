@@ -26,6 +26,24 @@ import { CouncilManager } from "../pallets/council/index.js";
 import { TreasuryManager } from "../pallets/treasury/index.js";
 import { ElectionsPhragmenManager } from "../pallets/elections-phragmen/index.js";
 
+// Additional pallet imports for pallets accessor
+import { BalancesManager } from "../pallets/balances/index.js";
+import { StakingManager } from "../pallets/staking/index.js";
+import { NominationPoolsManager } from "../pallets/nomination-pools/index.js";
+
+/**
+ * Pallets accessor interface
+ */
+export interface PalletsAccessor {
+  balances?: BalancesManager;
+  staking?: StakingManager;
+  nominationPools?: NominationPoolsManager;
+  democracy?: DemocracyManager;
+  council?: CouncilManager;
+  treasury?: TreasuryManager;
+  councilElections?: ElectionsPhragmenManager;
+}
+
 /**
  * Main Selendra SDK class
  *
@@ -67,6 +85,11 @@ export class SelendraSDK extends EventEmitter<SDKEvents> {
   private _council?: CouncilManager;
   private _treasury?: TreasuryManager;
   private _councilElections?: ElectionsPhragmenManager;
+
+  // Additional pallet managers (lazy-loaded)
+  private _balances?: BalancesManager;
+  private _staking?: StakingManager;
+  private _nominationPools?: NominationPoolsManager;
 
   /**
    * Create a new SelendraSDK instance
@@ -264,6 +287,8 @@ export class SelendraSDK extends EventEmitter<SDKEvents> {
       isConnected: this.isConnected,
       isConnecting: this.isConnecting,
       connectedAt: this.connectedAt,
+      tokenDecimals: 18, // Selendra default
+      tokenSymbol: "SEL",
     };
   }
 
@@ -858,6 +883,16 @@ export class SelendraSDK extends EventEmitter<SDKEvents> {
   }
 
   /**
+   * Get the Substrate API instance (alias for getApi())
+   *
+   * @returns {ApiPromise | null} Polkadot API instance or null
+   * @throws {Error} If called on EVM chain
+   */
+  getSubstrateApi(): ApiPromise | null {
+    return this.getApi();
+  }
+
+  /**
    * Get the ethers provider instance (EVM only)
    *
    * @returns {JsonRpcProvider | null} Ethers provider or null
@@ -1035,6 +1070,60 @@ export class SelendraSDK extends EventEmitter<SDKEvents> {
     }
 
     return this._councilElections!;
+  }
+
+  /**
+   * Get the pallets accessor (Substrate only)
+   *
+   * Provides access to all available pallet managers.
+   *
+   * @returns {PalletsAccessor} Pallets accessor object
+   * @throws {Error} If called on EVM chain or not connected
+   *
+   * @example
+   * ```typescript
+   * const { balances, staking, democracy } = sdk.pallets;
+   *
+   * // Query balance
+   * const accountData = await balances?.queries.account(address);
+   *
+   * // Get validators
+   * const validators = await staking?.queries.getValidators();
+   * ```
+   */
+  get pallets(): PalletsAccessor {
+    if (this.config.chainType === ChainType.EVM) {
+      throw new Error("pallets is only available for Substrate chains");
+    }
+    if (!this.isConnected) {
+      throw new Error("SDK is not connected. Call connect() first.");
+    }
+
+    const api = this.getApi();
+    if (!api) {
+      throw new Error("Substrate API not available");
+    }
+
+    // Lazy-load pallet managers
+    if (!this._balances) {
+      this._balances = new BalancesManager(api);
+    }
+    if (!this._staking) {
+      this._staking = new StakingManager(api);
+    }
+    if (!this._nominationPools) {
+      this._nominationPools = new NominationPoolsManager(api);
+    }
+
+    return {
+      balances: this._balances,
+      staking: this._staking,
+      nominationPools: this._nominationPools,
+      democracy: this.democracy,
+      council: this.council,
+      treasury: this.treasury,
+      councilElections: this.councilElections,
+    };
   }
 
   // ==========================================================================

@@ -28,10 +28,16 @@ import { useState, useEffect, useCallback } from "react";
 import { useSelendra } from "./useSelendra.js";
 import type { Signer } from "@polkadot/api/types";
 import type {
-  PoolInfo,
-  PoolMember,
+  BondedPoolInfo,
+  PoolMemberInfo,
   PoolState,
 } from "../pallets/nomination-pools/types.js";
+
+/**
+ * Pool info alias for backwards compatibility
+ */
+type PoolInfo = BondedPoolInfo;
+type PoolMember = PoolMemberInfo;
 
 /**
  * Pools state
@@ -301,7 +307,7 @@ export function useNominationPools(
     ): Promise<string> => {
       if (!sdk) throw new Error("SDK not connected");
 
-      const poolsManager = sdk.pallets.nominationPools?.manager;
+      const poolsManager = sdk.pallets.nominationPools;
       if (!poolsManager)
         throw new Error("Nomination Pools pallet not available");
 
@@ -328,7 +334,7 @@ export function useNominationPools(
     ): Promise<string> => {
       if (!sdk) throw new Error("SDK not connected");
 
-      const poolsManager = sdk.pallets.nominationPools?.manager;
+      const poolsManager = sdk.pallets.nominationPools;
       if (!poolsManager)
         throw new Error("Nomination Pools pallet not available");
 
@@ -354,7 +360,7 @@ export function useNominationPools(
     ): Promise<string> => {
       if (!sdk) throw new Error("SDK not connected");
 
-      const poolsManager = sdk.pallets.nominationPools?.manager;
+      const poolsManager = sdk.pallets.nominationPools;
       if (!poolsManager)
         throw new Error("Nomination Pools pallet not available");
 
@@ -373,7 +379,7 @@ export function useNominationPools(
     async (signer: Signer, signerAddress: string): Promise<string> => {
       if (!sdk) throw new Error("SDK not connected");
 
-      const poolsManager = sdk.pallets.nominationPools?.manager;
+      const poolsManager = sdk.pallets.nominationPools;
       if (!poolsManager)
         throw new Error("Nomination Pools pallet not available");
 
@@ -394,7 +400,7 @@ export function useNominationPools(
     ): Promise<string> => {
       if (!sdk) throw new Error("SDK not connected");
 
-      const poolsManager = sdk.pallets.nominationPools?.manager;
+      const poolsManager = sdk.pallets.nominationPools;
       if (!poolsManager)
         throw new Error("Nomination Pools pallet not available");
 
@@ -419,7 +425,7 @@ export function useNominationPools(
     ): Promise<string> => {
       if (!sdk) throw new Error("SDK not connected");
 
-      const poolsManager = sdk.pallets.nominationPools?.manager;
+      const poolsManager = sdk.pallets.nominationPools;
       if (!poolsManager)
         throw new Error("Nomination Pools pallet not available");
 
@@ -448,7 +454,7 @@ export function useNominationPools(
     ): Promise<string> => {
       if (!sdk) throw new Error("SDK not connected");
 
-      const poolsManager = sdk.pallets.nominationPools?.manager;
+      const poolsManager = sdk.pallets.nominationPools;
       if (!poolsManager)
         throw new Error("Nomination Pools pallet not available");
 
@@ -473,7 +479,7 @@ export function useNominationPools(
     ): Promise<string> => {
       if (!sdk) throw new Error("SDK not connected");
 
-      const poolsManager = sdk.pallets.nominationPools?.manager;
+      const poolsManager = sdk.pallets.nominationPools;
       if (!poolsManager)
         throw new Error("Nomination Pools pallet not available");
 

@@ -44,7 +44,7 @@ export class TechCommitteeQueries {
    */
   async proposalCount(): Promise<number> {
     const count = await this.api.query.technicalCommittee.proposalCount();
-    return count.toNumber();
+    return (count as any).toNumber();
   }
 
   /**

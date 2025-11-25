@@ -99,6 +99,15 @@ export class BalancesQueries {
   }
 
   /**
+   * Get existential deposit constant
+   * @returns Existential deposit amount
+   */
+  getExistentialDeposit(): bigint {
+    const ed = this.api.consts.balances.existentialDeposit;
+    return BigInt(ed?.toString() ?? "0");
+  }
+
+  /**
    * Parse lock reasons from chain data
    */
   private parseReasons(reasons: any): any {

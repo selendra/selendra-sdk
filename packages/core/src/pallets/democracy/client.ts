@@ -378,8 +378,11 @@ export class DemocracyManager {
       events.forEach((record: any) => {
         const { event } = record;
         if (this.api.events.democracy.Proposed?.is(event)) {
-          const [proposalIndex, deposit] = event.data;
-          callback(proposalIndex.toNumber(), BigInt(deposit.toString()));
+          const [proposalIndex, deposit] = event.data as any[];
+          callback(
+            (proposalIndex as any).toNumber(),
+            BigInt(deposit.toString())
+          );
         }
       });
     }) as any;
@@ -397,8 +400,8 @@ export class DemocracyManager {
       events.forEach((record: any) => {
         const { event } = record;
         if (this.api.events.democracy.Started?.is(event)) {
-          const [refIndex, threshold] = event.data;
-          callback(refIndex.toNumber(), threshold.toString());
+          const [refIndex, threshold] = event.data as any[];
+          callback((refIndex as any).toNumber(), threshold.toString());
         }
       });
     }) as any;
@@ -414,8 +417,8 @@ export class DemocracyManager {
       events.forEach((record: any) => {
         const { event } = record;
         if (this.api.events.democracy.Passed?.is(event)) {
-          const [refIndex] = event.data;
-          callback(refIndex.toNumber());
+          const [refIndex] = event.data as any[];
+          callback((refIndex as any).toNumber());
         }
       });
     }) as any;
@@ -431,8 +434,8 @@ export class DemocracyManager {
       events.forEach((record: any) => {
         const { event } = record;
         if (this.api.events.democracy.NotPassed?.is(event)) {
-          const [refIndex] = event.data;
-          callback(refIndex.toNumber());
+          const [refIndex] = event.data as any[];
+          callback((refIndex as any).toNumber());
         }
       });
     }) as any;
@@ -450,8 +453,12 @@ export class DemocracyManager {
       events.forEach((record: any) => {
         const { event } = record;
         if (this.api.events.democracy.Voted?.is(event)) {
-          const [voter, refIndex, vote] = event.data;
-          callback(voter.toString(), refIndex.toNumber(), vote.toJSON());
+          const [voter, refIndex, vote] = event.data as any[];
+          callback(
+            voter.toString(),
+            (refIndex as any).toNumber(),
+            (vote as any).toJSON()
+          );
         }
       });
     }) as any;

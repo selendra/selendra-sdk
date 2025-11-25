@@ -17,22 +17,16 @@ export type {
 // Export core hooks
 export { useSelendra } from "./useSelendra.js";
 export { useBalance } from "./useBalance.js";
-export { useStaking } from "./useStaking.js";
 export { useTransaction, useTransactions } from "./useTransaction.js";
-export { useGovernance } from "./useGovernance.js";
-export { useNominationPools } from "./useNominationPools.js";
 
 // Export hook types
 export type { UseSelendraResult } from "./useSelendra.js";
 export type { UseBalanceResult, BalanceState } from "./useBalance.js";
-export type { UseStakingResult, StakingState } from "./useStaking.js";
 export type {
   UseTransactionResult,
   TransactionState,
   TransactionStatus,
 } from "./useTransaction.js";
-export type { UseGovernanceResult, GovernanceState } from "./useGovernance.js";
-export type {
-  UseNominationPoolsResult,
-  PoolsState,
-} from "./useNominationPools.js";
+
+// Note: useStaking, useGovernance, and useNominationPools are temporarily
+// disabled pending API updates. They will be re-enabled in a future release.

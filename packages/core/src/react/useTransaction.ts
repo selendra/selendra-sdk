@@ -12,7 +12,7 @@
  *
  *   const handleTransfer = async () => {
  *     await execute(async (sdk) => {
- *       return sdk.pallets.balances.manager.transfer(
+ *       return sdk.pallets.balances.transfer(
  *         signer,
  *         signerAddress,
  *         { dest: recipient, value: amount }
@@ -101,7 +101,7 @@ export interface UseTransactionResult extends TransactionState {
  *
  * // Execute a transfer
  * const result = await execute(async (sdk) => {
- *   return sdk.pallets.balances.manager.transfer(signer, address, {
+ *   return sdk.pallets.balances.transfer(signer, address, {
  *     dest: recipient,
  *     value: amount
  *   });
@@ -196,8 +196,8 @@ export function useTransaction(): UseTransactionResult {
  *
  * const handleBatchTransfer = async () => {
  *   await executeBatch([
- *     (sdk) => sdk.pallets.balances.manager.transfer(signer, addr, { dest: 'a', value: '100' }),
- *     (sdk) => sdk.pallets.balances.manager.transfer(signer, addr, { dest: 'b', value: '200' }),
+ *     (sdk) => sdk.pallets.balances.transfer(signer, addr, { dest: 'a', value: '100' }),
+ *     (sdk) => sdk.pallets.balances.transfer(signer, addr, { dest: 'b', value: '200' }),
  *   ]);
  * };
  * ```

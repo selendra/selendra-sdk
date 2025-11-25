@@ -1,10 +1,10 @@
 /**
  * Type interfaces for the Selendra SDK
- * 
+ *
  * @module types/interfaces
  */
 
-import { Network, ChainType } from './enums.js';
+import { Network, ChainType } from "./enums.js";
 
 /**
  * SDK Configuration
@@ -48,6 +48,10 @@ export interface ConnectionInfo {
   connectedAt?: number;
   /** Connection latency in milliseconds */
   latency?: number;
+  /** Token decimals (default: 18 for Selendra) */
+  tokenDecimals?: number;
+  /** Token symbol (default: SEL) */
+  tokenSymbol?: string;
 }
 
 /**

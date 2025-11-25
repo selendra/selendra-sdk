@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+
 - TypeDoc documentation generation
 - GitHub Actions CI/CD workflows
 - npm publish workflow with provenance
@@ -19,6 +20,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 #### Core Features
+
 - **SelendraSDK** - Main SDK class with connection management
 - **createSDK** / **createAndConnect** - Factory functions for SDK creation
 - **Event System** - Real-time blockchain event subscriptions
@@ -27,6 +29,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 #### Pallet Implementations (30 Total)
 
 **Priority 0 - Critical:**
+
 - `BalancesManager` - Token balances, transfers, locks
 - `StakingManager` - Validator/nominator operations, rewards
 - `DemocracyManager` - Proposals, referendums, voting
@@ -36,6 +39,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `EthereumManager` - Ethereum transaction submission
 
 **Priority 1 - High:**
+
 - `SessionManager` - Session key management
 - `NominationPoolsManager` - Nomination pool operations
 - `AlephManager` - AlephBFT consensus queries
@@ -43,6 +47,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `CommitteeManagementManager` - Committee operations
 
 **Priority 2 - Medium:**
+
 - `IdentityManager` - On-chain identity management
 - `MultisigManager` - Multi-signature operations
 - `ProxyManager` - Proxy account management
@@ -50,6 +55,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `UtilityManager` - Batch calls and utility functions
 
 **Priority 3 - Lower:**
+
 - `ContractsManager` - ink! smart contracts
 - `XvmManager` - Cross-VM calls (EVM ↔ Wasm)
 - `DynamicEvmBaseFeeManager` - Dynamic gas pricing
@@ -59,6 +65,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `OperationsManager` - Custom Selendra operations
 
 **Priority 4 - Admin:**
+
 - `SudoManager` - Superuser operations
 - `SafeModeManager` - Emergency safe mode
 - `TxPauseManager` - Transaction pausing
@@ -66,6 +73,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `TechnicalCommitteeManager` - Technical committee
 
 #### React Integration
+
 - `SelendraProvider` - React context provider
 - `useSelendra` - Core SDK hook
 - `useBalance` - Balance queries with subscriptions
@@ -75,20 +83,24 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `useNominationPools` - Pool operations
 
 #### Unified Accounts
+
 - `UnifiedAccountsManager` - Substrate ↔ EVM address mapping
 - `claimDefaultAccount` - Claim default EVM address
 - `claimAccount` - Claim custom EVM address
 - Address derivation and conversion utilities
 
 #### Type System
+
 - Full TypeScript types for all pallets
 - Strict mode enabled
 - Auto-generated chain metadata types
 
 ### Changed
+
 - Package renamed from `@selendrajs/sdk-core` to `@selendrajs/sdk`
 
 ### Security
+
 - Zero production vulnerabilities
 - Secure key management practices
 - Input validation on all user inputs
@@ -98,6 +110,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [0.1.0] - 2025-11-01
 
 ### Added
+
 - Initial SDK implementation
 - Basic connection management
 - Substrate provider support

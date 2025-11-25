@@ -178,7 +178,7 @@ async function listPools(options: StakeOptions) {
 
     // Get pool count
     const lastPoolId = await api.query.nominationPools?.lastPoolId?.();
-    const poolCount = lastPoolId ? lastPoolId.toNumber() : 0;
+    const poolCount = lastPoolId ? (lastPoolId as any).toNumber() : 0;
 
     if (poolCount === 0) {
       spinner.warn("No pools found");
@@ -197,7 +197,7 @@ async function listPools(options: StakeOptions) {
         const bondedPool = await api.query.nominationPools?.bondedPools?.(id);
         const metadata = await api.query.nominationPools?.metadata?.(id);
 
-        if (!bondedPool || bondedPool.isNone) return null;
+        if (!bondedPool || (bondedPool as any).isNone) return null;
 
         const poolData = bondedPool.toJSON() as any;
         const name = metadata
