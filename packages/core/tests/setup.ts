@@ -4,6 +4,8 @@
  * Global test configuration and utilities.
  */
 
+import { jest, beforeAll, afterAll, expect } from "@jest/globals";
+
 // Increase timeout for async operations
 jest.setTimeout(30000);
 

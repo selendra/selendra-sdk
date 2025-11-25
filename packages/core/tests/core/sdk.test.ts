@@ -9,8 +9,7 @@ import type { SDKConfig } from "../../src/types/index.js";
 
 describe("SelendraSDK", () => {
   const testConfig: SDKConfig = {
-    rpcUrl: "wss://test.selendra.org",
-    evmRpcUrl: "https://evm-test.selendra.org",
+    endpoint: "wss://test.selendra.org",
   };
 
   describe("createSDK", () => {
@@ -18,31 +17,53 @@ describe("SelendraSDK", () => {
       const sdk = new SelendraSDK(testConfig);
 
       expect(sdk).toBeDefined();
-      expect(sdk.isConnected).toBe(false);
+      // SDK returns connection info even when not connected
+      const info = sdk.getConnectionInfo();
+      expect(info).toBeDefined();
+      expect(info.endpoint).toBe("wss://test.selendra.org");
+      expect(info.isConnected).toBe(false);
     });
 
-    it("should throw for missing rpcUrl", () => {
-      expect(() => {
-        new SelendraSDK({} as SDKConfig);
-      }).toThrow();
+    it("should create SDK instance with empty config using defaults", () => {
+      // SDK accepts empty config and uses defaults
+      const sdk = new SelendraSDK({});
+      expect(sdk).toBeDefined();
+      const info = sdk.getConnectionInfo();
+      expect(info.isConnected).toBe(false);
     });
   });
 
   describe("getConnectionInfo", () => {
-    it("should return null when not connected", () => {
+    it("should return connection info with isConnected false when not connected", () => {
       const sdk = new SelendraSDK(testConfig);
 
       const info = sdk.getConnectionInfo();
 
-      expect(info).toBeNull();
+      expect(info).toBeDefined();
+      expect(info.isConnected).toBe(false);
+      expect(info.endpoint).toBe("wss://test.selendra.org");
     });
   });
 
-  describe("isConnected", () => {
-    it("should return false initially", () => {
+  describe("SDK methods before connection", () => {
+    it("should have getApi method that returns null when not connected", () => {
       const sdk = new SelendraSDK(testConfig);
 
-      expect(sdk.isConnected).toBe(false);
+      const api = sdk.getApi();
+
+      expect(api).toBeNull();
+    });
+
+    it("should have getSubstrateApi as alias for getApi", () => {
+      const sdk = new SelendraSDK(testConfig);
+
+      expect(sdk.getSubstrateApi()).toBe(sdk.getApi());
+    });
+
+    it("should have connected property that returns false when not connected", () => {
+      const sdk = new SelendraSDK(testConfig);
+
+      expect(sdk.connected).toBe(false);
     });
   });
 });

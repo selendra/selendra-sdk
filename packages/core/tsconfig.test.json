@@ -1,0 +1,17 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "rootDir": ".",
+    "outDir": "./dist-test",
+    "types": ["node", "jest"],
+    "noEmit": true
+  },
+  "include": ["src/**/*", "tests/**/*"],
+  "exclude": [
+    "node_modules",
+    "dist",
+    "src/react/useGovernance.ts",
+    "src/react/useNominationPools.ts",
+    "src/react/useStaking.ts"
+  ]
+}
