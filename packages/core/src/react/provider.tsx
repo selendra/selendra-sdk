@@ -5,7 +5,7 @@
  *
  * @example
  * ```tsx
- * import { SelendraProvider } from '@selendrajs/sdk-core/react';
+ * import { SelendraProvider } from '@selendrajs/sdk/react';
  *
  * function App() {
  *   return (
@@ -75,7 +75,7 @@ export const SelendraContext = createContext<SelendraContextValue | null>(null);
  *
  * @example
  * ```tsx
- * import { SelendraProvider, useSelendra } from '@selendrajs/sdk-core/react';
+ * import { SelendraProvider, useSelendra } from '@selendrajs/sdk/react';
  *
  * // Wrap your app
  * function App() {

@@ -212,4 +212,4 @@ Each example outputs detailed information:
 - Examples use live Selendra RPC endpoints
 - Network connectivity required
 - Some operations may be slow due to network latency
-- All examples use the local `@selendrajs/sdk-core` package
+- All examples use the local `@selendrajs/sdk` package

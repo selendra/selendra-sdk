@@ -7,8 +7,8 @@
  */
 
 import 'dotenv/config';
-import { createSDK } from '@selendrajs/sdk-core';
-import { ChainType } from '@selendrajs/sdk-core/types';
+import { createSDK } from '@selendrajs/sdk';
+import { ChainType } from '@selendrajs/sdk/types';
 
 // ERC20 ABI for demonstration
 const ERC20_ABI = [

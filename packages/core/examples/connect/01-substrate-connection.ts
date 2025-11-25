@@ -5,7 +5,7 @@
  */
 
 import 'dotenv/config';
-import { SelendraSDK, ChainType } from '@selendrajs/sdk-core';
+import { SelendraSDK, ChainType } from '@selendrajs/sdk';
 
 async function basicSubstrateExample() {
   console.log('📝 Basic Substrate Connection Example\n');

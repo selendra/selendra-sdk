@@ -2,7 +2,7 @@
 
 SDK for building applications on Selendra blockchain.
 
-[![npm version](https://img.shields.io/npm/v/@selendrajs/sdk-core.svg)](https://www.npmjs.com/package/@selendrajs/sdk-core)
+[![npm version](https://img.shields.io/npm/v/@selendrajs/sdk.svg)](https://www.npmjs.com/package/@selendrajs/sdk)
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 
 ## Overview
@@ -19,14 +19,14 @@ TypeScript SDK for Selendra blockchain with full support for:
 
 | Package                | Description               | NPM                                                                                                                 |
 | ---------------------- | ------------------------- | ------------------------------------------------------------------------------------------------------------------- |
-| `@selendrajs/sdk-core` | Core SDK with all pallets | [![npm](https://img.shields.io/npm/v/@selendrajs/sdk-core.svg)](https://www.npmjs.com/package/@selendrajs/sdk-core) |
+| `@selendrajs/sdk` | Core SDK with all pallets | [![npm](https://img.shields.io/npm/v/@selendrajs/sdk.svg)](https://www.npmjs.com/package/@selendrajs/sdk) |
 | `@selendrajs/cli`      | Command-line interface    | [![npm](https://img.shields.io/npm/v/@selendrajs/cli.svg)](https://www.npmjs.com/package/@selendrajs/cli)           |
 
 ## Installation
 
 ```bash
 # Core SDK
-npm install @selendrajs/sdk-core
+npm install @selendrajs/sdk
 
 # CLI (global)
 npm install -g @selendrajs/cli
@@ -35,7 +35,7 @@ npm install -g @selendrajs/cli
 ## Quick Start
 
 ```typescript
-import { createSDK } from "@selendrajs/sdk-core";
+import { createSDK } from "@selendrajs/sdk";
 
 // Connect to Selendra
 const sdk = createSDK({ rpcUrl: "wss://rpc.selendra.org" });
@@ -63,7 +63,7 @@ import {
   SelendraProvider,
   useSelendra,
   useBalance,
-} from "@selendrajs/sdk-core/react";
+} from "@selendrajs/sdk/react";
 
 function App() {
   return (
@@ -136,7 +136,7 @@ function Wallet() {
 ```
 selendra-sdk/
 ├── packages/
-│   ├── core/                  # @selendrajs/sdk-core
+│   ├── core/                  # @selendrajs/sdk
 │   │   ├── src/
 │   │   │   ├── core/          # SDK core classes
 │   │   │   ├── pallets/       # All 30 pallet implementations

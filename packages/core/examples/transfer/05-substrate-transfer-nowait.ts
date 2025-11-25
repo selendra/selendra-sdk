@@ -8,8 +8,8 @@
  */
 
 import 'dotenv/config';
-import { createSDK } from '@selendrajs/sdk-core';
-import { ChainType } from '@selendrajs/sdk-core/types';
+import { createSDK } from '@selendrajs/sdk';
+import { ChainType } from '@selendrajs/sdk/types';
 import { Keyring } from '@polkadot/api';
 import { cryptoWaitReady } from '@polkadot/util-crypto';
 

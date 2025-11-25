@@ -42,7 +42,7 @@ Complete TypeScript implementation for the Selendra Balances pallet (pallet-bala
 ## Installation
 
 ```bash
-npm install @selendrajs/sdk-core
+npm install @selendrajs/sdk
 ```
 
 ## Usage
@@ -51,7 +51,7 @@ npm install @selendrajs/sdk-core
 
 ```typescript
 import { ApiPromise, WsProvider } from '@polkadot/api';
-import { BalancesManager } from '@selendrajs/sdk-core';
+import { BalancesManager } from '@selendrajs/sdk';
 
 // Connect to Selendra
 const provider = new WsProvider('wss://rpc-testnet.selendra.org');

@@ -1,7 +1,7 @@
 {
-  "name": "@selendrajs/sdk-core",
+  "name": "@selendrajs/sdk",
   "version": "1.0.0",
-  "description": "Core SDK for interacting with the Selendra blockchain - connect and disconnect only",
+  "description": "TypeScript SDK for interacting with the Selendra blockchain - Substrate, EVM, and unified accounts",
   "type": "module",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",

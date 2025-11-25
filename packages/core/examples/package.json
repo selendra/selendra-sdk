@@ -24,7 +24,7 @@
     "pallet:balances": "node --import tsx pallets/balances-demo.ts"
   },
   "dependencies": {
-    "@selendrajs/sdk-core": "file:..",
+    "@selendrajs/sdk": "file:..",
     "dotenv": "^17.2.3"
   },
   "devDependencies": {

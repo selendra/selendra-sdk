@@ -7,8 +7,8 @@
  */
 
 import 'dotenv/config';
-import { createSDK } from '@selendrajs/sdk-core';
-import { ChainType } from '@selendrajs/sdk-core/types';
+import { createSDK } from '@selendrajs/sdk';
+import { ChainType } from '@selendrajs/sdk/types';
 
 async function monitorEvmBlocks(duration: number = 30000) {
   console.log('=== EVM Block Monitoring ===\n');

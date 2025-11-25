@@ -5,7 +5,7 @@
  *
  * @example
  * ```tsx
- * import { useNominationPools } from '@selendrajs/sdk-core/react';
+ * import { useNominationPools } from '@selendrajs/sdk/react';
  *
  * function PoolsDashboard() {
  *   const { pools, memberInfo, loading, join, create } = useNominationPools(address);

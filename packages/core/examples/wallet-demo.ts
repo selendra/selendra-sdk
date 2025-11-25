@@ -5,7 +5,7 @@
  */
 
 import 'dotenv/config';
-import { SelendraWallet, WalletUtils } from '@selendrajs/sdk-core';
+import { SelendraWallet, WalletUtils } from '@selendrajs/sdk';
 import { cryptoWaitReady } from '@polkadot/util-crypto';
 
 async function main() {

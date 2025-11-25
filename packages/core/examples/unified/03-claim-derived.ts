@@ -9,7 +9,7 @@
  */
 
 import 'dotenv/config';
-import { createSDK, ChainType } from '@selendrajs/sdk-core';
+import { createSDK, ChainType } from '@selendrajs/sdk';
 import { Keyring } from '@polkadot/api';
 import { cryptoWaitReady } from '@polkadot/util-crypto';
 

@@ -5,7 +5,7 @@
  *
  * @example
  * ```tsx
- * import { useStaking } from '@selendrajs/sdk-core/react';
+ * import { useStaking } from '@selendrajs/sdk/react';
  *
  * function StakingDashboard({ address }: { address: string }) {
  *   const { staking, loading, error, bond, nominate, unbond } = useStaking(address);

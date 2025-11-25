@@ -5,7 +5,7 @@
  */
 
 import 'dotenv/config';
-import { SelendraSDK, ChainType } from '@selendrajs/sdk-core';
+import { SelendraSDK, ChainType } from '@selendrajs/sdk';
 
 async function checkUnifiedBalance() {
   console.log('📝 Unified Balance Check Example\n');

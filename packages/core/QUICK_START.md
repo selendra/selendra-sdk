@@ -50,7 +50,7 @@ npm run unified:claim-custom
 ### Query Existing Mapping
 
 ```typescript
-import { createSDK, ChainType } from '@selendrajs/sdk-core';
+import { createSDK, ChainType } from '@selendrajs/sdk';
 
 const sdk = createSDK({
   endpoint: 'wss://rpc-testnet.selendra.org',

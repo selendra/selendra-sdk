@@ -8,7 +8,7 @@
  */
 
 import 'dotenv/config';
-import { createSDK, ChainType } from '@selendrajs/sdk-core';
+import { createSDK, ChainType } from '@selendrajs/sdk';
 
 async function main() {
   console.log('=== Check Unified Account Mapping ===\n');

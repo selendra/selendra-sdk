@@ -30,11 +30,11 @@ sdk.ts/
 ## Installation
 
 ```bash
-npm install @selendrajs/sdk-core
+npm install @selendrajs/sdk
 # or
-yarn add @selendrajs/sdk-core
+yarn add @selendrajs/sdk
 # or
-pnpm add @selendrajs/sdk-core
+pnpm add @selendrajs/sdk
 ```
 
 ## Quick Start
@@ -42,7 +42,7 @@ pnpm add @selendrajs/sdk-core
 ### Connect to Substrate Chain
 
 ```typescript
-import { SelendraSDK, ChainType, Network } from '@selendrajs/sdk-core';
+import { SelendraSDK, ChainType, Network } from '@selendrajs/sdk';
 
 const sdk = new SelendraSDK({
   endpoint: 'wss://rpc.selendra.org',
@@ -70,7 +70,7 @@ await sdk.disconnect();
 ### Connect to EVM Chain
 
 ```typescript
-import { SelendraSDK, ChainType } from '@selendrajs/sdk-core';
+import { SelendraSDK, ChainType } from '@selendrajs/sdk';
 
 const sdk = new SelendraSDK({
   endpoint: 'https://rpc-evm.selendra.org',
@@ -308,7 +308,7 @@ Create a new SDK instance.
 
 **Example:**
 ```typescript
-import { createSDK } from '@selendrajs/sdk-core';
+import { createSDK } from '@selendrajs/sdk';
 
 const sdk = createSDK({
   endpoint: 'wss://rpc.selendra.org',
@@ -322,7 +322,7 @@ Create and immediately connect an SDK instance.
 
 **Example:**
 ```typescript
-import { createAndConnect } from '@selendrajs/sdk-core';
+import { createAndConnect } from '@selendrajs/sdk';
 
 const sdk = await createAndConnect({
   endpoint: 'wss://rpc.selendra.org'

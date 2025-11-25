@@ -3,7 +3,7 @@
  *
  * Main entry point - exports all public APIs
  *
- * @module @selendrajs/sdk-core
+ * @module @selendrajs/sdk
  * @author Selendra Team <team@selendra.org>
  * @license Apache-2.0
  * @version 1.0.0

@@ -2,7 +2,7 @@
 
 ## Executive Summary
 
-This document outlines the development roadmap for the Selendra TypeScript SDK (`@selendrajs/sdk-core`). The SDK provides a modular, type-safe interface for interacting with the Selendra blockchain, supporting both Substrate and EVM chains.
+This document outlines the development roadmap for the Selendra TypeScript SDK (`@selendrajs/sdk`). The SDK provides a modular, type-safe interface for interacting with the Selendra blockchain, supporting both Substrate and EVM chains.
 
 ---
 
@@ -499,7 +499,7 @@ import {
   createSDK, 
   ChainType,
   Network 
-} from '@selendrajs/sdk-core';
+} from '@selendrajs/sdk';
 
 // Create SDK instance
 const sdk = createSDK({
@@ -560,7 +560,7 @@ const result = await sdk.submitTransaction(tx, keypair, {
 
 ```json
 {
-  "name": "@selendrajs/sdk-core",
+  "name": "@selendrajs/sdk",
   "exports": {
     ".": {
       "import": "./dist/index.js",

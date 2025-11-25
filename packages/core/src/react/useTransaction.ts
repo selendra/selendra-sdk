@@ -5,7 +5,7 @@
  *
  * @example
  * ```tsx
- * import { useTransaction } from '@selendrajs/sdk-core/react';
+ * import { useTransaction } from '@selendrajs/sdk/react';
  *
  * function TransferForm() {
  *   const { status, execute, reset } = useTransaction();

@@ -5,7 +5,7 @@
  *
  * @example
  * ```tsx
- * import { useGovernance } from '@selendrajs/sdk-core/react';
+ * import { useGovernance } from '@selendrajs/sdk/react';
  *
  * function GovernanceDashboard() {
  *   const { governance, loading, vote, propose } = useGovernance();

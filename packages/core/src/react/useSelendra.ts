@@ -5,7 +5,7 @@
  *
  * @example
  * ```tsx
- * import { useSelendra } from '@selendrajs/sdk-core/react';
+ * import { useSelendra } from '@selendrajs/sdk/react';
  *
  * function WalletInfo() {
  *   const { sdk, isConnected, connectionInfo, error } = useSelendra();

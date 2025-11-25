@@ -8,8 +8,8 @@
  */
 
 import 'dotenv/config';
-import { createSDK } from '@selendrajs/sdk-core';
-import { ChainType } from '@selendrajs/sdk-core/types';
+import { createSDK } from '@selendrajs/sdk';
+import { ChainType } from '@selendrajs/sdk/types';
 
 async function main() {
   console.log('=== Get Contract Instance (Minimal ABI) Example ===\n');

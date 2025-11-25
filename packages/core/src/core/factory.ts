@@ -60,7 +60,7 @@ export async function createAndConnect(config?: SDKConfig): Promise<SelendraSDK>
  * 
  * @example
  * ```typescript
- * import { sdk } from '@selendrajs/sdk-core';
+ * import { sdk } from '@selendrajs/sdk';
  * 
  * await sdk.connect();
  * console.log(sdk.getConnectionInfo());

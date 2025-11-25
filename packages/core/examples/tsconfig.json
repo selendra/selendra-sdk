@@ -9,8 +9,8 @@
     "allowSyntheticDefaultImports": true,
     "baseUrl": ".",
     "paths": {
-      "@selendrajs/sdk-core": ["../dist/index.d.ts"],
-      "@selendrajs/sdk-core/*": ["../dist/*"]
+      "@selendrajs/sdk": ["../dist/index.d.ts"],
+      "@selendrajs/sdk/*": ["../dist/*"]
     }
   },
   "include": ["./**/*.ts"],

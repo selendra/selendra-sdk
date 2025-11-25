@@ -5,7 +5,7 @@
  *
  * @example
  * ```tsx
- * import { useBalance } from '@selendrajs/sdk-core/react';
+ * import { useBalance } from '@selendrajs/sdk/react';
  *
  * function BalanceDisplay({ address }: { address: string }) {
  *   const { balance, loading, error, refresh } = useBalance(address);
