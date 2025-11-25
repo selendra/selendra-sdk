@@ -1,0 +1,19 @@
+[package]
+name = "wasm-test"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+ink = { version = "4.3", default-features = false }
+
+[lib]
+path = "lib.rs"
+crate-type = ["cdylib"]
+
+[features]
+default = ["std"]
+std = ["ink/std"]
+
+[[bin]]
+name = "wasm-test"
+path = "main.rs"

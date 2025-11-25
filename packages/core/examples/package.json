@@ -1,0 +1,36 @@
+{
+  "name": "sdk-examples",
+  "version": "1.0.0",
+  "type": "module",
+  "description": "Examples testing the local Selendra SDK",
+  "scripts": {
+    "build": "tsc",
+    "example:substrate": "npm run build && node dist/connect/01-substrate-connection.js",
+    "example:evm": "npm run build && node dist/connect/02-evm-connection.js",
+    "example:unified": "npm run build && node dist/connect/03-unified-connection.js",
+    "balance:substrate": "npm run build && node dist/balance/01-substrate-balance.js",
+    "balance:evm": "npm run build && node dist/balance/02-evm-balance.js",
+    "balance:unified": "npm run build && node dist/balance/03-unified-balance.js",
+    "transfer:native": "npm run build && node dist/transfer/01-native-transfer.js",
+    "transfer:erc20": "npm run build && node dist/transfer/02-erc20-transfer.js",
+    "transfer:contract": "npm run build && node dist/transfer/03-contract-interaction.js",
+    "transfer:substrate": "npm run build && node dist/transfer/04-substrate-transfer.js",
+    "transfer:substrate-nowait": "npm run build && node dist/transfer/05-substrate-transfer-nowait.js",
+    "transfer:substrate-all": "npm run build && node dist/transfer/06-substrate-transfer-all.js",
+    "contract:get": "npm run build && node dist/contract/01-get-contract.js",
+    "contract:instance": "npm run build && node dist/contract/02-get-contract-instance.js",
+    "block:current": "npm run build && node dist/block/01-current-block.js",
+    "block:monitor": "npm run build && node dist/block/02-block-monitoring.js",
+    "pallet:balances": "node --import tsx pallets/balances-demo.ts"
+  },
+  "dependencies": {
+    "@selendrajs/sdk": "file:..",
+    "dotenv": "^17.2.3"
+  },
+  "devDependencies": {
+    "@types/node": "^24.10.1",
+    "ts-node": "^10.9.2",
+    "tsx": "^4.20.6",
+    "typescript": "^5.4.5"
+  }
+}

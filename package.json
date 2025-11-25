@@ -1,0 +1,43 @@
+{
+  "name": "@selendrajs/sdk",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Selendra SDK - TypeScript libraries for interacting with the Selendra blockchain",
+  "workspaces": [
+    "packages/*"
+  ],
+  "scripts": {
+    "build": "npm run build --workspaces",
+    "build:core": "npm run build -w @selendrajs/sdk",
+    "build:cli": "npm run build -w @selendrajs/cli",
+    "clean": "npm run clean --workspaces",
+    "test": "npm run test --workspaces",
+    "test:coverage": "npm run test:coverage --workspaces",
+    "lint": "npm run lint --workspaces",
+    "cli": "npm run dev -w @selendrajs/cli --",
+    "prepublishOnly": "npm run build"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/selendra/selendra-sdk.git"
+  },
+  "keywords": [
+    "blockchain",
+    "substrate",
+    "selendra",
+    "sdk",
+    "evm",
+    "typescript",
+    "polkadot",
+    "cli"
+  ],
+  "author": "Selendra Team <team@selendra.org>",
+  "license": "Apache-2.0",
+  "bugs": {
+    "url": "https://github.com/selendra/selendra-sdk/issues"
+  },
+  "homepage": "https://github.com/selendra/selendra-sdk#readme",
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}
