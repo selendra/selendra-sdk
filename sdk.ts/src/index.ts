@@ -129,6 +129,34 @@ export type {
   NewSessionEvent,
 } from './pallets/session/index.js';
 
+// Export Democracy pallet
+export { DemocracyManager, DemocracyQueries, VoteType, Conviction } from './pallets/democracy/index.js';
+export type {
+  AccountVote,
+  Proposal,
+  ReferendumInfo,
+  VoteTally,
+  VotingInfo,
+  Delegation,
+  ProposeParams,
+  SecondParams,
+  VoteParams,
+  DelegateParams,
+  RemoveVoteParams,
+  ProposedEvent,
+  TabledEvent,
+  StartedEvent,
+  PassedEvent,
+  NotPassedEvent,
+  CancelledEvent,
+  ExecutedEvent,
+  DelegatedEvent,
+  UndelegatedEvent,
+  VotedEvent,
+  ActiveReferenda,
+  ProposalDetails,
+} from './pallets/democracy/index.js';
+
 
 // Re-export commonly used types from dependencies for convenience
 export type { ApiPromise } from '@polkadot/api';
