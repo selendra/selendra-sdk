@@ -41,7 +41,7 @@ export interface PoolTxResult {
  * Nomination Pools Manager - handles Nomination Pools pallet extrinsics
  */
 export class NominationPoolsManager {
-  private queries: NominationPoolsQueries;
+  public queries: NominationPoolsQueries;
 
   constructor(private api: ApiPromise) {
     this.queries = new NominationPoolsQueries(api);

@@ -31,7 +31,7 @@ export class UtilityQueries {
     const batchedCallsLimit = this.api.consts.utility.batchedCallsLimit;
 
     return {
-      batchedCallsLimit: batchedCallsLimit?.toNumber() ?? 10920,
+      batchedCallsLimit: (batchedCallsLimit as any)?.toNumber() ?? 10920,
     };
   }
 
@@ -84,7 +84,12 @@ export class UtilityQueries {
    * @returns Call hash
    */
   getCallHash(callData: string): string {
-    return this.api.registry.hash(callData).toHex();
+    const bytes = new Uint8Array(
+      (callData.match(/.{1,2}/g) || [])
+        .slice(1)
+        .map((byte) => parseInt(byte, 16))
+    );
+    return this.api.registry.hash(bytes).toHex();
   }
 
   /**
@@ -143,8 +148,8 @@ export class UtilityQueries {
       );
 
       return {
-        refTime: BigInt(info.weight.refTime.toString()),
-        proofSize: BigInt(info.weight.proofSize.toString()),
+        refTime: BigInt((info as any).weight.refTime.toString()),
+        proofSize: BigInt((info as any).weight.proofSize.toString()),
       };
     } catch (error) {
       // Return default weight on error

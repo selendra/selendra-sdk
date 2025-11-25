@@ -5,20 +5,20 @@
  */
 
 import type { ApiPromise } from "@polkadot/api";
-import type {
+import {
   PoolState,
-  BondedPoolInfo,
-  RewardPoolInfo,
-  PoolMemberInfo,
-  SubPoolsInfo,
-  SubPool,
-  PoolRoles,
-  UnbondingEra,
-  PoolInfoResult,
-  MemberInfoResult,
-  PoolsListResult,
-  PoolConstants,
-  PoolConfig,
+  type BondedPoolInfo,
+  type RewardPoolInfo,
+  type PoolMemberInfo,
+  type SubPoolsInfo,
+  type SubPool,
+  type PoolRoles,
+  type UnbondingEra,
+  type PoolInfoResult,
+  type MemberInfoResult,
+  type PoolsListResult,
+  type PoolConstants,
+  type PoolConfig,
 } from "./types.js";
 
 /**

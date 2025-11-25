@@ -74,8 +74,8 @@ export class IdentityQueries {
 
     if (Array.isArray(json)) {
       return {
-        deposit: BigInt(json[0] || 0),
-        subs: json[1] || [],
+        deposit: BigInt((json[0] as string | number) || 0),
+        subs: (json[1] as string[]) || [],
       };
     }
 

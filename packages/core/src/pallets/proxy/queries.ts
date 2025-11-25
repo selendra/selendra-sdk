@@ -95,8 +95,8 @@ export class ProxyQueries {
     return {
       proxyDepositBase: BigInt(proxyDepositBase?.toString() ?? "0"),
       proxyDepositFactor: BigInt(proxyDepositFactor?.toString() ?? "0"),
-      maxProxies: maxProxies?.toNumber() ?? 32,
-      maxPending: maxPending?.toNumber() ?? 32,
+      maxProxies: (maxProxies as any)?.toNumber() ?? 32,
+      maxPending: (maxPending as any)?.toNumber() ?? 32,
       announcementDepositBase: BigInt(
         announcementDepositBase?.toString() ?? "0"
       ),

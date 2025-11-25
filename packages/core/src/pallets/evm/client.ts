@@ -311,7 +311,7 @@ export class EvmManager {
     const params: EvmCallParams = {
       source: evmAddress,
       target: to,
-      input: data,
+      input: data || "0x",
       value: value || 0n,
       gasLimit: estimatedGas,
       maxFeePerGas: gasPrice,
@@ -423,7 +423,8 @@ export class EvmManager {
             const hasError = events.some(
               (e) =>
                 this.api.events.system.ExtrinsicFailed.is(e) ||
-                (e.section === "evm" && e.method === "ExecutedFailed")
+                ((e as any).section === "evm" &&
+                  (e as any).method === "ExecutedFailed")
             );
 
             resolve({
@@ -434,7 +435,7 @@ export class EvmManager {
               events,
               contractAddress: createdEvent?.address,
               logs,
-              gasUsed: createdEvent?.gasUsed,
+              gasUsed: (createdEvent as any)?.gasUsed,
             });
           }
 
@@ -470,7 +471,8 @@ export class EvmManager {
             const hasError = events.some(
               (e) =>
                 this.api.events.system.ExtrinsicFailed.is(e) ||
-                (e.section === "evm" && e.method === "ExecutedFailed")
+                ((e as any).section === "evm" &&
+                  (e as any).method === "ExecutedFailed")
             );
 
             resolve({
@@ -479,9 +481,9 @@ export class EvmManager {
               blockNumber: 0,
               txHash: extrinsic.hash.toString(),
               events,
-              returnValue: executedEvent?.returnValue,
+              returnValue: (executedEvent as any)?.returnValue,
               logs,
-              gasUsed: executedEvent?.gasUsed,
+              gasUsed: (executedEvent as any)?.gasUsed,
             });
           }
 

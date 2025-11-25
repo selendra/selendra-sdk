@@ -292,7 +292,7 @@ export function useStaking(
     ): Promise<string> => {
       if (!sdk) throw new Error("SDK not connected");
 
-      const stakingManager = sdk.pallets.staking?.manager;
+      const stakingManager = sdk.pallets.staking;
       if (!stakingManager) throw new Error("Staking pallet not available");
 
       const result = await stakingManager.bond(signer, signerAddress, {
@@ -315,7 +315,7 @@ export function useStaking(
     ): Promise<string> => {
       if (!sdk) throw new Error("SDK not connected");
 
-      const stakingManager = sdk.pallets.staking?.manager;
+      const stakingManager = sdk.pallets.staking;
       if (!stakingManager) throw new Error("Staking pallet not available");
 
       const result = await stakingManager.bondExtra(signer, signerAddress, {
@@ -337,7 +337,7 @@ export function useStaking(
     ): Promise<string> => {
       if (!sdk) throw new Error("SDK not connected");
 
-      const stakingManager = sdk.pallets.staking?.manager;
+      const stakingManager = sdk.pallets.staking;
       if (!stakingManager) throw new Error("Staking pallet not available");
 
       const result = await stakingManager.unbond(signer, signerAddress, {
@@ -359,7 +359,7 @@ export function useStaking(
     ): Promise<string> => {
       if (!sdk) throw new Error("SDK not connected");
 
-      const stakingManager = sdk.pallets.staking?.manager;
+      const stakingManager = sdk.pallets.staking;
       if (!stakingManager) throw new Error("Staking pallet not available");
 
       const result = await stakingManager.withdrawUnbonded(
@@ -385,7 +385,7 @@ export function useStaking(
     ): Promise<string> => {
       if (!sdk) throw new Error("SDK not connected");
 
-      const stakingManager = sdk.pallets.staking?.manager;
+      const stakingManager = sdk.pallets.staking;
       if (!stakingManager) throw new Error("Staking pallet not available");
 
       const result = await stakingManager.nominate(signer, signerAddress, {
@@ -403,7 +403,7 @@ export function useStaking(
     async (signer: Signer, signerAddress: string): Promise<string> => {
       if (!sdk) throw new Error("SDK not connected");
 
-      const stakingManager = sdk.pallets.staking?.manager;
+      const stakingManager = sdk.pallets.staking;
       if (!stakingManager) throw new Error("Staking pallet not available");
 
       const result = await stakingManager.chill(signer, signerAddress);
@@ -423,7 +423,7 @@ export function useStaking(
     ): Promise<string> => {
       if (!sdk) throw new Error("SDK not connected");
 
-      const stakingManager = sdk.pallets.staking?.manager;
+      const stakingManager = sdk.pallets.staking;
       if (!stakingManager) throw new Error("Staking pallet not available");
 
       const result = await stakingManager.setPayee(signer, signerAddress, {
@@ -445,7 +445,7 @@ export function useStaking(
     ): Promise<string> => {
       if (!sdk) throw new Error("SDK not connected");
 
-      const stakingManager = sdk.pallets.staking?.manager;
+      const stakingManager = sdk.pallets.staking;
       if (!stakingManager) throw new Error("Staking pallet not available");
 
       const result = await stakingManager.rebond(signer, signerAddress, {
@@ -467,7 +467,7 @@ export function useStaking(
     ): Promise<string> => {
       if (!sdk) throw new Error("SDK not connected");
 
-      const stakingManager = sdk.pallets.staking?.manager;
+      const stakingManager = sdk.pallets.staking;
       if (!stakingManager) throw new Error("Staking pallet not available");
 
       const result = await stakingManager.validate(signer, signerAddress, {

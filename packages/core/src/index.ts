@@ -256,52 +256,61 @@ export type {
 export { SessionManager, SessionQueries } from "./pallets/session/index.js";
 export type {
   SessionKeys,
+  RawSessionKeys,
+  QueuedKeyInfo,
   SessionInfo,
-  ValidatorInfo,
+  SessionProgress,
+  ValidatorSessionInfo,
   SetKeysParams,
   PurgeKeysParams,
-  RotateSessionParams,
-  KeysChangedEvent,
   NewSessionEvent,
-  SessionTxResult,
+  ValidatorsResult,
+  CurrentIndexResult,
+  NextKeysResult,
+  QueuedKeysResult,
+  SessionConstants,
 } from "./pallets/session/index.js";
 
 // Export Nomination Pools pallet
 export {
   NominationPoolsManager,
   NominationPoolsQueries,
-  PoolState,
 } from "./pallets/nomination-pools/index.js";
+export { PoolState } from "./pallets/nomination-pools/index.js";
 export type {
-  PoolInfo,
-  PoolMember,
-  BondedPoolInner,
-  RewardPool,
-  SubPools,
-  UnbondPool,
+  BondedPoolInfo,
+  PoolRoles,
+  RewardPoolInfo,
+  PoolMemberInfo,
+  UnbondingEra,
+  SubPoolsInfo,
+  SubPool,
+  PoolConfig,
   PoolCommission,
   CommissionChangeRate,
-  PoolRoles,
-  PoolMetadata,
   CreatePoolParams,
   JoinPoolParams,
-  BondExtraPoolParams,
-  ClaimPayoutParams,
-  UnbondPoolParams,
-  WithdrawUnbondedPoolParams,
+  BondExtraParams as PoolBondExtraParams,
+  BondExtraSource,
+  UnbondParams as PoolUnbondParams,
+  WithdrawUnbondedParams as PoolWithdrawUnbondedParams,
+  PoolWithdrawUnbondedParams as PoolWithdrawUnbondedParamsExtended,
+  SetMetadataParams,
   NominatePoolParams,
-  SetPoolStateParams,
-  SetPoolMetadataParams,
-  SetPoolConfigsParams,
+  SetStateParams,
   ChillPoolParams,
+  UpdateRolesParams,
+  SetCommissionParams,
   ClaimCommissionParams,
-  PoolClaimPayoutEvent,
-  PoolBondedEvent,
-  PoolUnbondedEvent,
-  PoolWithdrawnEvent,
   PoolCreatedEvent,
-  PoolStateChangedEvent,
-  PoolsTxResult,
+  MemberJoinedEvent,
+  PayoutEvent,
+  UnbondedEvent as PoolUnbondedEvent,
+  WithdrawnEvent as PoolWithdrawnEvent,
+  PoolInfoResult,
+  MemberInfoResult,
+  PoolsListResult,
+  PoolConstants,
 } from "./pallets/nomination-pools/index.js";
 
 // Export Aleph pallet (Selendra consensus)
@@ -472,37 +481,36 @@ export type {
 export {
   ContractsManager,
   ContractsQueries,
+  Determinism,
 } from "./pallets/contracts/index.js";
 export type {
+  ContractGasLimit,
+  StorageDepositLimit,
   ContractInfo,
   CodeInfo,
   OwnerInfo,
-  GasEstimate,
-  WeightV2,
-  DepositLimit,
-  StorageDeposit,
+  UploadCodeParams,
   InstantiateParams,
   InstantiateWithCodeParams,
-  CallParams,
+  ContractCallParams,
   DryRunResult,
-  ContractExecResult,
-  CodeUploadResult,
-  InstantiateResult,
+  InstantiationResult,
   ContractCallResult,
-  ContractConstants,
   ContractEvent,
-  ContractTxResult,
+  ContractsConstants,
+  ContractsTxResult,
 } from "./pallets/contracts/index.js";
 
 // Export XVM pallet (Cross-Virtual Machine calls)
 export { XvmManager, XvmQueries, XvmContext } from "./pallets/xvm/index.js";
 export type {
+  XvmTarget,
   XvmCallParams,
   XvmCallResult,
-  XvmResult,
+  XvmEvent,
   XvmConstants,
-  EvmCallInput,
-  WasmCallInput,
+  EvmToWasmParams,
+  WasmToEvmParams,
   XvmTxResult,
 } from "./pallets/xvm/index.js";
 
@@ -513,13 +521,11 @@ export {
 } from "./pallets/dynamic-evm-base-fee/index.js";
 export type {
   BaseFeeConfig,
-  BaseFeeInfo,
-  BaseFeeHistory,
-  BaseFeeConstants,
-  SetBaseFeeParams,
-  BaseFeeChangeEvent,
-  DynamicBaseFeeEvent,
-  DynamicBaseFeeResult,
+  BaseFeeThreshold,
+  BaseFeePerGas,
+  FeeHistoryEntry,
+  DynamicBaseFeeConstants,
+  DynamicBaseFeeTxResult,
 } from "./pallets/dynamic-evm-base-fee/index.js";
 
 // Export Ethereum Checked pallet
@@ -529,11 +535,11 @@ export {
 } from "./pallets/ethereum-checked/index.js";
 export type {
   CheckedEthereumTx,
-  CheckedTransactionResult,
-  ValidationResult,
-  TransactionValidationError,
-  CheckedTransactionInfo,
-  EthereumCheckedEvent,
+  AccessListItem as EthCheckedAccessListItem,
+  TxValidationResult,
+  CheckedTxReceipt,
+  TxLog,
+  EthereumCheckedConstants,
   EthereumCheckedTxResult,
 } from "./pallets/ethereum-checked/index.js";
 
@@ -544,14 +550,11 @@ export {
 } from "./pallets/scheduler/index.js";
 export type {
   ScheduledCall,
+  ScheduleOrigin,
   AgendaEntry,
   ScheduleParams,
   ScheduleNamedParams,
-  CancelParams,
-  PeriodicSchedule,
   SchedulerConstants,
-  SchedulerEventType,
-  SchedulerEvent,
   SchedulerTxResult,
 } from "./pallets/scheduler/index.js";
 
@@ -588,15 +591,13 @@ export type {
 export { SudoManager, SudoQueries } from "./pallets/sudo/index.js";
 export type {
   SudoKey,
-  SudoKeyInfo,
   SudoCallParams,
-  SudoResult,
-  SudoUncheckedWeightParams,
   SudoAsParams,
   SetKeyParams,
+  SudoTxResult,
   SudoEventType,
   SudoEvent,
-  SudoTxResult,
+  SudoConstants,
 } from "./pallets/sudo/index.js";
 
 // Export Safe Mode pallet (emergency network protection)

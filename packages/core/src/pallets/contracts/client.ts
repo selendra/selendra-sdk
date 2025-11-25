@@ -11,13 +11,13 @@ import type { ISubmittableResult } from "@polkadot/types/types";
 import type {
   ContractGasLimit,
   StorageDepositLimit,
-  Determinism,
   UploadCodeParams,
   InstantiateParams,
   InstantiateWithCodeParams,
   ContractCallParams,
   ContractsTxResult,
 } from "./types.js";
+import { Determinism } from "./types.js";
 import { ContractsQueries } from "./queries.js";
 
 /**

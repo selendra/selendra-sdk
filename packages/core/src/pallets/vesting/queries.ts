@@ -38,15 +38,15 @@ export class VestingQueries {
     try {
       const result = await this.api.query.vesting.vesting(account);
 
-      if (result.isNone) {
+      if ((result as any).isNone) {
         return null;
       }
 
-      const schedules = result.unwrap();
+      const schedules = (result as any).unwrap();
       return schedules.map((s: any) => ({
         locked: BigInt(s.locked.toString()),
         perBlock: BigInt(s.perBlock.toString()),
-        startingBlock: s.startingBlock.toNumber(),
+        startingBlock: (s.startingBlock as any).toNumber(),
       }));
     } catch (error) {
       console.error("Error querying vesting:", error);
@@ -61,7 +61,7 @@ export class VestingQueries {
   async storageVersion(): Promise<number> {
     try {
       const result = await this.api.query.vesting.storageVersion();
-      return result.toNumber();
+      return (result as any).toNumber();
     } catch (error) {
       console.error("Error querying storage version:", error);
       return 0;
@@ -81,7 +81,7 @@ export class VestingQueries {
 
     return {
       minVestedTransfer: BigInt(minVestedTransfer?.toString() ?? "0"),
-      maxVestingSchedules: maxVestingSchedules?.toNumber() ?? 28,
+      maxVestingSchedules: (maxVestingSchedules as any)?.toNumber() ?? 28,
     };
   }
 
@@ -298,8 +298,8 @@ export class VestingQueries {
 
         const account = key.args[0].toString();
 
-        if (value.isSome) {
-          const schedules = value.unwrap();
+        if ((value as any).isSome) {
+          const schedules = (value as any).unwrap();
           result.push({
             account,
             scheduleCount: schedules.length,

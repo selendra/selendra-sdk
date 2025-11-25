@@ -283,7 +283,7 @@ export class DemocracyQueries {
     const cancelled = await this.api.query.democracy.cancellations(
       proposalHash
     );
-    return cancelled.isTrue || cancelled.toString() === "true";
+    return (cancelled as any).isTrue || cancelled.toString() === "true";
   }
 
   /**

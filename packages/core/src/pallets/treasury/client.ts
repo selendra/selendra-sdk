@@ -241,8 +241,8 @@ export class TreasuryManager {
       events.forEach((record: any) => {
         const { event } = record;
         if (this.api.events.treasury.Proposed?.is(event)) {
-          const [proposalIndex] = event.data;
-          callback(proposalIndex.toNumber());
+          const [proposalIndex] = event.data as any[];
+          callback((proposalIndex as any).toNumber());
         }
       });
     }) as any;
@@ -260,9 +260,9 @@ export class TreasuryManager {
       events.forEach((record: any) => {
         const { event } = record;
         if (this.api.events.treasury.Awarded?.is(event)) {
-          const [proposalIndex, award, account] = event.data;
+          const [proposalIndex, award, account] = event.data as any[];
           callback(
-            proposalIndex.toNumber(),
+            (proposalIndex as any).toNumber(),
             BigInt(award.toString()),
             account.toString()
           );
@@ -283,8 +283,11 @@ export class TreasuryManager {
       events.forEach((record: any) => {
         const { event } = record;
         if (this.api.events.treasury.Rejected?.is(event)) {
-          const [proposalIndex, slashed] = event.data;
-          callback(proposalIndex.toNumber(), BigInt(slashed.toString()));
+          const [proposalIndex, slashed] = event.data as any[];
+          callback(
+            (proposalIndex as any).toNumber(),
+            BigInt(slashed.toString())
+          );
         }
       });
     }) as any;
@@ -306,9 +309,9 @@ export class TreasuryManager {
       events.forEach((record: any) => {
         const { event } = record;
         if (this.api.events.treasury.SpendApproved?.is(event)) {
-          const [proposalIndex, amount, beneficiary] = event.data;
+          const [proposalIndex, amount, beneficiary] = event.data as any[];
           callback(
-            proposalIndex.toNumber(),
+            (proposalIndex as any).toNumber(),
             BigInt(amount.toString()),
             beneficiary.toString()
           );

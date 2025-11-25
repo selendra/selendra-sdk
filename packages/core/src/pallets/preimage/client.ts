@@ -35,35 +35,34 @@ export class PreimageManager {
     const hash = blake2AsHex(data, 256);
 
     return new Promise((resolve, reject) => {
-      this.api.tx.preimage
-        .notePreimage(data)
-        .signAndSend(signer, ({ status, events, dispatchError }) => {
-          if (dispatchError) {
-            if (dispatchError.isModule) {
-              const decoded = this.api.registry.findMetaError(
-                dispatchError.asModule
-              );
-              reject(new Error(`${decoded.section}.${decoded.name}`));
-            } else {
-              reject(new Error(dispatchError.toString()));
-            }
-            return;
+      const tx = this.api.tx.preimage.notePreimage(data);
+      tx.signAndSend(signer, ({ status, events, dispatchError }) => {
+        if (dispatchError) {
+          if (dispatchError.isModule) {
+            const decoded = this.api.registry.findMetaError(
+              dispatchError.asModule
+            );
+            reject(new Error(`${decoded.section}.${decoded.name}`));
+          } else {
+            reject(new Error(dispatchError.toString()));
           }
+          return;
+        }
 
-          if (status.isFinalized) {
-            resolve({
-              success: true,
-              blockHash: status.asFinalized.toString(),
-              preimageHash: hash,
-              events: events.map((e) => ({
-                section: e.event.section,
-                method: e.event.method,
-                data: e.event.data.toString(),
-              })),
-            });
-          }
-        })
-        .catch(reject);
+        if (status.isFinalized) {
+          resolve({
+            success: true,
+            blockHash: status.asFinalized.toString(),
+            txHash: tx.hash.toHex(),
+            preimageHash: hash,
+            events: events.map((e) => ({
+              section: e.event.section,
+              method: e.event.method,
+              data: e.event.data.toString(),
+            })),
+          });
+        }
+      }).catch(reject);
     });
   }
 
@@ -78,35 +77,34 @@ export class PreimageManager {
     hash: string
   ): Promise<PreimageTxResult> {
     return new Promise((resolve, reject) => {
-      this.api.tx.preimage
-        .unnotePreimage(hash)
-        .signAndSend(signer, ({ status, events, dispatchError }) => {
-          if (dispatchError) {
-            if (dispatchError.isModule) {
-              const decoded = this.api.registry.findMetaError(
-                dispatchError.asModule
-              );
-              reject(new Error(`${decoded.section}.${decoded.name}`));
-            } else {
-              reject(new Error(dispatchError.toString()));
-            }
-            return;
+      const tx = this.api.tx.preimage.unnotePreimage(hash);
+      tx.signAndSend(signer, ({ status, events, dispatchError }) => {
+        if (dispatchError) {
+          if (dispatchError.isModule) {
+            const decoded = this.api.registry.findMetaError(
+              dispatchError.asModule
+            );
+            reject(new Error(`${decoded.section}.${decoded.name}`));
+          } else {
+            reject(new Error(dispatchError.toString()));
           }
+          return;
+        }
 
-          if (status.isFinalized) {
-            resolve({
-              success: true,
-              blockHash: status.asFinalized.toString(),
-              preimageHash: hash,
-              events: events.map((e) => ({
-                section: e.event.section,
-                method: e.event.method,
-                data: e.event.data.toString(),
-              })),
-            });
-          }
-        })
-        .catch(reject);
+        if (status.isFinalized) {
+          resolve({
+            success: true,
+            blockHash: status.asFinalized.toString(),
+            txHash: tx.hash.toHex(),
+            preimageHash: hash,
+            events: events.map((e) => ({
+              section: e.event.section,
+              method: e.event.method,
+              data: e.event.data.toString(),
+            })),
+          });
+        }
+      }).catch(reject);
     });
   }
 
@@ -121,35 +119,34 @@ export class PreimageManager {
     hash: string
   ): Promise<PreimageTxResult> {
     return new Promise((resolve, reject) => {
-      this.api.tx.preimage
-        .requestPreimage(hash)
-        .signAndSend(signer, ({ status, events, dispatchError }) => {
-          if (dispatchError) {
-            if (dispatchError.isModule) {
-              const decoded = this.api.registry.findMetaError(
-                dispatchError.asModule
-              );
-              reject(new Error(`${decoded.section}.${decoded.name}`));
-            } else {
-              reject(new Error(dispatchError.toString()));
-            }
-            return;
+      const tx = this.api.tx.preimage.requestPreimage(hash);
+      tx.signAndSend(signer, ({ status, events, dispatchError }) => {
+        if (dispatchError) {
+          if (dispatchError.isModule) {
+            const decoded = this.api.registry.findMetaError(
+              dispatchError.asModule
+            );
+            reject(new Error(`${decoded.section}.${decoded.name}`));
+          } else {
+            reject(new Error(dispatchError.toString()));
           }
+          return;
+        }
 
-          if (status.isFinalized) {
-            resolve({
-              success: true,
-              blockHash: status.asFinalized.toString(),
-              preimageHash: hash,
-              events: events.map((e) => ({
-                section: e.event.section,
-                method: e.event.method,
-                data: e.event.data.toString(),
-              })),
-            });
-          }
-        })
-        .catch(reject);
+        if (status.isFinalized) {
+          resolve({
+            success: true,
+            blockHash: status.asFinalized.toString(),
+            txHash: tx.hash.toHex(),
+            preimageHash: hash,
+            events: events.map((e) => ({
+              section: e.event.section,
+              method: e.event.method,
+              data: e.event.data.toString(),
+            })),
+          });
+        }
+      }).catch(reject);
     });
   }
 
@@ -164,35 +161,34 @@ export class PreimageManager {
     hash: string
   ): Promise<PreimageTxResult> {
     return new Promise((resolve, reject) => {
-      this.api.tx.preimage
-        .unrequestPreimage(hash)
-        .signAndSend(signer, ({ status, events, dispatchError }) => {
-          if (dispatchError) {
-            if (dispatchError.isModule) {
-              const decoded = this.api.registry.findMetaError(
-                dispatchError.asModule
-              );
-              reject(new Error(`${decoded.section}.${decoded.name}`));
-            } else {
-              reject(new Error(dispatchError.toString()));
-            }
-            return;
+      const tx = this.api.tx.preimage.unrequestPreimage(hash);
+      tx.signAndSend(signer, ({ status, events, dispatchError }) => {
+        if (dispatchError) {
+          if (dispatchError.isModule) {
+            const decoded = this.api.registry.findMetaError(
+              dispatchError.asModule
+            );
+            reject(new Error(`${decoded.section}.${decoded.name}`));
+          } else {
+            reject(new Error(dispatchError.toString()));
           }
+          return;
+        }
 
-          if (status.isFinalized) {
-            resolve({
-              success: true,
-              blockHash: status.asFinalized.toString(),
-              preimageHash: hash,
-              events: events.map((e) => ({
-                section: e.event.section,
-                method: e.event.method,
-                data: e.event.data.toString(),
-              })),
-            });
-          }
-        })
-        .catch(reject);
+        if (status.isFinalized) {
+          resolve({
+            success: true,
+            blockHash: status.asFinalized.toString(),
+            txHash: tx.hash.toHex(),
+            preimageHash: hash,
+            events: events.map((e) => ({
+              section: e.event.section,
+              method: e.event.method,
+              data: e.event.data.toString(),
+            })),
+          });
+        }
+      }).catch(reject);
     });
   }
 

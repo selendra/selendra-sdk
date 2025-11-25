@@ -239,12 +239,13 @@ export class CouncilManager {
       events.forEach((record: any) => {
         const { event } = record;
         if (this.api.events.council.Proposed?.is(event)) {
-          const [account, proposalIndex, proposalHash, threshold] = event.data;
+          const [account, proposalIndex, proposalHash, threshold] =
+            event.data as any[];
           callback(
             account.toString(),
-            proposalIndex.toNumber(),
+            (proposalIndex as any).toNumber(),
             proposalHash.toString(),
-            threshold.toNumber()
+            (threshold as any).toNumber()
           );
         }
       });
@@ -269,13 +270,13 @@ export class CouncilManager {
       events.forEach((record: any) => {
         const { event } = record;
         if (this.api.events.council.Voted?.is(event)) {
-          const [account, proposalHash, voted, yes, no] = event.data;
+          const [account, proposalHash, voted, yes, no] = event.data as any[];
           callback(
             account.toString(),
             proposalHash.toString(),
-            voted.isTrue || voted.toString() === "true",
-            yes.toNumber(),
-            no.toNumber()
+            (voted as any).isTrue || voted.toString() === "true",
+            (yes as any).toNumber(),
+            (no as any).toNumber()
           );
         }
       });
@@ -351,8 +352,12 @@ export class CouncilManager {
       events.forEach((record: any) => {
         const { event } = record;
         if (this.api.events.council.Closed?.is(event)) {
-          const [proposalHash, yes, no] = event.data;
-          callback(proposalHash.toString(), yes.toNumber(), no.toNumber());
+          const [proposalHash, yes, no] = event.data as any[];
+          callback(
+            proposalHash.toString(),
+            (yes as any).toNumber(),
+            (no as any).toNumber()
+          );
         }
       });
     }) as any;

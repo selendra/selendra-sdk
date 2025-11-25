@@ -48,15 +48,15 @@ export class MultisigQueries {
         callHash
       );
 
-      if (result.isNone) {
+      if ((result as any).isNone) {
         return null;
       }
 
-      const data = result.unwrap();
+      const data = (result as any).unwrap();
       return {
         when: {
-          height: data.when.height.toNumber(),
-          index: data.when.index.toNumber(),
+          height: (data.when.height as any).toNumber(),
+          index: (data.when.index as any).toNumber(),
         },
         depositor: data.depositor.toString(),
         deposit: BigInt(data.deposit.toString()),
@@ -83,7 +83,7 @@ export class MultisigQueries {
     return {
       depositBase: BigInt(depositBase?.toString() ?? "0"),
       depositFactor: BigInt(depositFactor?.toString() ?? "0"),
-      maxSignatories: maxSignatories?.toNumber() ?? 100,
+      maxSignatories: (maxSignatories as any)?.toNumber() ?? 100,
     };
   }
 
@@ -186,7 +186,7 @@ export class MultisigQueries {
 
       return entries.map(([key, value]) => {
         const callHash = key.args[1].toHex();
-        const info = value.unwrap();
+        const info = (value as any).unwrap();
         const approvalCount = info.approvals.length;
 
         return {
@@ -194,8 +194,8 @@ export class MultisigQueries {
           callHash,
           info: {
             when: {
-              height: info.when.height.toNumber(),
-              index: info.when.index.toNumber(),
+              height: (info.when.height as any).toNumber(),
+              index: (info.when.index as any).toNumber(),
             },
             depositor: info.depositor.toString(),
             deposit: BigInt(info.deposit.toString()),
