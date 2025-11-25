@@ -302,14 +302,10 @@ async function main() {
     console.log('   3. Declare validator intent (validate with commission)');
     console.log('   4. Wait for next era to be included in validator set');
 
-    console.log('\n💡 To actually execute these transactions:');
-    console.log('   await eveBondTx.signAndSend(eve);');
-    console.log('   await setKeysTx.signAndSend(eve);');
-    console.log('   await eveValidateTx.signAndSend(eve);');
+    console.log('\n💡 Executing these transactions now...');
 
-    // Optional: Uncomment to actually submit transactions
-    /*
-    console.log('\n🚀 Executing transactions...');
+    // Execute transactions to set up Eve as validator
+    console.log('\n🚀 Setting up Eve as validator...');
     
     // Bond funds
     if (!eveInfoBefore.isBonded) {
@@ -325,6 +321,8 @@ async function main() {
           }
         }).catch(reject);
       });
+    } else {
+      console.log('\n1. Eve already bonded, skipping...');
     }
 
     // Set session keys
@@ -371,8 +369,9 @@ async function main() {
     if (eveInfoAfter.validatorPrefs) {
       console.log('   Commission:', `${Number(eveInfoAfter.validatorPrefs.commission) / 10000000}%`);
     }
-    console.log('\n   Eve will be included in the active validator set in the next era!');
-    */
+    console.log('\n   ✓ Eve is now configured as a validator!');
+    console.log('   ⏳ Eve will be included in the active validator set in the next era.');
+
 
     // ========================================================================
     // 9. REWARD OPERATIONS
