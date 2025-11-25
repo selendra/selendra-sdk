@@ -17,34 +17,39 @@ TypeScript SDK for Selendra blockchain with full support for:
 
 ## Packages
 
-| Package | Description | NPM |
-|---------|-------------|-----|
+| Package                | Description               | NPM                                                                                                                 |
+| ---------------------- | ------------------------- | ------------------------------------------------------------------------------------------------------------------- |
 | `@selendrajs/sdk-core` | Core SDK with all pallets | [![npm](https://img.shields.io/npm/v/@selendrajs/sdk-core.svg)](https://www.npmjs.com/package/@selendrajs/sdk-core) |
+| `@selendrajs/cli`      | Command-line interface    | [![npm](https://img.shields.io/npm/v/@selendrajs/cli.svg)](https://www.npmjs.com/package/@selendrajs/cli)           |
 
 ## Installation
 
 ```bash
+# Core SDK
 npm install @selendrajs/sdk-core
+
+# CLI (global)
+npm install -g @selendrajs/cli
 ```
 
 ## Quick Start
 
 ```typescript
-import { createSDK } from '@selendrajs/sdk-core';
+import { createSDK } from "@selendrajs/sdk-core";
 
 // Connect to Selendra
-const sdk = createSDK({ rpcUrl: 'wss://rpc.selendra.org' });
+const sdk = createSDK({ rpcUrl: "wss://rpc.selendra.org" });
 await sdk.connect();
 
 // Query balance
-const balance = await sdk.pallets.balances.queries.getBalance('5GrwvaEF...');
+const balance = await sdk.pallets.balances.queries.getBalance("5GrwvaEF...");
 console.log(`Balance: ${balance.free}`);
 
 // Transfer tokens
 const result = await sdk.pallets.balances.manager.transfer(
   signer,
   signerAddress,
-  { dest: '5FHneW46...', value: '1000000000000000000' }
+  { dest: "5FHneW46...", value: "1000000000000000000" }
 );
 
 // Disconnect
@@ -54,11 +59,15 @@ await sdk.disconnect();
 ## React Integration
 
 ```tsx
-import { SelendraProvider, useSelendra, useBalance } from '@selendrajs/sdk-core/react';
+import {
+  SelendraProvider,
+  useSelendra,
+  useBalance,
+} from "@selendrajs/sdk-core/react";
 
 function App() {
   return (
-    <SelendraProvider config={{ rpcUrl: 'wss://rpc.selendra.org' }}>
+    <SelendraProvider config={{ rpcUrl: "wss://rpc.selendra.org" }}>
       <Wallet />
     </SelendraProvider>
   );
@@ -66,7 +75,7 @@ function App() {
 
 function Wallet() {
   const { isConnected } = useSelendra();
-  const { balance, isLoading } = useBalance('5GrwvaEF...');
+  const { balance, isLoading } = useBalance("5GrwvaEF...");
 
   if (!isConnected) return <div>Connecting...</div>;
   if (isLoading) return <div>Loading...</div>;
@@ -78,11 +87,13 @@ function Wallet() {
 ## Supported Pallets
 
 ### Core
+
 - **Balances** - Token transfers and queries
 - **Staking** - Validator nomination and rewards
 - **Session** - Session key management
 
 ### Governance
+
 - **Democracy** - Proposals and referenda
 - **Council** - Collective decision-making
 - **Technical Committee** - Technical governance
@@ -90,6 +101,7 @@ function Wallet() {
 - **Elections** - Council elections (Phragmen)
 
 ### Account Management
+
 - **Identity** - On-chain identity
 - **Multisig** - Multi-signature accounts
 - **Proxy** - Account delegation
@@ -97,12 +109,14 @@ function Wallet() {
 - **Utility** - Batch transactions
 
 ### Smart Contracts
+
 - **Contracts** - ink! WASM contracts
 - **EVM** - Ethereum Virtual Machine
 - **Ethereum** - Ethereum transaction compatibility
 - **XVM** - Cross-VM calls
 
 ### Selendra-Specific
+
 - **Aleph** - Consensus and finality
 - **Elections** - Validator elections
 - **Committee Management** - Validator performance
@@ -110,6 +124,7 @@ function Wallet() {
 - **Unified Accounts** - Substrate ↔ EVM mapping
 
 ### Administration
+
 - **Sudo** - Privileged operations
 - **Safe Mode** - Emergency protection
 - **Tx Pause** - Transaction pausing
@@ -121,20 +136,52 @@ function Wallet() {
 ```
 selendra-sdk/
 ├── packages/
-│   └── core/                  # @selendrajs/sdk-core
+│   ├── core/                  # @selendrajs/sdk-core
+│   │   ├── src/
+│   │   │   ├── core/          # SDK core classes
+│   │   │   ├── pallets/       # All 30 pallet implementations
+│   │   │   ├── providers/     # Connection providers
+│   │   │   ├── react/         # React hooks
+│   │   │   ├── unified/       # Unified accounts
+│   │   │   ├── types/         # TypeScript types
+│   │   │   └── utils/         # Utilities
+│   │   ├── tests/             # Jest tests
+│   │   └── examples/          # Usage examples
+│   │
+│   └── cli/                   # @selendrajs/cli
 │       ├── src/
-│       │   ├── core/          # SDK core classes
-│       │   ├── pallets/       # All 30 pallet implementations
-│       │   ├── providers/     # Connection providers
-│       │   ├── react/         # React hooks
-│       │   ├── unified/       # Unified accounts
-│       │   ├── types/         # TypeScript types
-│       │   └── utils/         # Utilities
-│       ├── tests/             # Jest tests
-│       └── examples/          # Usage examples
+│       │   ├── commands/      # CLI commands
+│       │   ├── utils/         # CLI utilities
+│       │   └── templates/     # Project templates
+│       └── example/           # Example projects
+│
 ├── package.json               # Workspace root
 └── README.md
 ```
+
+## CLI Usage
+
+```bash
+# Create new project
+selendra init my-dapp
+
+# Check network status
+selendra status --network testnet
+
+# Check balance
+selendra balance 0x742d35Cc6634C0532925a3b844Bc9e7595f3f4A
+
+# Create account
+selendra account new
+
+# Deploy contract
+selendra deploy MyToken --network testnet
+
+# Staking info
+selendra stake info
+```
+
+See [CLI README](packages/cli/README.md) for full documentation.
 
 ## Examples
 
@@ -160,8 +207,12 @@ npm run build
 # Run tests
 npm test
 
-# Build core package only
+# Build specific packages
 npm run build:core
+npm run build:cli
+
+# Run CLI in development
+npm run cli -- status --network testnet
 ```
 
 ## Documentation
@@ -169,6 +220,7 @@ npm run build:core
 - [Quick Start Guide](packages/core/QUICK_START.md)
 - [Implementation Plan](packages/core/IMPLEMENTATION_PLAN.md)
 - [Pallet Reference](packages/core/SELENDRA_PALLETS.md)
+- [CLI Reference](packages/cli/README.md)
 - [Task Tracker](packages/core/TASKS.md)
 
 ## Legacy Code
