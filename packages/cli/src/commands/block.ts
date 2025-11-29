@@ -7,7 +7,12 @@
 import chalk from "chalk";
 import ora from "ora";
 import { formatUnits, formatGwei, type Block, type Transaction } from "viem";
-import { EVMClient, getNetwork, NetworkKey, formatBalance } from "../utils/client.js";
+import {
+  EVMClient,
+  getNetwork,
+  NetworkKey,
+  formatBalance,
+} from "../utils/client.js";
 import {
   printHeader,
   printKeyValue,
@@ -25,7 +30,10 @@ interface BlockOptions {
 /**
  * Format timestamp with relative time
  */
-function formatTimestamp(timestamp: bigint): { formatted: string; relative: string } {
+function formatTimestamp(timestamp: bigint): {
+  formatted: string;
+  relative: string;
+} {
   const date = new Date(Number(timestamp) * 1000);
   const now = new Date();
   const diffSeconds = Math.floor((now.getTime() - date.getTime()) / 1000);
@@ -44,7 +52,10 @@ function formatTimestamp(timestamp: bigint): { formatted: string; relative: stri
     relative = `${days} day${days > 1 ? "s" : ""} ago`;
   }
 
-  const formatted = date.toISOString().replace("T", " ").replace(".000Z", " UTC");
+  const formatted = date
+    .toISOString()
+    .replace("T", " ")
+    .replace(".000Z", " UTC");
 
   return { formatted, relative };
 }
@@ -82,7 +93,10 @@ function isBlockNumber(input: string): boolean {
 /**
  * Get explorer URL for block
  */
-function getExplorerUrl(blockNumber: bigint, explorer: string | null): string | null {
+function getExplorerUrl(
+  blockNumber: bigint,
+  explorer: string | null
+): string | null {
   if (!explorer) return null;
   return `${explorer}/block/${blockNumber}`;
 }
@@ -90,19 +104,17 @@ function getExplorerUrl(blockNumber: bigint, explorer: string | null): string | 
 /**
  * Format transaction summary for display
  */
-function formatTransactionSummary(
-  tx: Transaction,
-  index: number
-): string {
+function formatTransactionSummary(tx: Transaction, index: number): string {
   const from = formatAddress(tx.from, 6);
   const to = tx.to ? formatAddress(tx.to, 6) : chalk.gray("Contract Creation");
-  
+
   // Format value
   let valueDisplay: string;
   if (tx.value > 0n) {
     const value = formatBalance(tx.value);
     const numValue = parseFloat(value);
-    valueDisplay = numValue < 0.0001 ? "<0.0001 SEL" : `${numValue.toFixed(4)} SEL`;
+    valueDisplay =
+      numValue < 0.0001 ? "<0.0001 SEL" : `${numValue.toFixed(4)} SEL`;
   } else if (tx.input && tx.input !== "0x") {
     valueDisplay = chalk.gray("Contract Call");
   } else {
@@ -112,7 +124,9 @@ function formatTransactionSummary(
   const txHash = formatAddress(tx.hash, 8);
   const num = String(index + 1).padStart(3, " ");
 
-  return `${chalk.gray(num + ".")} ${chalk.cyan(txHash)} ${from} → ${to} (${valueDisplay})`;
+  return `${chalk.gray(num + ".")} ${chalk.cyan(
+    txHash
+  )} ${from} → ${to} (${valueDisplay})`;
 }
 
 export async function blockCommand(
@@ -175,7 +189,11 @@ export async function blockCommand(
     if (!block) {
       spinner.fail("Block not found");
       console.log();
-      console.log(chalk.yellow("The block may not exist or the network may be unreachable."));
+      console.log(
+        chalk.yellow(
+          "The block may not exist or the network may be unreachable."
+        )
+      );
       return;
     }
 
@@ -183,7 +201,10 @@ export async function blockCommand(
     if (options.txs && block.transactions) {
       // When includeTransactions is true, transactions is Transaction[]
       // When false, it's string[] (hashes only)
-      if (block.transactions.length > 0 && typeof block.transactions[0] !== "string") {
+      if (
+        block.transactions.length > 0 &&
+        typeof block.transactions[0] !== "string"
+      ) {
         transactions = block.transactions as unknown as Transaction[];
       }
     }
@@ -191,9 +212,8 @@ export async function blockCommand(
     spinner.succeed("Block retrieved");
 
     // Format timestamp
-    const { formatted: timestampFormatted, relative: timestampRelative } = formatTimestamp(
-      block.timestamp
-    );
+    const { formatted: timestampFormatted, relative: timestampRelative } =
+      formatTimestamp(block.timestamp);
 
     // Calculate gas usage
     const gasUsedPercent = formatGasUsage(block.gasUsed, block.gasLimit);
@@ -260,10 +280,15 @@ export async function blockCommand(
     );
 
     newLine();
-    printKeyValue("Transactions:", formatNumber(block.transactions?.length ?? 0));
+    printKeyValue(
+      "Transactions:",
+      formatNumber(block.transactions?.length ?? 0)
+    );
     printKeyValue(
       "Gas Used:",
-      `${formatNumber(block.gasUsed)} / ${formatNumber(block.gasLimit)} (${chalk.yellow(gasUsedPercent)})`
+      `${formatNumber(block.gasUsed)} / ${formatNumber(
+        block.gasLimit
+      )} (${chalk.yellow(gasUsedPercent)})`
     );
 
     if (block.baseFeePerGas) {
@@ -299,13 +324,17 @@ export async function blockCommand(
       if (transactions.length > displayLimit) {
         newLine();
         console.log(
-          chalk.gray(`  ... and ${transactions.length - displayLimit} more transactions`)
+          chalk.gray(
+            `  ... and ${transactions.length - displayLimit} more transactions`
+          )
         );
       }
     } else if (options.txs && (block.transactions?.length ?? 0) > 0) {
       // If --txs was requested but we only have hashes
       newLine();
-      console.log(chalk.bold.white(`📝 Transactions (${block.transactions!.length})`));
+      console.log(
+        chalk.bold.white(`📝 Transactions (${block.transactions!.length})`)
+      );
       console.log(chalk.gray("─".repeat(60)));
       console.log();
 
@@ -320,7 +349,11 @@ export async function blockCommand(
 
       if (hashes.length > displayLimit) {
         newLine();
-        console.log(chalk.gray(`  ... and ${hashes.length - displayLimit} more transactions`));
+        console.log(
+          chalk.gray(
+            `  ... and ${hashes.length - displayLimit} more transactions`
+          )
+        );
       }
     }
 
@@ -333,7 +366,6 @@ export async function blockCommand(
     }
 
     newLine();
-
   } catch (error: any) {
     spinner.fail("Failed to fetch block");
     console.error(chalk.red("Error:"), error.message);

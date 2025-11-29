@@ -46,10 +46,7 @@ function getStatusDisplay(status: "success" | "reverted"): string {
 /**
  * Get explorer URL for transaction
  */
-function getExplorerUrl(
-  hash: string,
-  explorer: string | null
-): string | null {
+function getExplorerUrl(hash: string, explorer: string | null): string | null {
   if (!explorer) return null;
   return `${explorer}/tx/${hash}`;
 }
@@ -60,7 +57,9 @@ export async function txCommand(hash: string, options: TxOptions) {
   // Validate hash format
   if (!hash.startsWith("0x") || hash.length !== 66) {
     console.error(chalk.red("Invalid transaction hash"));
-    console.log(chalk.gray("Transaction hash must be 66 characters starting with 0x"));
+    console.log(
+      chalk.gray("Transaction hash must be 66 characters starting with 0x")
+    );
     console.log(chalk.gray("Example: 0x1234...abcd"));
     return;
   }
@@ -150,7 +149,9 @@ export async function txCommand(hash: string, options: TxOptions) {
     printKeyValue("Status:", getStatusDisplay(status));
     printKeyValue(
       "Block:",
-      tx.blockNumber ? Number(tx.blockNumber).toLocaleString() : chalk.yellow("Pending")
+      tx.blockNumber
+        ? Number(tx.blockNumber).toLocaleString()
+        : chalk.yellow("Pending")
     );
     if (blockTimestamp) {
       printKeyValue("Timestamp:", formatTimestamp(blockTimestamp));
@@ -174,7 +175,12 @@ export async function txCommand(hash: string, options: TxOptions) {
     // Show input data indicator
     if (tx.input && tx.input !== "0x") {
       newLine();
-      printKeyValue("Input Data:", chalk.gray(`${tx.input.slice(0, 20)}... (${(tx.input.length - 2) / 2} bytes)`));
+      printKeyValue(
+        "Input Data:",
+        chalk.gray(
+          `${tx.input.slice(0, 20)}... (${(tx.input.length - 2) / 2} bytes)`
+        )
+      );
     }
 
     // Explorer link
@@ -186,7 +192,6 @@ export async function txCommand(hash: string, options: TxOptions) {
     }
 
     newLine();
-
   } catch (error: any) {
     spinner.fail("Failed to fetch transaction");
     console.error(chalk.red("Error:"), error.message);

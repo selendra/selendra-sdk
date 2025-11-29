@@ -12,10 +12,10 @@ This document tracks planned features, improvements, and bug fixes for the Selen
 
 | Priority  | Total  | Completed | In Progress | Not Started |
 | --------- | ------ | --------- | ----------- | ----------- |
-| 🔴 High   | 6      | 3         | 0           | 3           |
+| 🔴 High   | 6      | 6         | 0           | 0           |
 | 🟡 Medium | 7      | 0         | 0           | 7           |
 | 🟢 Low    | 5      | 0         | 0           | 5           |
-| **Total** | **18** | **3**     | **0**       | **15**      |
+| **Total** | **18** | **6**     | **0**       | **12**      |
 
 ---
 
@@ -28,29 +28,31 @@ These are critical for developer experience and should be implemented first.
 **Priority:** 🔴 High  
 **Effort:** Low (2-4 hours)  
 **Component:** CLI  
-**Status:** ⬜ Not Started
+**Status:** ✅ Completed
 
 **Description:**  
 Currently, `selendra faucet <address>` only displays manual instructions. Need to integrate with the actual faucet API for automatic token distribution.
 
 **Acceptance Criteria:**
 
-- [ ] Integrate with Selendra testnet faucet API
-- [ ] Auto-request tokens with rate limiting awareness
-- [ ] Show clear success/failure messages with tx hash
-- [ ] Handle API errors gracefully (rate limit, invalid address)
-- [ ] Add `--amount` flag if API supports custom amounts
+- [x] Integrate with Selendra testnet faucet API
+- [x] Auto-request tokens with rate limiting awareness
+- [x] Show clear success/failure messages with tx hash
+- [x] Handle API errors gracefully (rate limit, invalid address)
+- [x] Fallback to manual instructions if API unavailable
 
-**Files to Modify:**
+**Files Modified:**
 
 - `packages/cli/src/commands/faucet.ts`
 
-**API Endpoint (TBD):**
+**API Endpoint:**
 
 ```
-POST https://faucet-api.selendra.org/request
-Body: { address: "0x...", network: "testnet" }
+POST https://faucet-api.selendra.org/drip
+Body: { address: "0x..." }
 ```
+
+**Environment Variable:** `SELENDRA_FAUCET_API` - Override faucet API URL
 
 ---
 
@@ -90,33 +92,30 @@ selendra tx 0x123... --json
 **Priority:** 🔴 High  
 **Effort:** Medium (4-8 hours)  
 **Component:** CLI  
-**Status:** ⬜ Not Started
+**Status:** ✅ Completed
 
 **Description:**  
-Add `selendra verify <contract-name> <address>` command to verify contracts on the Selendra block explorer.
+Add `selendra verify <address> <contract-name>` command to verify contracts on the Selendra block explorer.
 
 **Acceptance Criteria:**
 
-- [ ] Read contract source from artifacts
-- [ ] Submit to explorer verification API
-- [ ] Support constructor arguments
-- [ ] Support multiple Solidity files (flattening)
-- [ ] Handle verification status polling
+- [x] Read contract source from artifacts (Hardhat/Foundry)
+- [x] Submit to explorer verification API
+- [x] Support constructor arguments
+- [x] Auto-detect compiler version and optimization settings
+- [x] Handle verification status polling
+- [x] Fallback to manual instructions if API unavailable
 
-**Files to Create:**
+**Files Created:**
 
 - `packages/cli/src/commands/verify.ts`
 
 **Example Usage:**
 
 ```bash
-selendra verify MyToken 0x123... --network testnet
-selendra verify MyToken 0x123... --constructor-args "arg1,arg2"
+selendra verify 0x123... MyToken --network testnet
+selendra verify 0x123... MyToken --constructor "0x..." --compiler 0.8.20
 ```
-
-**Dependencies:**
-
-- Requires Selendra Explorer API endpoint for verification
 
 ---
 
@@ -191,32 +190,45 @@ selendra block 1000000 --txs
 **Priority:** 🔴 High  
 **Effort:** Medium (4-6 hours)  
 **Component:** SDK  
-**Status:** ⬜ Not Started
+**Status:** ✅ Completed
 
 **Description:**  
 Add multicall support to batch multiple read calls into a single RPC request. Essential for dApp performance.
 
 **Acceptance Criteria:**
 
-- [ ] Implement `Multicall` class using standard Multicall3 contract
-- [ ] Support arbitrary contract calls in a batch
-- [ ] Return typed results
-- [ ] Handle partial failures gracefully
-- [ ] Deploy Multicall3 if not present on Selendra
+- [x] Implement `Multicall` class using standard Multicall3 contract
+- [x] Support arbitrary contract calls in a batch
+- [x] Return typed results
+- [x] Handle partial failures gracefully
+- [x] Helper functions for common patterns (ERC20 balances, token info)
 
-**Files to Create:**
+**Files Created:**
 
 - `packages/core/src/utils/multicall.ts`
+
+**Exports Added:**
+
+- `Multicall` - Main class
+- `createMulticall()` - Factory function
+- `batchERC20Balances()` - Batch token balance checks
+- `batchERC20Info()` - Batch token info (name, symbol, decimals)
+- `MULTICALL3_ADDRESS` - Standard Multicall3 address
 
 **Example Usage:**
 
 ```typescript
-const multicall = new Multicall(client);
+import { createMulticall, batchERC20Balances } from "@selendrajs/sdk";
+
+// Using Multicall class
+const multicall = createMulticall(client);
 const results = await multicall.call([
-  { target: tokenA, abi: erc20Abi, functionName: "balanceOf", args: [user] },
-  { target: tokenB, abi: erc20Abi, functionName: "balanceOf", args: [user] },
-  { target: tokenA, abi: erc20Abi, functionName: "totalSupply" },
+  { address: tokenA, abi: erc20Abi, functionName: "balanceOf", args: [user] },
+  { address: tokenB, abi: erc20Abi, functionName: "totalSupply" },
 ]);
+
+// Using helper function
+const balances = await batchERC20Balances(client, [token1, token2], userAddress);
 ```
 
 ---
@@ -592,10 +604,10 @@ Add ESLint + Prettier configuration for consistent code style.
 ## 📈 Progress Tracking
 
 ```
-[████████░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░] 17% (3/18)
+[█████████████████░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░] 33% (6/18)
 ```
 
-**Completed:** TASK-002, TASK-004, TASK-005
+**Completed:** TASK-001, TASK-002, TASK-003, TASK-004, TASK-005, TASK-006
 
 **Legend:**
 

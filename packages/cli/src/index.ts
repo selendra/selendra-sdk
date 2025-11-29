@@ -14,6 +14,7 @@ import { faucetCommand } from "./commands/faucet.js";
 import { initCommand } from "./commands/init.js";
 import { compileCommand } from "./commands/compile.js";
 import { deployCommand } from "./commands/deploy.js";
+import { verifyCommand } from "./commands/verify.js";
 import { balanceCommand } from "./commands/balance.js";
 import { transferCommand } from "./commands/transfer.js";
 import { chainCommand } from "./commands/chain.js";
@@ -63,6 +64,24 @@ program
   )
   .option("--gas <gas>", "Gas limit")
   .action(deployCommand);
+
+// Verify contracts
+program
+  .command("verify")
+  .description("Verify smart contract source on explorer")
+  .argument("<address>", "Contract address to verify")
+  .argument("<contract>", "Contract name (e.g., MyContract)")
+  .option(
+    "-n, --network <network>",
+    "Network to verify on (mainnet|testnet)",
+    "mainnet"
+  )
+  .option("--compiler <version>", "Compiler version (e.g., 0.8.20)")
+  .option("--optimization", "Enable optimization (default: true)")
+  .option("--runs <runs>", "Optimization runs (default: 200)")
+  .option("--constructor <args>", "ABI-encoded constructor arguments")
+  .option("--license <license>", "SPDX license identifier")
+  .action(verifyCommand);
 
 // ========================================
 // Network Commands

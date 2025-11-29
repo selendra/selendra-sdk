@@ -7,3 +7,4 @@
 export * from './config.js';
 export * from './logger.js';
 export * from './wallet.js';
+export * from './multicall.js';

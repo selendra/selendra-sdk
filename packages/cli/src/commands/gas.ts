@@ -167,11 +167,7 @@ export async function gasCommand(options: GasOptions) {
         );
       }
       if (maxFee) {
-        printKeyValue(
-          "Max Fee:",
-          `${formatGwei(maxFee)} gwei`,
-          chalk.gray
-        );
+        printKeyValue("Max Fee:", `${formatGwei(maxFee)} gwei`, chalk.gray);
       }
     } else {
       console.log(chalk.gray("  (Legacy gas pricing - EIP-1559 not active)"));

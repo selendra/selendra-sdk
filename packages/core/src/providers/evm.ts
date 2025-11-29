@@ -668,9 +668,8 @@ export class EvmProvider extends BaseProvider {
       const CONTRACT_DEPLOY_GAS = 500000n;
 
       // Calculate costs using current gas price
-      const effectiveGasPrice = baseFee && priorityFee 
-        ? baseFee + priorityFee 
-        : gasPrice;
+      const effectiveGasPrice =
+        baseFee && priorityFee ? baseFee + priorityFee : gasPrice;
 
       return {
         gasPrice,

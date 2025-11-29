@@ -25,7 +25,11 @@ export {
   SubstrateProvider,
   EvmProvider,
 } from "./providers/index.js";
-export type { BaseProviderEvents, GasEstimate, GasCostsResult } from "./providers/index.js";
+export type {
+  BaseProviderEvents,
+  GasEstimate,
+  GasCostsResult,
+} from "./providers/index.js";
 
 // Export Unified Accounts
 export {
@@ -65,6 +69,21 @@ export type {
   WalletType,
   EncryptedJson,
   ProgressCallback,
+} from "./utils/index.js";
+
+// Export Multicall utility
+export {
+  Multicall,
+  createMulticall,
+  batchERC20Balances,
+  batchERC20Info,
+  MULTICALL3_ADDRESS,
+  MULTICALL3_ABI,
+} from "./utils/index.js";
+export type {
+  MulticallRequest,
+  MulticallResult,
+  MulticallOptions,
 } from "./utils/index.js";
 
 // Export logger configuration

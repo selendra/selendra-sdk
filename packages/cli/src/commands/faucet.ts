@@ -1,7 +1,7 @@
 /**
  * Faucet Command
  *
- * Request testnet tokens
+ * Request testnet tokens via API
  */
 
 import chalk from "chalk";
@@ -13,10 +13,96 @@ import {
   printKeyValue,
   printWarning,
   printInfo,
+  printSuccess,
+  printTroubleshooting,
   newLine,
 } from "../utils/output.js";
 
-const FAUCET_URL = "https://faucet.selendra.org";
+/**
+ * Faucet API configuration
+ */
+const FAUCET_CONFIG = {
+  apiUrl: process.env.SELENDRA_FAUCET_API || "https://faucet-api.selendra.org",
+  webUrl: "https://faucet.selendra.org",
+  amount: "10", // Default amount in SEL
+  cooldownMessage: "Please wait before requesting more tokens",
+};
+
+/**
+ * Faucet API response interface
+ */
+interface FaucetResponse {
+  success: boolean;
+  txHash?: string;
+  amount?: string;
+  message?: string;
+  error?: string;
+  cooldownRemaining?: number;
+}
+
+/**
+ * Request tokens from faucet API
+ */
+async function requestFromFaucet(address: string): Promise<FaucetResponse> {
+  const controller = new AbortController();
+  const timeoutId = setTimeout(() => controller.abort(), 30000); // 30s timeout
+
+  try {
+    const response = await fetch(`${FAUCET_CONFIG.apiUrl}/drip`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Accept: "application/json",
+      },
+      body: JSON.stringify({ address }),
+      signal: controller.signal,
+    });
+
+    clearTimeout(timeoutId);
+
+    const data = (await response.json()) as Record<string, unknown>;
+
+    if (!response.ok) {
+      return {
+        success: false,
+        error:
+          (data.error as string) ||
+          (data.message as string) ||
+          `HTTP ${response.status}`,
+        cooldownRemaining: data.cooldownRemaining as number | undefined,
+      };
+    }
+
+    return {
+      success: true,
+      txHash: (data.txHash as string) || (data.hash as string),
+      amount: (data.amount as string) || FAUCET_CONFIG.amount,
+      message: data.message as string | undefined,
+    };
+  } catch (error: any) {
+    clearTimeout(timeoutId);
+
+    if (error.name === "AbortError") {
+      return { success: false, error: "Request timed out" };
+    }
+
+    // Handle network errors - faucet API might not be available
+    if (error.code === "ECONNREFUSED" || error.cause?.code === "ECONNREFUSED") {
+      return { success: false, error: "Faucet API unavailable" };
+    }
+
+    return { success: false, error: error.message || "Unknown error" };
+  }
+}
+
+/**
+ * Format cooldown time
+ */
+function formatCooldown(seconds: number): string {
+  if (seconds < 60) return `${seconds} seconds`;
+  if (seconds < 3600) return `${Math.ceil(seconds / 60)} minutes`;
+  return `${Math.ceil(seconds / 3600)} hours`;
+}
 
 export async function faucetCommand(address: string) {
   // Validate address
@@ -36,61 +122,145 @@ export async function faucetCommand(address: string) {
   printKeyValue("Network:", "Selendra Testnet");
   newLine();
 
-  const spinner = ora("Submitting faucet request...").start();
+  // Check current balance first
+  const spinner = ora("Checking current balance...").start();
 
+  let currentBalance = 0n;
   try {
-    // Try to call faucet API (placeholder for actual implementation)
-    // In production, this would make an API call to the faucet service
-    await new Promise((resolve) => setTimeout(resolve, 1500));
-
-    // For now, show manual instructions
-    spinner.warn("Automated faucet integration pending");
-    newLine();
-
-    printHeader("Manual Faucet Access");
-
-    printInfo("Visit the faucet website:");
-    console.log(chalk.cyan(`  ${FAUCET_URL}`));
-    newLine();
-
-    printInfo("Or join our community:");
-    console.log(
-      chalk.white("  Telegram: ") + chalk.cyan("https://t.me/selendranetwork")
-    );
-    console.log(
-      chalk.white("  Discord:  ") + chalk.cyan("https://discord.gg/selendra")
-    );
-    newLine();
-
-    console.log(chalk.gray("The CLI faucet integration is coming soon!"));
-    newLine();
-
-    // Check current balance
-    spinner.start("Checking current balance...");
-
     const network = getNetwork("testnet");
     const evmClient = new EVMClient(network);
-    const balance = await evmClient.getBalance(address as `0x${string}`);
-
+    currentBalance = await evmClient.getBalance(address as `0x${string}`);
     spinner.succeed("Balance retrieved");
+
+    printKeyValue(
+      "Current Balance:",
+      `${formatBalance(currentBalance)} SEL`,
+      chalk.cyan
+    );
+    newLine();
+  } catch (error: any) {
+    spinner.warn("Could not fetch current balance");
+    newLine();
+  }
+
+  // Request from faucet API
+  spinner.start("Submitting faucet request...");
+
+  const result = await requestFromFaucet(address);
+
+  if (result.success) {
+    spinner.succeed("Tokens sent successfully!");
     newLine();
 
-    printHeader("Current Testnet Balance");
-    printKeyValue("Balance:", `${formatBalance(balance)} SEL`, chalk.green);
+    printSuccess("Faucet request completed");
     newLine();
 
-    if (balance === 0n) {
-      printWarning(
-        "Your balance is 0. Visit the faucet to get testnet tokens."
-      );
-    } else {
-      printInfo("You already have testnet tokens. Ready to deploy!");
+    printHeader("Transaction Details");
+    printKeyValue("Amount:", `${result.amount} SEL`, chalk.green);
+    if (result.txHash) {
+      printKeyValue("Tx Hash:", result.txHash);
+
+      const network = getNetwork("testnet");
+      if (network.explorer) {
+        newLine();
+        console.log(chalk.gray("View transaction:"));
+        console.log(chalk.cyan(`${network.explorer}/tx/${result.txHash}`));
+      }
+    }
+    if (result.message) {
+      newLine();
+      printInfo(result.message);
     }
 
     newLine();
-  } catch (error: any) {
-    spinner.fail("Failed to process request");
-    console.error(chalk.red("Error:"), error.message);
-    process.exit(1);
+
+    // Check new balance after a short delay
+    spinner.start("Verifying new balance...");
+    await new Promise((resolve) => setTimeout(resolve, 3000));
+
+    try {
+      const network = getNetwork("testnet");
+      const evmClient = new EVMClient(network);
+      const newBalance = await evmClient.getBalance(address as `0x${string}`);
+      spinner.succeed("Balance updated");
+
+      newLine();
+      printHeader("Updated Balance");
+      printKeyValue("Balance:", `${formatBalance(newBalance)} SEL`, chalk.green);
+
+      if (newBalance > currentBalance) {
+        const received = newBalance - currentBalance;
+        printKeyValue("Received:", `+${formatBalance(received)} SEL`, chalk.cyan);
+      }
+
+      newLine();
+      printInfo("You're ready to deploy contracts on testnet!");
+    } catch {
+      spinner.info(
+        "Balance update pending - transaction may take a moment to confirm"
+      );
+    }
+
+    newLine();
+  } else {
+    // Handle faucet errors
+    spinner.fail("Faucet request failed");
+    newLine();
+
+    if (result.cooldownRemaining) {
+      printWarning(
+        `Rate limited. Try again in ${formatCooldown(result.cooldownRemaining)}`
+      );
+      newLine();
+    }
+
+    // Check if it's a network/API availability issue
+    const isApiUnavailable =
+      result.error?.includes("unavailable") ||
+      result.error?.includes("timeout") ||
+      result.error?.includes("ECONNREFUSED");
+
+    if (isApiUnavailable) {
+      printHeader("Alternative Options");
+      newLine();
+
+      printInfo("The faucet API is currently unavailable. Try:");
+      newLine();
+
+      console.log(chalk.white("  1. Web Faucet:"));
+      console.log(chalk.cyan(`     ${FAUCET_CONFIG.webUrl}`));
+      newLine();
+
+      console.log(chalk.white("  2. Community Channels:"));
+      console.log(
+        chalk.gray("     Telegram: ") +
+          chalk.cyan("https://t.me/selendranetwork")
+      );
+      console.log(
+        chalk.gray("     Discord:  ") +
+          chalk.cyan("https://discord.gg/selendra")
+      );
+      newLine();
+
+      printInfo("Ask for testnet tokens in our community!");
+    } else {
+      console.error(chalk.red("Error:"), result.error);
+      newLine();
+
+      printTroubleshooting([
+        "Check if the address is correct",
+        "Wait a few minutes if you recently requested tokens",
+        `Visit ${FAUCET_CONFIG.webUrl} for manual requests`,
+        "Join our community for support",
+      ]);
+    }
+
+    newLine();
+
+    // Still show current balance
+    if (currentBalance > 0n) {
+      printInfo(`You still have ${formatBalance(currentBalance)} SEL available`);
+      newLine();
+    }
   }
 }
