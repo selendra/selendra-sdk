@@ -95,6 +95,40 @@ export {
 } from "./utils/logger.js";
 export type { LoggerConfig } from "./utils/logger.js";
 
+// Export error classes (TASK-012)
+export {
+  SelendraError,
+  ConnectionError,
+  NetworkUnavailableError,
+  RpcError,
+  TransactionError,
+  InsufficientFundsError,
+  GasEstimationError,
+  TransactionRevertedError,
+  TransactionTimeoutError,
+  NonceTooLowError,
+  ContractError,
+  ContractNotFoundError,
+  ContractCallError,
+  AbiNotFoundError,
+  AccountError,
+  AccountNotFoundError,
+  InvalidPrivateKeyError,
+  InvalidMnemonicError,
+  SigningError,
+  ValidationError,
+  InvalidAddressError,
+  InvalidAmountError,
+  ConfigurationError,
+  MissingConfigError,
+  SubstrateError,
+  ExtrinsicFailedError,
+  isSelendraError,
+  hasErrorCode,
+  wrapError,
+  parseRpcError,
+} from "./errors/index.js";
+
 // Export Pallets
 export { BalancesManager, BalancesQueries } from "./pallets/balances/index.js";
 export type {

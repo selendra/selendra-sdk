@@ -1,0 +1,256 @@
+#compdef selendra
+# Selendra CLI Zsh Completion Script
+#
+# Installation:
+#   1. Save this file to ~/.selendra/completions/_selendra
+#   2. Add to ~/.zshrc:
+#      fpath=(~/.selendra/completions $fpath)
+#      autoload -Uz compinit && compinit
+#
+# Or install to standard completions directory:
+#   sudo cp _selendra /usr/local/share/zsh/site-functions/_selendra
+
+_selendra() {
+    local curcontext="$curcontext" state state_descr line
+    typeset -A opt_args
+
+    local -a commands
+    commands=(
+        'init:Initialize a new Selendra project'
+        'compile:Compile smart contracts'
+        'deploy:Deploy smart contract'
+        'verify:Verify smart contract source on explorer'
+        'status:Show network status and statistics'
+        'chain:Show chain information'
+        'block:Show block information'
+        'tx:Look up transaction details by hash'
+        'gas:Show current gas prices and estimation'
+        'logs:Query contract event logs'
+        'interact:Interactive contract REPL'
+        'abi:Manage contract ABIs'
+        'account:Manage accounts and keys'
+        'balance:Check account balance'
+        'transfer:Transfer SEL tokens'
+        'faucet:Request testnet tokens'
+        'stake:Staking and nomination pools'
+    )
+
+    local -a networks
+    networks=('mainnet' 'testnet' 'local')
+
+    _arguments -C \
+        '1: :->command' \
+        '*:: :->args'
+
+    case $state in
+        command)
+            _describe -t commands 'selendra command' commands
+            ;;
+        args)
+            case $words[1] in
+                init)
+                    _arguments \
+                        '1:project name:_files -/' \
+                        '-t[Template to use]:template:(evm wasm)' \
+                        '--template[Template to use]:template:(evm wasm)'
+                    ;;
+                compile)
+                    _arguments \
+                        '--target[Target platform]:target:(evm wasm)'
+                    ;;
+                deploy)
+                    _arguments \
+                        '1:contract name:_selendra_contracts' \
+                        '-n[Network]:network:(mainnet testnet local)' \
+                        '--network[Network]:network:(mainnet testnet local)' \
+                        '--args[Constructor arguments]:args:' \
+                        '--gas[Gas limit]:gas:'
+                    ;;
+                verify)
+                    _arguments \
+                        '1:contract address:' \
+                        '2:contract name:_selendra_contracts' \
+                        '-n[Network]:network:(mainnet testnet)' \
+                        '--network[Network]:network:(mainnet testnet)' \
+                        '--compiler[Compiler version]:version:' \
+                        '--optimization[Enable optimization]' \
+                        '--runs[Optimization runs]:runs:' \
+                        '--constructor[ABI-encoded constructor arguments]:args:' \
+                        '--license[SPDX license identifier]:license:'
+                    ;;
+                status)
+                    _arguments \
+                        '-n[Network]:network:(mainnet testnet local)' \
+                        '--network[Network]:network:(mainnet testnet local)' \
+                        '--json[Output as JSON]' \
+                        '--health[Show detailed health metrics]' \
+                        '-w[Watch for updates]' \
+                        '--watch[Watch for updates]'
+                    ;;
+                chain)
+                    _arguments \
+                        '-n[Network]:network:(mainnet testnet local)' \
+                        '--network[Network]:network:(mainnet testnet local)' \
+                        '--json[Output as JSON]'
+                    ;;
+                block)
+                    _arguments \
+                        '1:block identifier:(latest)' \
+                        '-n[Network]:network:(mainnet testnet local)' \
+                        '--network[Network]:network:(mainnet testnet local)' \
+                        '--json[Output as JSON]' \
+                        '--txs[Include transaction details]'
+                    ;;
+                tx)
+                    _arguments \
+                        '1:transaction hash:' \
+                        '-n[Network]:network:(mainnet testnet local)' \
+                        '--network[Network]:network:(mainnet testnet local)' \
+                        '--json[Output as JSON]'
+                    ;;
+                gas)
+                    _arguments \
+                        '-n[Network]:network:(mainnet testnet local)' \
+                        '--network[Network]:network:(mainnet testnet local)' \
+                        '--json[Output as JSON]'
+                    ;;
+                logs)
+                    _arguments \
+                        '1:contract address:' \
+                        '-n[Network]:network:(mainnet testnet local)' \
+                        '--network[Network]:network:(mainnet testnet local)' \
+                        '-e[Filter by event name]:event:' \
+                        '--event[Filter by event name]:event:' \
+                        '--from-block[Start block number]:block:' \
+                        '--to-block[End block number]:block:' \
+                        '--abi[Path to ABI file]:abi:_files -g "*.json"' \
+                        '-w[Watch for new events]' \
+                        '--watch[Watch for new events]' \
+                        '--json[Output as JSON]' \
+                        '-l[Maximum logs to show]:limit:' \
+                        '--limit[Maximum logs to show]:limit:'
+                    ;;
+                interact)
+                    _arguments \
+                        '1:contract address:' \
+                        '-a[Path to ABI file]:abi:_files -g "*.json"' \
+                        '--abi[Path to ABI file]:abi:_files -g "*.json"' \
+                        '-n[Network]:network:(mainnet testnet local)' \
+                        '--network[Network]:network:(mainnet testnet local)'
+                    ;;
+                abi)
+                    local -a abi_commands
+                    abi_commands=(
+                        'export:Export ABI from compiled contract'
+                        'import:Import ABI from file or verified contract'
+                        'list:List saved ABIs'
+                        'types:Generate TypeScript types from ABI'
+                    )
+                    _arguments -C \
+                        '1: :->subcmd' \
+                        '*:: :->args'
+                    case $state in
+                        subcmd)
+                            _describe -t commands 'abi subcommand' abi_commands
+                            ;;
+                        args)
+                            case $words[1] in
+                                export)
+                                    _arguments \
+                                        '1:contract name:_selendra_contracts' \
+                                        '-o[Output file path]:output:_files' \
+                                        '--output[Output file path]:output:_files'
+                                    ;;
+                                import)
+                                    _arguments \
+                                        '1:ABI file or address:_files -g "*.json"' \
+                                        '-n[Name to save ABI as]:name:' \
+                                        '--name[Name to save ABI as]:name:' \
+                                        '--network[Network for fetching from explorer]:network:(mainnet testnet)'
+                                    ;;
+                                list)
+                                    ;;
+                                types)
+                                    _arguments \
+                                        '1:ABI name or path:_files -g "*.json"' \
+                                        '-o[Output file path]:output:_files' \
+                                        '--output[Output file path]:output:_files'
+                                    ;;
+                            esac
+                            ;;
+                    esac
+                    ;;
+                account)
+                    local -a account_actions
+                    account_actions=(
+                        'new:Create new EVM account'
+                        'new-substrate:Create new Substrate account'
+                        'list:List saved accounts'
+                        'import:Import existing account'
+                        'export:Export account private key'
+                        'delete:Delete saved account'
+                        'show:Show account details'
+                    )
+                    _describe -t actions 'account action' account_actions
+                    ;;
+                balance)
+                    _arguments \
+                        '1:address:' \
+                        '-n[Network]:network:(mainnet testnet local)' \
+                        '--network[Network]:network:(mainnet testnet local)' \
+                        '--json[Output as JSON]'
+                    ;;
+                transfer)
+                    _arguments \
+                        '1:recipient address:' \
+                        '-n[Network]:network:(mainnet testnet local)' \
+                        '--network[Network]:network:(mainnet testnet local)' \
+                        '-a[Amount to transfer in SEL]:amount:' \
+                        '--amount[Amount to transfer in SEL]:amount:'
+                    ;;
+                faucet)
+                    _arguments \
+                        '1:address:'
+                    ;;
+                stake)
+                    local -a stake_actions
+                    stake_actions=(
+                        'info:Show staking info'
+                        'pools:List nomination pools'
+                        'join:Join a nomination pool'
+                        'claim:Claim staking rewards'
+                        'unbond:Unbond staked tokens'
+                    )
+                    _arguments -C \
+                        '1: :->action' \
+                        '*:: :->args'
+                    case $state in
+                        action)
+                            _describe -t actions 'stake action' stake_actions
+                            ;;
+                        args)
+                            _arguments \
+                                '-n[Network]:network:(mainnet testnet local)' \
+                                '--network[Network]:network:(mainnet testnet local)' \
+                                '-p[Pool ID]:pool:' \
+                                '--pool[Pool ID]:pool:' \
+                                '-a[Amount to stake]:amount:' \
+                                '--amount[Amount to stake]:amount:'
+                            ;;
+                    esac
+                    ;;
+            esac
+            ;;
+    esac
+}
+
+# Helper function to complete contract names from artifacts
+_selendra_contracts() {
+    local -a contracts
+    if [[ -d "./artifacts/contracts" ]]; then
+        contracts=("${(@f)$(find ./artifacts/contracts -name '*.json' -exec basename {} .json \; 2>/dev/null | sort -u)}")
+        _describe -t contracts 'contract' contracts
+    fi
+}
+
+_selendra "$@"

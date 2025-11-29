@@ -186,11 +186,19 @@ export async function faucetCommand(address: string) {
 
       newLine();
       printHeader("Updated Balance");
-      printKeyValue("Balance:", `${formatBalance(newBalance)} SEL`, chalk.green);
+      printKeyValue(
+        "Balance:",
+        `${formatBalance(newBalance)} SEL`,
+        chalk.green
+      );
 
       if (newBalance > currentBalance) {
         const received = newBalance - currentBalance;
-        printKeyValue("Received:", `+${formatBalance(received)} SEL`, chalk.cyan);
+        printKeyValue(
+          "Received:",
+          `+${formatBalance(received)} SEL`,
+          chalk.cyan
+        );
       }
 
       newLine();
@@ -259,7 +267,9 @@ export async function faucetCommand(address: string) {
 
     // Still show current balance
     if (currentBalance > 0n) {
-      printInfo(`You still have ${formatBalance(currentBalance)} SEL available`);
+      printInfo(
+        `You still have ${formatBalance(currentBalance)} SEL available`
+      );
       newLine();
     }
   }

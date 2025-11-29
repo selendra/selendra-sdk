@@ -1,10 +1,10 @@
 /**
  * Utility exports
- * 
+ *
  * @module utils
  */
 
-export * from './config.js';
-export * from './logger.js';
-export * from './wallet.js';
-export * from './multicall.js';
+export * from "./config.js";
+export * from "./logger.js";
+export * from "./wallet.js";
+export * from "./multicall.js";

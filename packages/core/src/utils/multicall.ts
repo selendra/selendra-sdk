@@ -215,7 +215,7 @@ export class Multicall {
       callData: encodeFunctionData({
         abi: call.abi,
         functionName: call.functionName,
-        args: call.args as unknown[] || [],
+        args: (call.args as unknown[]) || [],
       }),
     }));
 
@@ -539,19 +539,18 @@ export async function batchERC20Info(
   const results = await multicall.call(calls);
 
   // Process results in groups of 3
-  const tokenInfos: ({ name: string; symbol: string; decimals: number } | null)[] =
-    [];
+  const tokenInfos: ({
+    name: string;
+    symbol: string;
+    decimals: number;
+  } | null)[] = [];
 
   for (let i = 0; i < tokens.length; i++) {
     const nameResult = results[i * 3];
     const symbolResult = results[i * 3 + 1];
     const decimalsResult = results[i * 3 + 2];
 
-    if (
-      nameResult.success &&
-      symbolResult.success &&
-      decimalsResult.success
-    ) {
+    if (nameResult.success && symbolResult.success && decimalsResult.success) {
       tokenInfos.push({
         name: nameResult.result as string,
         symbol: symbolResult.result as string,

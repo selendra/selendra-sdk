@@ -22,6 +22,13 @@ import { blockCommand } from "./commands/block.js";
 import { stakeCommand } from "./commands/stake.js";
 import { txCommand } from "./commands/tx.js";
 import { gasCommand } from "./commands/gas.js";
+import { logsCommand } from "./commands/logs.js";
+import { interactCommand } from "./commands/interact.js";
+import { abiCommand, abiSubcommands } from "./commands/abi.js";
+
+// Import configuration utilities
+import { defineConfig, type SelendraConfig } from "./utils/config.js";
+export { defineConfig, type SelendraConfig };
 
 const program = new Command();
 
@@ -97,6 +104,8 @@ program
     "mainnet"
   )
   .option("--json", "Output as JSON")
+  .option("--health", "Show detailed health metrics")
+  .option("-w, --watch", "Watch for updates")
   .action(statusCommand);
 
 // Chain info
@@ -149,6 +158,68 @@ program
   )
   .option("--json", "Output as JSON")
   .action(gasCommand);
+
+// Event logs
+program
+  .command("logs")
+  .description("Query contract event logs")
+  .argument("<address>", "Contract address to query logs for")
+  .option(
+    "-n, --network <network>",
+    "Network to query (mainnet|testnet|local)",
+    "mainnet"
+  )
+  .option("-e, --event <event>", "Filter by event name")
+  .option("--from-block <block>", "Start block number")
+  .option("--to-block <block>", "End block number")
+  .option("--abi <path>", "Path to ABI file for decoding")
+  .option("-w, --watch", "Watch for new events")
+  .option("--json", "Output as JSON")
+  .option("-l, --limit <limit>", "Maximum logs to show", "50")
+  .action(logsCommand);
+
+// Interactive contract
+program
+  .command("interact")
+  .description("Interactive contract REPL")
+  .argument("<address>", "Contract address")
+  .option("-a, --abi <path>", "Path to ABI file")
+  .option(
+    "-n, --network <network>",
+    "Network to use (mainnet|testnet|local)",
+    "mainnet"
+  )
+  .action(interactCommand);
+
+// ABI management
+const abiProg = program.command("abi").description("Manage contract ABIs");
+
+abiProg
+  .command("export")
+  .description("Export ABI from compiled contract")
+  .argument("<contract>", "Contract name")
+  .option("-o, --output <path>", "Output file path")
+  .action(abiSubcommands.export);
+
+abiProg
+  .command("import")
+  .description("Import ABI from file or verified contract")
+  .argument("<source>", "ABI file path or contract address")
+  .option("-n, --name <name>", "Name to save ABI as")
+  .option("--network <network>", "Network for fetching from explorer")
+  .action(abiSubcommands.import);
+
+abiProg
+  .command("list")
+  .description("List saved ABIs")
+  .action(abiSubcommands.list);
+
+abiProg
+  .command("types")
+  .description("Generate TypeScript types from ABI")
+  .argument("<abi>", "ABI name or path")
+  .option("-o, --output <path>", "Output file path")
+  .action(abiSubcommands.types);
 
 // ========================================
 // Account Commands

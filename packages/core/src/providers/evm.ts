@@ -698,4 +698,241 @@ export class EvmProvider extends BaseProvider {
       );
     }
   }
+
+  // ==========================================================================
+  // Transaction Simulation Methods (TASK-011)
+  // ==========================================================================
+
+  /**
+   * Simulation result for a transaction
+   */
+  /**
+   * Simulate a transaction without executing it
+   *
+   * This is useful for checking if a transaction would succeed and
+   * getting the return value without actually sending the transaction.
+   *
+   * @param transaction - Transaction parameters
+   * @returns Simulation result
+   */
+  async simulateTransaction(transaction: {
+    to: string;
+    from?: string;
+    value?: bigint;
+    data?: string;
+    gas?: bigint;
+    gasPrice?: bigint;
+  }): Promise<{
+    success: boolean;
+    gasUsed: bigint;
+    returnData?: string;
+    error?: string;
+  }> {
+    if (!this.publicClient) {
+      throw new Error("Provider not connected");
+    }
+
+    try {
+      // Use eth_call to simulate the transaction
+      const result = await this.publicClient.call({
+        to: transaction.to as Address,
+        account: transaction.from as Address | undefined,
+        value: transaction.value,
+        data: transaction.data as `0x${string}` | undefined,
+        gas: transaction.gas,
+        gasPrice: transaction.gasPrice,
+      });
+
+      // Estimate gas to get gas used
+      const gasUsed = await this.estimateGas({
+        to: transaction.to,
+        from: transaction.from,
+        value: transaction.value,
+        data: transaction.data,
+      });
+
+      return {
+        success: true,
+        gasUsed,
+        returnData: result.data,
+      };
+    } catch (error: any) {
+      // Extract error message and return data if available
+      const errorMessage =
+        error instanceof Error ? error.message : String(error);
+
+      // Try to extract revert reason
+      let revertReason: string | undefined;
+      if (errorMessage.includes("execution reverted")) {
+        revertReason = errorMessage;
+      }
+
+      return {
+        success: false,
+        gasUsed: 0n,
+        error: revertReason || errorMessage,
+      };
+    }
+  }
+
+  /**
+   * Simulate a contract function call
+   *
+   * This is useful for checking if a contract write would succeed
+   * and getting the return value without actually executing it.
+   *
+   * @param contractAddress - Contract address
+   * @param abi - Contract ABI
+   * @param functionName - Function name to call
+   * @param args - Function arguments
+   * @param options - Additional options
+   * @returns Simulation result with decoded return value
+   */
+  async simulateContractCall(
+    contractAddress: string,
+    abi: Abi,
+    functionName: string,
+    args: unknown[] = [],
+    options?: {
+      from?: string;
+      value?: bigint;
+    }
+  ): Promise<{
+    success: boolean;
+    result?: unknown;
+    gasUsed: bigint;
+    error?: string;
+  }> {
+    if (!this.publicClient) {
+      throw new Error("Provider not connected");
+    }
+
+    try {
+      // Simulate the contract call
+      const { result } = await this.publicClient.simulateContract({
+        address: contractAddress as Address,
+        abi,
+        functionName,
+        args,
+        account: options?.from as Address | undefined,
+        value: options?.value,
+      });
+
+      // Estimate gas
+      const gasUsed = await this.estimateContractGas(
+        contractAddress,
+        abi,
+        functionName,
+        args,
+        options?.value
+      );
+
+      return {
+        success: true,
+        result,
+        gasUsed,
+      };
+    } catch (error: any) {
+      const errorMessage =
+        error instanceof Error ? error.message : String(error);
+
+      // Try to get gas used even on failure
+      let gasUsed = 0n;
+      try {
+        gasUsed = await this.estimateContractGas(
+          contractAddress,
+          abi,
+          functionName,
+          args,
+          options?.value
+        );
+      } catch {
+        // Ignore gas estimation failure
+      }
+
+      return {
+        success: false,
+        gasUsed,
+        error: errorMessage,
+      };
+    }
+  }
+
+  /**
+   * Dry run multiple transactions in sequence
+   *
+   * This simulates multiple transactions to check if they would all succeed.
+   * Useful for batch operations or multi-step workflows.
+   *
+   * @param transactions - Array of transactions to simulate
+   * @returns Array of simulation results
+   */
+  async dryRunBatch(
+    transactions: Array<{
+      to: string;
+      from?: string;
+      value?: bigint;
+      data?: string;
+    }>
+  ): Promise<
+    Array<{
+      index: number;
+      success: boolean;
+      gasUsed: bigint;
+      error?: string;
+    }>
+  > {
+    const results: Array<{
+      index: number;
+      success: boolean;
+      gasUsed: bigint;
+      error?: string;
+    }> = [];
+
+    for (let i = 0; i < transactions.length; i++) {
+      const tx = transactions[i];
+      const result = await this.simulateTransaction(tx);
+
+      results.push({
+        index: i,
+        success: result.success,
+        gasUsed: result.gasUsed,
+        error: result.error,
+      });
+
+      // Stop on first failure if needed (you could make this configurable)
+      if (!result.success) {
+        // Continue to check remaining transactions
+        for (let j = i + 1; j < transactions.length; j++) {
+          results.push({
+            index: j,
+            success: false,
+            gasUsed: 0n,
+            error: "Skipped due to previous failure",
+          });
+        }
+        break;
+      }
+    }
+
+    return results;
+  }
+
+  /**
+   * Check if transaction would succeed
+   *
+   * Simple helper to check if a transaction would succeed without getting full details.
+   *
+   * @param transaction - Transaction parameters
+   * @returns True if transaction would succeed
+   */
+  async wouldSucceed(transaction: {
+    to: string;
+    from?: string;
+    value?: bigint;
+    data?: string;
+  }): Promise<boolean> {
+    const result = await this.simulateTransaction(transaction);
+    return result.success;
+  }
 }

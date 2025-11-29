@@ -61,8 +61,8 @@ interface VerifyResponse {
  * Common license types for Solidity contracts
  */
 const LICENSE_TYPES: Record<string, string> = {
-  "UNLICENSED": "1",
-  "MIT": "2",
+  UNLICENSED: "1",
+  MIT: "2",
   "GPL-2.0": "3",
   "GPL-3.0": "4",
   "LGPL-2.1": "5",
@@ -176,9 +176,7 @@ function getCompilerVersion(artifact: any): string {
  * Extract license from source
  */
 function extractLicense(source: string): string {
-  const licenseMatch = source.match(
-    /\/\/\s*SPDX-License-Identifier:\s*(\S+)/i
-  );
+  const licenseMatch = source.match(/\/\/\s*SPDX-License-Identifier:\s*(\S+)/i);
   if (licenseMatch) {
     return licenseMatch[1];
   }
@@ -329,13 +327,16 @@ export async function verifyCommand(
   }
 
   if (networkKey === "local") {
-    console.error(chalk.red("Contract verification not available for local network"));
+    console.error(
+      chalk.red("Contract verification not available for local network")
+    );
     process.exit(1);
     return;
   }
 
   const network = getNetwork(networkKey);
-  const apiUrl = networkKey === "mainnet" ? EXPLORER_API.mainnet : EXPLORER_API.testnet;
+  const apiUrl =
+    networkKey === "mainnet" ? EXPLORER_API.mainnet : EXPLORER_API.testnet;
 
   printKeyValue("Contract:", contractAddress);
   printKeyValue("Name:", contractName);
@@ -362,7 +363,10 @@ export async function verifyCommand(
     printHeader("Verification Settings");
     printKeyValue("Source File:", path.basename(sourcePath));
     printKeyValue("Compiler:", `v${compilerVersion}`);
-    printKeyValue("Optimization:", optimizationUsed ? `Enabled (${runs} runs)` : "Disabled");
+    printKeyValue(
+      "Optimization:",
+      optimizationUsed ? `Enabled (${runs} runs)` : "Disabled"
+    );
     printKeyValue("License:", license);
     newLine();
 
@@ -462,7 +466,9 @@ export async function verifyCommand(
 
         console.log(chalk.gray("Steps:"));
         console.log(chalk.white("  1. Click 'Verify & Publish'"));
-        console.log(chalk.white("  2. Select compiler version: " + compilerVersion));
+        console.log(
+          chalk.white("  2. Select compiler version: " + compilerVersion)
+        );
         console.log(chalk.white("  3. Paste your contract source code"));
         console.log(chalk.white("  4. Submit for verification"));
         newLine();
