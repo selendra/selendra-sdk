@@ -25,6 +25,8 @@ import { gasCommand } from "./commands/gas.js";
 import { logsCommand } from "./commands/logs.js";
 import { interactCommand } from "./commands/interact.js";
 import { abiCommand, abiSubcommands } from "./commands/abi.js";
+import { learnCommand } from "./commands/learn.js";
+import { pluginCommand, loadInstalledPlugins } from "./commands/plugin.js";
 
 // Import configuration utilities
 import { defineConfig, type SelendraConfig } from "./utils/config.js";
@@ -278,6 +280,79 @@ program
   .option("-p, --pool <pool>", "Pool ID")
   .option("-a, --amount <amount>", "Amount to stake")
   .action(stakeCommand);
+
+// ========================================
+// Learning & Plugins
+// ========================================
+
+// Interactive tutorials
+program
+  .command("learn")
+  .description("Interactive tutorials for learning Selendra")
+  .argument("[topic]", "Tutorial topic to start")
+  .option("-l, --list", "List available tutorials")
+  .option("--reset", "Reset tutorial progress")
+  .action(learnCommand);
+
+// Plugin management
+const pluginProg = program.command("plugin").description("Manage CLI plugins");
+
+pluginProg
+  .command("install")
+  .description("Install a plugin")
+  .argument("<source>", "Plugin name, path, or git URL")
+  .option("--local", "Install from local path")
+  .option("--git", "Install from git repository")
+  .action((source: string, options: any) => pluginCommand("install", source, options));
+
+pluginProg
+  .command("uninstall")
+  .description("Uninstall a plugin")
+  .argument("<plugin>", "Plugin name to uninstall")
+  .action((plugin: string) => pluginCommand("uninstall", plugin));
+
+pluginProg
+  .command("list")
+  .description("List plugins")
+  .option("-a, --available", "Show available plugins")
+  .action((options: any) => pluginCommand("list", undefined, options));
+
+pluginProg
+  .command("enable")
+  .description("Enable a plugin")
+  .argument("<plugin>", "Plugin name")
+  .action((plugin: string) => pluginCommand("enable", plugin));
+
+pluginProg
+  .command("disable")
+  .description("Disable a plugin")
+  .argument("<plugin>", "Plugin name")
+  .action((plugin: string) => pluginCommand("disable", plugin));
+
+pluginProg
+  .command("update")
+  .description("Update plugins")
+  .argument("[plugin]", "Plugin to update (updates all if omitted)")
+  .action((plugin?: string) => pluginCommand("update", plugin));
+
+pluginProg
+  .command("info")
+  .description("Show plugin information")
+  .argument("<plugin>", "Plugin name")
+  .action((plugin: string) => pluginCommand("info", plugin));
+
+pluginProg
+  .command("create")
+  .description("Create a new plugin")
+  .argument("[name]", "Plugin name")
+  .action((name?: string) => pluginCommand("create", name));
+
+// Load installed plugins
+try {
+  loadInstalledPlugins(program);
+} catch {
+  // Silently ignore plugin loading errors
+}
 
 // ========================================
 // Parse and Execute

@@ -1,0 +1,18 @@
+{
+  "name": "@selendrajs/docs",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Selendra SDK Documentation",
+  "scripts": {
+    "docs:dev": "vitepress dev",
+    "docs:build": "vitepress build",
+    "docs:preview": "vitepress preview",
+    "docs:generate-api": "typedoc --plugin typedoc-plugin-markdown --out api ../core/src/index.ts"
+  },
+  "devDependencies": {
+    "typedoc": "^0.25.0",
+    "typedoc-plugin-markdown": "^3.17.0",
+    "vitepress": "^1.0.0",
+    "vue": "^3.4.0"
+  }
+}
