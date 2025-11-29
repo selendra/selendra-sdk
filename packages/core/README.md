@@ -8,19 +8,19 @@
 
 A modular, extensible TypeScript SDK for connecting to the Selendra blockchain.
 
-## ✨ Features
+## Features
 
-- 🏗️ **Modular Architecture** - Easy to extend and maintain
-- 🔌 **Dual Chain Support** - Substrate and EVM chains
-- 📦 **Tree-Shakeable** - Import only what you need
-- 🎯 **Type-Safe** - Full TypeScript with strict mode
-- 🔄 **Event-Driven** - React to connection changes
-- 🔁 **Auto-Reconnect** - Built-in reconnection logic
-- 📖 **Well-Documented** - Comprehensive JSDoc comments
-- ⚡ **Powered by viem** - Modern, lightweight EVM library
-- 🔗 **wagmi Compatible** - Seamless React integration
+- **Modular Architecture** - Easy to extend and maintain
+- **Dual Chain Support** - Substrate and EVM chains
+- **Tree-Shakeable** - Import only what you need
+- **Type-Safe** - Full TypeScript with strict mode
+- **Event-Driven** - React to connection changes
+- **Auto-Reconnect** - Built-in reconnection logic
+- **Well-Documented** - Comprehensive JSDoc comments
+- **Powered by viem** - Modern, lightweight EVM library
+- **wagmi Compatible** - Seamless React integration
 
-## 📁 Project Structure
+## Project Structure
 
 ```
 sdk.ts/

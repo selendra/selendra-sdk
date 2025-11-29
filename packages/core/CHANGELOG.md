@@ -14,20 +14,24 @@ This is a major release that migrates the EVM stack from ethers.js to viem + wag
 #### Migration Required
 
 1. **Provider Changes**
+
    - `getEvmProvider()` now returns viem's `PublicClient` instead of ethers `JsonRpcProvider`
    - Use `client.getBalance({ address })` instead of `provider.getBalance(address)`
    - Use `client.getBlockNumber()` instead of `provider.getBlockNumber()`
 
 2. **Wallet Changes**
+
    - Wallet utilities use viem's `PrivateKeyAccount` type
    - Use `privateKeyToAccount()` from `viem/accounts` instead of `new ethers.Wallet()`
 
 3. **Contract Interaction**
+
    - Use viem's `getContract()` API instead of `new ethers.Contract()`
    - Contract reads: `contract.read.methodName([args])` instead of `contract.methodName(args)`
    - Contract writes: `contract.write.methodName([args])` instead of `contract.methodName(args)`
 
 4. **Transaction Signing**
+
    - `sendEvmTransaction()` and `writeEvmContract()` now require chain configuration
    - Transactions use `createWalletClient()` with explicit chain
 

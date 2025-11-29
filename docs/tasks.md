@@ -12,6 +12,7 @@ This document tracks planned features, improvements, and bug fixes for the Selen
 ## 🎉 v2.0.0 Release Notes
 
 **Breaking Changes:**
+
 - Migrated EVM stack from ethers.js to viem + wagmi
 - `getEvmProvider()` returns viem's `PublicClient` instead of ethers `JsonRpcProvider`
 - Contract interactions use viem's `getContract()` API
