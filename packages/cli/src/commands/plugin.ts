@@ -159,7 +159,8 @@ function loadPluginManifest(pluginPath: string): PluginManifest | null {
         name: pkg.name,
         version: pkg.version,
         description: pkg.description || "",
-        author: typeof pkg.author === "string" ? pkg.author : pkg.author?.name || "",
+        author:
+          typeof pkg.author === "string" ? pkg.author : pkg.author?.name || "",
         license: pkg.license || "MIT",
         main: pkg.main || "index.js",
         commands: selendraConfig.commands || [],
@@ -218,7 +219,9 @@ async function installPlugin(
     } else if (options.git) {
       // Install from git repository
       installSource = "git";
-      pluginName = path.basename(source, ".git").replace(/^selendra-plugin-/, "");
+      pluginName = path
+        .basename(source, ".git")
+        .replace(/^selendra-plugin-/, "");
       pluginPath = getPluginPath(pluginName);
 
       spinner.text = "Cloning repository...";
@@ -241,8 +244,8 @@ async function installPlugin(
       // Use npm pack and extract
       const npmPackage = source.startsWith("@")
         ? source
-        : `@selendra/plugin-${source}`;
-      
+        : `@selendrajs/plugin-${source}`;
+
       execSync(`npm pack ${npmPackage} --pack-destination ${pluginPath}`, {
         stdio: "pipe",
         cwd: pluginPath,
@@ -315,7 +318,9 @@ async function installPlugin(
       console.log();
       console.log(chalk.dim("New commands available:"));
       for (const cmd of manifest.commands) {
-        console.log(`  ${chalk.cyan(`selendra ${cmd.name}`)} - ${cmd.description}`);
+        console.log(
+          `  ${chalk.cyan(`selendra ${cmd.name}`)} - ${cmd.description}`
+        );
       }
     }
   } catch (error: any) {
@@ -328,7 +333,7 @@ async function uninstallPlugin(pluginName: string): Promise<void> {
   const plugin = config.plugins.find(
     (p) =>
       p.name === pluginName ||
-      p.name === `@selendra/plugin-${pluginName}` ||
+      p.name === `@selendrajs/plugin-${pluginName}` ||
       p.name.endsWith(`/${pluginName}`)
   );
 
@@ -416,7 +421,7 @@ async function listPlugins(options: { available?: boolean }): Promise<void> {
       ];
 
       for (const plugin of samplePlugins) {
-        console.log(`  ${chalk.yellow(`@selendra/plugin-${plugin.name}`)}`);
+        console.log(`  ${chalk.yellow(`@selendrajs/plugin-${plugin.name}`)}`);
         console.log(`    ${plugin.description}`);
         console.log(
           `    ${chalk.dim("Tags:")} ${plugin.tags
@@ -428,7 +433,7 @@ async function listPlugins(options: { available?: boolean }): Promise<void> {
 
       console.log(
         chalk.dim(
-          "Install with: selendra plugin install @selendra/plugin-<name>"
+          "Install with: selendra plugin install @selendrajs/plugin-<name>"
         )
       );
       return;
@@ -444,7 +449,9 @@ async function listPlugins(options: { available?: boolean }): Promise<void> {
       for (const name of registry.featured) {
         const plugin = registry.plugins.find((p) => p.name === name);
         if (plugin) {
-          console.log(`  ${chalk.cyan(plugin.package)} - ${plugin.description}`);
+          console.log(
+            `  ${chalk.cyan(plugin.package)} - ${plugin.description}`
+          );
         }
       }
       console.log();
@@ -488,7 +495,9 @@ async function listPlugins(options: { available?: boolean }): Promise<void> {
       ? chalk.green("● enabled")
       : chalk.dim("○ disabled");
 
-    console.log(`  ${chalk.yellow(plugin.name)} ${chalk.dim(`v${plugin.version}`)}`);
+    console.log(
+      `  ${chalk.yellow(plugin.name)} ${chalk.dim(`v${plugin.version}`)}`
+    );
     console.log(`    ${plugin.description}`);
     console.log(
       `    ${status} | ${chalk.dim("Source:")} ${plugin.source} | ${chalk.dim(
@@ -534,7 +543,9 @@ async function disablePlugin(pluginName: string): Promise<void> {
 async function updatePlugin(pluginName?: string): Promise<void> {
   const config = loadPluginsConfig();
   const pluginsToUpdate = pluginName
-    ? config.plugins.filter((p) => p.name === pluginName || p.name.includes(pluginName))
+    ? config.plugins.filter(
+        (p) => p.name === pluginName || p.name.includes(pluginName)
+      )
     : config.plugins.filter((p) => p.source === "npm");
 
   if (pluginsToUpdate.length === 0) {
@@ -588,10 +599,14 @@ async function showPluginInfo(pluginName: string): Promise<void> {
   console.log(`${chalk.dim("Source:")} ${plugin.source}`);
   console.log(`${chalk.dim("Path:")} ${plugin.path}`);
   console.log(
-    `${chalk.dim("Installed:")} ${new Date(plugin.installedAt).toLocaleString()}`
+    `${chalk.dim("Installed:")} ${new Date(
+      plugin.installedAt
+    ).toLocaleString()}`
   );
   console.log(
-    `${chalk.dim("Status:")} ${plugin.enabled ? chalk.green("enabled") : chalk.dim("disabled")}`
+    `${chalk.dim("Status:")} ${
+      plugin.enabled ? chalk.green("enabled") : chalk.dim("disabled")
+    }`
   );
 
   if (manifest) {
@@ -606,7 +621,9 @@ async function showPluginInfo(pluginName: string): Promise<void> {
         if (cmd.arguments) {
           for (const arg of cmd.arguments) {
             const required = arg.required ? chalk.red("*") : "";
-            console.log(`    ${chalk.dim(`<${arg.name}>`)}${required} ${arg.description}`);
+            console.log(
+              `    ${chalk.dim(`<${arg.name}>`)}${required} ${arg.description}`
+            );
           }
         }
         if (cmd.options) {
@@ -635,8 +652,11 @@ async function createPlugin(pluginName: string): Promise<void> {
     .replace(/^selendra-plugin-/, "")
     .replace(/^@selendra\/plugin-/, "");
 
-  const fullName = `@selendra/plugin-${normalizedName}`;
-  const pluginDir = path.join(process.cwd(), `selendra-plugin-${normalizedName}`);
+  const fullName = `@selendrajs/plugin-${normalizedName}`;
+  const pluginDir = path.join(
+    process.cwd(),
+    `selendra-plugin-${normalizedName}`
+  );
 
   if (fs.existsSync(pluginDir)) {
     console.log(chalk.red(`Directory already exists: ${pluginDir}`));
@@ -735,10 +755,13 @@ async function createPlugin(pluginName: string): Promise<void> {
               },
             ]
           : [],
-        hooks: answers.hooks.reduce((acc: Record<string, string>, hook: string) => {
-          acc[hook] = `./dist/hooks/${hook}.js`;
-          return acc;
-        }, {}),
+        hooks: answers.hooks.reduce(
+          (acc: Record<string, string>, hook: string) => {
+            acc[hook] = `./dist/hooks/${hook}.js`;
+            return acc;
+          },
+          {}
+        ),
       },
       dependencies: {},
       devDependencies: {
@@ -856,8 +879,10 @@ export interface HookContext extends PluginContext {
 
     // Create command file if needed
     if (answers.addCommand) {
-      fs.mkdirSync(path.join(pluginDir, "src", "commands"), { recursive: true });
-      
+      fs.mkdirSync(path.join(pluginDir, "src", "commands"), {
+        recursive: true,
+      });
+
       const commandContent = `/**
  * ${commandName} command
  */

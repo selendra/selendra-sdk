@@ -28,50 +28,47 @@ Learn by example with these practical code samples.
 ### Connect and Read
 
 ```typescript
-import { createEVMProvider, formatSEL } from '@selendrajs/sdk';
+import { createEVMProvider, formatSEL } from "@selendrajs/sdk";
 
-const provider = createEVMProvider('mainnet');
-const balance = await provider.getBalance('0x...');
+const provider = createEVMProvider("mainnet");
+const balance = await provider.getBalance("0x...");
 console.log(`Balance: ${formatSEL(balance)} SEL`);
 ```
 
 ### Transfer Tokens
 
 ```typescript
-import { createEVMProvider, parseSEL } from '@selendrajs/sdk';
+import { createEVMProvider, parseSEL } from "@selendrajs/sdk";
 
-const provider = createEVMProvider('testnet');
+const provider = createEVMProvider("testnet");
 const hash = await provider.transfer(
   process.env.PRIVATE_KEY!,
-  '0x...recipient',
-  parseSEL('10')
+  "0x...recipient",
+  parseSEL("10")
 );
 ```
 
 ### Deploy Contract
 
 ```typescript
-import { createEVMProvider } from '@selendrajs/sdk';
-import contractJson from './MyContract.json';
+import { createEVMProvider } from "@selendrajs/sdk";
+import contractJson from "./MyContract.json";
 
-const provider = createEVMProvider('testnet');
+const provider = createEVMProvider("testnet");
 const address = await provider.deployContract(
   contractJson.abi,
   contractJson.bytecode,
   process.env.PRIVATE_KEY!,
-  ['Constructor Arg']
+  ["Constructor Arg"]
 );
 ```
 
 ### Read Contract
 
 ```typescript
-const result = await provider.readContract(
-  contractAddress,
-  abi,
-  'balanceOf',
-  [userAddress]
-);
+const result = await provider.readContract(contractAddress, abi, "balanceOf", [
+  userAddress,
+]);
 ```
 
 ### Write Contract
@@ -81,7 +78,7 @@ const hash = await provider.writeContract(
   contractAddress,
   abi,
   privateKey,
-  'transfer',
+  "transfer",
   [recipient, amount]
 );
 ```

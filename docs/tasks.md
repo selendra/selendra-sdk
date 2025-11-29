@@ -621,7 +621,7 @@ Allow third-party CLI plugins for extensibility.
 
 ```bash
 # Install from npm
-selendra plugin install @selendra/plugin-gas-reporter
+selendra plugin install @selendrajs/plugin-gas-reporter
 
 # Install from local
 selendra plugin install ./my-plugin --local

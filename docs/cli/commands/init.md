@@ -10,16 +10,16 @@ selendra init <project-name> [options]
 
 ## Arguments
 
-| Argument | Description |
-|----------|-------------|
+| Argument       | Description                   |
+| -------------- | ----------------------------- |
 | `project-name` | Name of the project to create |
 
 ## Options
 
-| Option | Description |
-|--------|-------------|
+| Option                      | Description                 |
+| --------------------------- | --------------------------- |
 | `-t, --template <template>` | Template to use (evm\|wasm) |
-| `-h, --help` | Display help |
+| `-h, --help`                | Display help                |
 
 ## Templates
 

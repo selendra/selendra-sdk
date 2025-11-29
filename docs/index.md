@@ -50,22 +50,20 @@ npm install -g @selendrajs/cli
 ## Quick Example
 
 ```typescript
-import { createEVMProvider, formatSEL } from '@selendrajs/sdk';
+import { createEVMProvider, formatSEL } from "@selendrajs/sdk";
 
 // Connect to Selendra
-const provider = createEVMProvider('mainnet');
+const provider = createEVMProvider("mainnet");
 
 // Check balance
-const balance = await provider.getBalance('0x...');
+const balance = await provider.getBalance("0x...");
 console.log(`Balance: ${formatSEL(balance)} SEL`);
 
 // Deploy a contract
-const hash = await provider.deployContract(
-  abi,
-  bytecode,
-  privateKey,
-  [constructorArg1, constructorArg2]
-);
+const hash = await provider.deployContract(abi, bytecode, privateKey, [
+  constructorArg1,
+  constructorArg2,
+]);
 ```
 
 ## CLI Quick Start

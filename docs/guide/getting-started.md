@@ -54,16 +54,16 @@ selendra --version
 Let's connect to the Selendra network and check the current block:
 
 ```typescript
-import { createEVMProvider } from '@selendrajs/sdk';
+import { createEVMProvider } from "@selendrajs/sdk";
 
 async function main() {
   // Connect to Selendra mainnet
-  const provider = createEVMProvider('mainnet');
-  
+  const provider = createEVMProvider("mainnet");
+
   // Get the current block number
   const blockNumber = await provider.getBlockNumber();
   console.log(`Current block: ${blockNumber}`);
-  
+
   // Get chain ID
   const chainId = await provider.getChainId();
   console.log(`Chain ID: ${chainId}`);
@@ -76,11 +76,11 @@ main().catch(console.error);
 
 Selendra has three networks:
 
-| Network | Chain ID | RPC URL |
-|---------|----------|---------|
-| Mainnet | 1961 | https://rpc.selendra.org |
-| Testnet | 1953 | https://rpc.testnet.selendra.org |
-| Local | 1337 | http://localhost:8545 |
+| Network | Chain ID | RPC URL                          |
+| ------- | -------- | -------------------------------- |
+| Mainnet | 1961     | https://rpc.selendra.org         |
+| Testnet | 1953     | https://rpc.testnet.selendra.org |
+| Local   | 1337     | http://localhost:8545            |
 
 ## Next Steps
 

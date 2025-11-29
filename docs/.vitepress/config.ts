@@ -4,23 +4,29 @@ import { defineConfig } from "vitepress";
 export default defineConfig({
   title: "Selendra SDK",
   description: "TypeScript SDK for Selendra Blockchain Development",
-  
+
   head: [
     ["link", { rel: "icon", type: "image/png", href: "/logo.png" }],
     ["meta", { name: "theme-color", content: "#6366f1" }],
     ["meta", { property: "og:type", content: "website" }],
     ["meta", { property: "og:title", content: "Selendra SDK" }],
-    ["meta", { property: "og:description", content: "TypeScript SDK for Selendra Blockchain Development" }],
+    [
+      "meta",
+      {
+        property: "og:description",
+        content: "TypeScript SDK for Selendra Blockchain Development",
+      },
+    ],
     ["meta", { property: "og:url", content: "https://sdk.selendra.org" }],
   ],
-  
+
   lastUpdated: true,
   cleanUrls: true,
-  
+
   themeConfig: {
     // https://vitepress.dev/reference/default-theme-config
     logo: "/logo.png",
-    
+
     nav: [
       { text: "Guide", link: "/guide/getting-started" },
       { text: "CLI", link: "/cli/overview" },
@@ -113,9 +119,7 @@ export default defineConfig({
         },
         {
           text: "Staking Commands",
-          items: [
-            { text: "stake", link: "/cli/commands/stake" },
-          ],
+          items: [{ text: "stake", link: "/cli/commands/stake" }],
         },
         {
           text: "Advanced",
@@ -128,9 +132,7 @@ export default defineConfig({
       "/api/": [
         {
           text: "API Reference",
-          items: [
-            { text: "Overview", link: "/api/overview" },
-          ],
+          items: [{ text: "Overview", link: "/api/overview" }],
         },
         {
           text: "Providers",
@@ -150,23 +152,17 @@ export default defineConfig({
         },
         {
           text: "Errors",
-          items: [
-            { text: "Error Classes", link: "/api/errors" },
-          ],
+          items: [{ text: "Error Classes", link: "/api/errors" }],
         },
         {
           text: "Types",
-          items: [
-            { text: "Type Definitions", link: "/api/types" },
-          ],
+          items: [{ text: "Type Definitions", link: "/api/types" }],
         },
       ],
       "/examples/": [
         {
           text: "Examples",
-          items: [
-            { text: "Overview", link: "/examples/overview" },
-          ],
+          items: [{ text: "Overview", link: "/examples/overview" }],
         },
         {
           text: "Basic",
@@ -180,7 +176,10 @@ export default defineConfig({
           text: "Contracts",
           items: [
             { text: "Deploy Contract", link: "/examples/deploy-contract" },
-            { text: "Interact with Contract", link: "/examples/contract-interaction" },
+            {
+              text: "Interact with Contract",
+              link: "/examples/contract-interaction",
+            },
             { text: "ERC-20 Token", link: "/examples/erc20" },
             { text: "NFT (ERC-721)", link: "/examples/nft" },
           ],

@@ -9,7 +9,7 @@
  *
  * @example
  * ```typescript
- * import { SelendraSDK } from '@selendra/sdk';
+ * import { SelendraSDK } from '@selendrajs/sdk';
  *
  * const sdk = await SelendraSDK.create({ rpcUrl: 'wss://rpc.selendra.org' });
  * const techCommittee = sdk.pallets.technicalCommittee;

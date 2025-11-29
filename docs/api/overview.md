@@ -16,32 +16,32 @@ import {
   createEVMProvider,
   createSubstrateProvider,
   createUnifiedProvider,
-  
+
   // Utilities
   Multicall,
   createMulticall,
   batchERC20Balances,
-  
+
   // Formatting
   formatSEL,
   parseSEL,
-  
+
   // Address utilities
   isValidAddress,
   toEVMAddress,
   toSubstrateAddress,
-  
+
   // Error classes
   SelendraError,
   TransactionError,
   ContractError,
   NetworkError,
-  
+
   // Types
   type EVMProvider,
   type SubstrateProvider,
   type NetworkConfig,
-} from '@selendrajs/sdk';
+} from "@selendrajs/sdk";
 ```
 
 ## Providers
@@ -51,7 +51,7 @@ import {
 For EVM/Solidity smart contract interactions:
 
 ```typescript
-const provider = createEVMProvider('mainnet');
+const provider = createEVMProvider("mainnet");
 
 // Read data
 const balance = await provider.getBalance(address);
@@ -67,7 +67,7 @@ const receipt = await provider.waitForTransaction(hash);
 For native Substrate pallet interactions:
 
 ```typescript
-const provider = await createSubstrateProvider('mainnet');
+const provider = await createSubstrateProvider("mainnet");
 
 // Read data
 const balance = await provider.getBalance(address);
@@ -81,7 +81,7 @@ await provider.transfer(mnemonic, to, amount);
 Combines both EVM and Substrate:
 
 ```typescript
-const provider = await createUnifiedProvider('mainnet');
+const provider = await createUnifiedProvider("mainnet");
 
 // Access both
 const evmBalance = await provider.evm.getBalance(evmAddress);
@@ -101,8 +101,8 @@ Batch multiple read calls:
 const multicall = createMulticall(client);
 
 const results = await multicall.call([
-  { address: token, abi: erc20Abi, functionName: 'balanceOf', args: [user] },
-  { address: token, abi: erc20Abi, functionName: 'totalSupply' },
+  { address: token, abi: erc20Abi, functionName: "balanceOf", args: [user] },
+  { address: token, abi: erc20Abi, functionName: "totalSupply" },
 ]);
 ```
 
@@ -113,17 +113,17 @@ const results = await multicall.call([
 formatSEL(1000000000000000000n); // "1.0"
 
 // Parse SEL to wei
-parseSEL('1.0'); // 1000000000000000000n
+parseSEL("1.0"); // 1000000000000000000n
 ```
 
 ## Error Handling
 
 ```typescript
-import { 
-  SelendraError, 
+import {
+  SelendraError,
   TransactionError,
-  isSelendraError 
-} from '@selendrajs/sdk';
+  isSelendraError,
+} from "@selendrajs/sdk";
 
 try {
   await provider.transfer(key, to, amount);

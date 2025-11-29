@@ -77,9 +77,15 @@ ${chalk.cyan.bold("Welcome to Selendra!")}
 
 Selendra is a high-performance blockchain that combines the best of both worlds:
 
-${chalk.yellow("•")} ${chalk.bold("EVM Compatibility")} - Deploy Solidity smart contracts
-${chalk.yellow("•")} ${chalk.bold("Substrate Runtime")} - Access Polkadot ecosystem features
-${chalk.yellow("•")} ${chalk.bold("Unified Accounts")} - One account for both EVM and Substrate
+${chalk.yellow("•")} ${chalk.bold(
+          "EVM Compatibility"
+        )} - Deploy Solidity smart contracts
+${chalk.yellow("•")} ${chalk.bold(
+          "Substrate Runtime"
+        )} - Access Polkadot ecosystem features
+${chalk.yellow("•")} ${chalk.bold(
+          "Unified Accounts"
+        )} - One account for both EVM and Substrate
 
 ${chalk.dim("Networks:")}
   • ${chalk.green("Mainnet")} - Production network (Chain ID: 1961)
@@ -168,7 +174,9 @@ ${chalk.bgGray.white(" selendra faucet <your-address> ")}
 The faucet will send you some testnet SEL tokens. These tokens have no real value
 and are only for testing purposes.
 
-${chalk.yellow("Note:")} The faucet has rate limits. You can request tokens once per hour.
+${chalk.yellow(
+  "Note:"
+)} The faucet has rate limits. You can request tokens once per hour.
 `,
       },
       {
@@ -231,7 +239,9 @@ ${chalk.cyan.bold("Smart Contracts on Selendra")}
 A smart contract is a self-executing program that runs on the blockchain.
 On Selendra, you can write smart contracts in Solidity (for EVM) or ink! (for Wasm).
 
-In this tutorial, we'll focus on ${chalk.bold("Solidity")} and create an ERC-20 token.
+In this tutorial, we'll focus on ${chalk.bold(
+          "Solidity"
+        )} and create an ERC-20 token.
 
 ${chalk.yellow("What is ERC-20?")}
 ERC-20 is a standard for fungible tokens. It defines:
@@ -319,7 +329,9 @@ ${chalk.cyan.bold("Deploying to Testnet")}
 
 Now let's deploy your token with an initial supply of 1,000,000 tokens:
 
-${chalk.bgGray.white(" selendra deploy MyToken --network testnet --args 1000000 ")}
+${chalk.bgGray.white(
+  " selendra deploy MyToken --network testnet --args 1000000 "
+)}
 
 ${chalk.yellow("Requirements:")}
   • Set PRIVATE_KEY environment variable
@@ -367,7 +379,9 @@ ${chalk.cyan.bold("Verifying Your Contract")}
 Verification makes your contract's source code visible on the block explorer.
 This builds trust with your users!
 
-${chalk.bgGray.white(" selendra verify <contract-address> MyToken --network testnet ")}
+${chalk.bgGray.white(
+  " selendra verify <contract-address> MyToken --network testnet "
+)}
 
 After verification, anyone can:
   • Read your contract's source code
@@ -444,8 +458,7 @@ ${chalk.bold("4. Lending/Borrowing")}
         description: "Understanding the constant product formula",
         type: "quiz",
         quiz: {
-          question:
-            "What formula do most AMMs like Uniswap use for pricing?",
+          question: "What formula do most AMMs like Uniswap use for pricing?",
           options: [
             "x + y = k (Constant Sum)",
             "x * y = k (Constant Product)",
@@ -720,7 +733,9 @@ ${chalk.yellow("Storage Options:")}
   • ${chalk.bold("Arweave")} - Permanent storage with upfront payment
   • ${chalk.bold("Centralized")} - Your own servers (not recommended)
 
-${chalk.red("⚠️ Warning:")} If metadata hosting goes down, NFTs lose their content!
+${chalk.red(
+  "⚠️ Warning:"
+)} If metadata hosting goes down, NFTs lose their content!
 Always use decentralized storage for important collections.
 `,
       },
@@ -729,8 +744,7 @@ Always use decentralized storage for important collections.
         description: "Test your understanding",
         type: "quiz",
         quiz: {
-          question:
-            "What's the main difference between ERC-721 and ERC-1155?",
+          question: "What's the main difference between ERC-721 and ERC-1155?",
           options: [
             "ERC-721 is newer than ERC-1155",
             "ERC-1155 supports both fungible and non-fungible tokens",
@@ -864,11 +878,15 @@ async function runTutorialStep(
   totalSteps: number
 ): Promise<boolean> {
   console.clear();
-  console.log(chalk.dim(`━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━`));
+  console.log(
+    chalk.dim(`━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━`)
+  );
   console.log(
     chalk.cyan.bold(`Step ${stepNumber}/${totalSteps}: ${step.title}`)
   );
-  console.log(chalk.dim(`━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━`));
+  console.log(
+    chalk.dim(`━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━`)
+  );
   console.log();
 
   // Show description
@@ -882,9 +900,13 @@ async function runTutorialStep(
   }
 
   if (step.code) {
-    console.log(chalk.dim("┌─────────────────────────────────────────────────┐"));
+    console.log(
+      chalk.dim("┌─────────────────────────────────────────────────┐")
+    );
     console.log(chalk.yellow(step.code));
-    console.log(chalk.dim("└─────────────────────────────────────────────────┘"));
+    console.log(
+      chalk.dim("└─────────────────────────────────────────────────┘")
+    );
     console.log();
   }
 
@@ -943,7 +965,7 @@ async function runTutorialStep(
     ? true
     : action === "prev"
     ? false
-    : null as unknown as boolean;
+    : (null as unknown as boolean);
 }
 
 async function runTutorial(tutorial: Tutorial): Promise<void> {
@@ -1153,7 +1175,8 @@ export async function learnCommand(
 
   if (topic) {
     const tutorial = tutorials.find(
-      (t) => t.id === topic || t.title.toLowerCase().includes(topic.toLowerCase())
+      (t) =>
+        t.id === topic || t.title.toLowerCase().includes(topic.toLowerCase())
     );
     if (tutorial) {
       await runTutorial(tutorial);

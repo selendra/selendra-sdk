@@ -73,11 +73,11 @@ selendra plugin create my-plugin
 
 ## Options
 
-| Option | Description |
-|--------|-------------|
-| `--local` | Install from local path |
-| `--git` | Install from git repository |
-| `--available` | Show available plugins |
+| Option        | Description                 |
+| ------------- | --------------------------- |
+| `--local`     | Install from local path     |
+| `--git`       | Install from git repository |
+| `--available` | Show available plugins      |
 
 ## Plugin Structure
 
@@ -100,7 +100,7 @@ selendra-plugin-myname/
 
 ```json
 {
-  "name": "@selendra/plugin-myname",
+  "name": "@selendrajs/plugin-myname",
   "selendra": {
     "commands": [
       {
@@ -119,20 +119,20 @@ selendra-plugin-myname/
 
 Plugins can hook into these lifecycle events:
 
-| Hook | Description |
-|------|-------------|
-| `preCompile` | Before compiling contracts |
-| `postCompile` | After compiling contracts |
-| `preDeploy` | Before deploying |
-| `postDeploy` | After deploying |
-| `preTest` | Before running tests |
-| `postTest` | After running tests |
+| Hook          | Description                |
+| ------------- | -------------------------- |
+| `preCompile`  | Before compiling contracts |
+| `postCompile` | After compiling contracts  |
+| `preDeploy`   | Before deploying           |
+| `postDeploy`  | After deploying            |
+| `preTest`     | Before running tests       |
+| `postTest`    | After running tests        |
 
 ## Examples
 
 ```bash
 # Install from npm
-selendra plugin install @selendra/plugin-gas-reporter
+selendra plugin install @selendrajs/plugin-gas-reporter
 
 # Install from local
 selendra plugin install ./my-plugin --local
@@ -153,9 +153,10 @@ selendra plugin list --available
 ## Plugin Registry
 
 Official plugins are available at:
-- `@selendra/plugin-hardhat-bridge`
-- `@selendra/plugin-foundry-bridge`
-- `@selendra/plugin-gas-reporter`
-- `@selendra/plugin-contract-sizer`
-- `@selendra/plugin-coverage`
-- `@selendra/plugin-ipfs-deploy`
+
+- `@selendrajs/plugin-hardhat-bridge`
+- `@selendrajs/plugin-foundry-bridge`
+- `@selendrajs/plugin-gas-reporter`
+- `@selendrajs/plugin-contract-sizer`
+- `@selendrajs/plugin-coverage`
+- `@selendrajs/plugin-ipfs-deploy`

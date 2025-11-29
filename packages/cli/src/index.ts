@@ -303,7 +303,9 @@ pluginProg
   .argument("<source>", "Plugin name, path, or git URL")
   .option("--local", "Install from local path")
   .option("--git", "Install from git repository")
-  .action((source: string, options: any) => pluginCommand("install", source, options));
+  .action((source: string, options: any) =>
+    pluginCommand("install", source, options)
+  );
 
 pluginProg
   .command("uninstall")
