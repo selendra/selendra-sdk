@@ -6,8 +6,73 @@
  */
 
 import { ApiPromise, WsProvider } from "@polkadot/api";
-import { ethers } from "ethers";
+import {
+  createPublicClient,
+  createWalletClient,
+  http,
+  formatUnits,
+  parseUnits,
+  formatGwei,
+  type PublicClient,
+  type WalletClient,
+  type Transport,
+  type Chain,
+  type Account,
+} from "viem";
+import { privateKeyToAccount } from "viem/accounts";
 import chalk from "chalk";
+
+/**
+ * Custom chain definitions for Selendra networks
+ */
+const selendraMainnet = {
+  id: 1961,
+  name: "Selendra Mainnet",
+  nativeCurrency: {
+    name: "SEL",
+    symbol: "SEL",
+    decimals: 18,
+  },
+  rpcUrls: {
+    default: { http: ["https://rpc.selendra.org"] },
+  },
+  blockExplorers: {
+    default: { name: "Explorer", url: "https://explorer.selendra.org" },
+  },
+} as const satisfies Chain;
+
+const selendraTestnet = {
+  id: 1953,
+  name: "Selendra Testnet",
+  nativeCurrency: {
+    name: "SEL",
+    symbol: "SEL",
+    decimals: 18,
+  },
+  rpcUrls: {
+    default: { http: ["https://rpc-testnet.selendra.org"] },
+  },
+  blockExplorers: {
+    default: {
+      name: "Explorer",
+      url: "https://testnet-explorer.selendra.org",
+    },
+  },
+  testnet: true,
+} as const satisfies Chain;
+
+const selendraLocal = {
+  id: 31337,
+  name: "Local Development",
+  nativeCurrency: {
+    name: "SEL",
+    symbol: "SEL",
+    decimals: 18,
+  },
+  rpcUrls: {
+    default: { http: ["http://127.0.0.1:9944"] },
+  },
+} as const satisfies Chain;
 
 /**
  * Network configuration
@@ -20,6 +85,7 @@ export const Networks = {
     evmChainId: 1961,
     explorer: "https://explorer.selendra.org",
     faucet: null,
+    chain: selendraMainnet,
   },
   testnet: {
     name: "Selendra Testnet",
@@ -28,6 +94,7 @@ export const Networks = {
     evmChainId: 1953,
     explorer: "https://testnet-explorer.selendra.org",
     faucet: "https://faucet.selendra.org",
+    chain: selendraTestnet,
   },
   local: {
     name: "Local Development",
@@ -36,6 +103,7 @@ export const Networks = {
     evmChainId: 31337,
     explorer: null,
     faucet: null,
+    chain: selendraLocal,
   },
 } as const;
 
@@ -168,55 +236,80 @@ export class SubstrateClient {
  * EVM client wrapper
  */
 export class EVMClient {
-  private provider: ethers.JsonRpcProvider;
+  private client: PublicClient<Transport, Chain>;
   private network: NetworkConfig;
 
   constructor(network: NetworkKey | NetworkConfig) {
     this.network = typeof network === "string" ? getNetwork(network) : network;
-    this.provider = new ethers.JsonRpcProvider(this.network.httpRpc);
+    this.client = createPublicClient({
+      chain: this.network.chain,
+      transport: http(this.network.httpRpc),
+    });
   }
 
   /**
-   * Get the provider instance
+   * Get the public client instance
    */
-  getProvider(): ethers.JsonRpcProvider {
-    return this.provider;
+  getProvider(): PublicClient<Transport, Chain> {
+    return this.client;
   }
 
   /**
-   * Get a signer with the given private key
+   * Get a wallet client with the given private key
    */
-  getSigner(privateKey: string): ethers.Wallet {
-    return new ethers.Wallet(privateKey, this.provider);
+  getWalletClient(
+    privateKey: `0x${string}`
+  ): WalletClient<Transport, Chain, Account> {
+    const account = privateKeyToAccount(privateKey);
+    return createWalletClient({
+      account,
+      chain: this.network.chain,
+      transport: http(this.network.httpRpc),
+    });
+  }
+
+  /**
+   * Get account from private key
+   */
+  getAccount(privateKey: `0x${string}`) {
+    return privateKeyToAccount(privateKey);
   }
 
   /**
    * Get EVM balance
    */
-  async getBalance(address: string): Promise<bigint> {
-    return this.provider.getBalance(address);
+  async getBalance(address: `0x${string}`): Promise<bigint> {
+    return this.client.getBalance({ address });
   }
 
   /**
    * Get latest block number
    */
-  async getBlockNumber(): Promise<number> {
-    return this.provider.getBlockNumber();
+  async getBlockNumber(): Promise<bigint> {
+    return this.client.getBlockNumber();
   }
 
   /**
    * Get gas price
    */
   async getGasPrice(): Promise<bigint> {
-    const feeData = await this.provider.getFeeData();
-    return feeData.gasPrice || 0n;
+    return this.client.getGasPrice();
   }
 
   /**
-   * Get fee data
+   * Get fee data (for EIP-1559)
    */
   async getFeeData() {
-    return this.provider.getFeeData();
+    const [gasPrice, block] = await Promise.all([
+      this.client.getGasPrice(),
+      this.client.getBlock(),
+    ]);
+
+    return {
+      gasPrice,
+      maxFeePerGas: block.baseFeePerGas ? block.baseFeePerGas * 2n : undefined,
+      maxPriorityFeePerGas: block.baseFeePerGas ? 1000000000n : undefined, // 1 gwei
+    };
   }
 
   /**
@@ -274,8 +367,8 @@ export class SelendraCliClient {
         block: latestBlock,
       },
       evm: {
-        blockNumber: evmBlock,
-        gasPrice: ethers.formatUnits(gasPrice, "gwei"),
+        blockNumber: Number(evmBlock),
+        gasPrice: formatGwei(gasPrice),
       },
     };
   }
@@ -284,7 +377,7 @@ export class SelendraCliClient {
 /**
  * Helper to get private key from environment
  */
-export function getPrivateKey(): string {
+export function getPrivateKey(): `0x${string}` {
   const privateKey =
     process.env.PRIVATE_KEY || process.env.SELENDRA_PRIVATE_KEY;
 
@@ -302,7 +395,9 @@ export function getPrivateKey(): string {
     process.exit(1);
   }
 
-  return privateKey;
+  // Ensure proper hex format
+  const key = privateKey.startsWith("0x") ? privateKey : `0x${privateKey}`;
+  return key as `0x${string}`;
 }
 
 /**
@@ -313,12 +408,12 @@ export function formatBalance(
   decimals: number = 18
 ): string {
   const value = typeof balance === "string" ? BigInt(balance) : balance;
-  return ethers.formatUnits(value, decimals);
+  return formatUnits(value, decimals);
 }
 
 /**
  * Parse balance from string
  */
 export function parseBalance(amount: string, decimals: number = 18): bigint {
-  return ethers.parseUnits(amount, decimals);
+  return parseUnits(amount, decimals);
 }

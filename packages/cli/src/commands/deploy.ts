@@ -6,7 +6,7 @@
 
 import chalk from "chalk";
 import ora from "ora";
-import { ethers } from "ethers";
+import { formatEther, encodeDeployData, type Abi } from "viem";
 import fs from "fs/promises";
 import path from "path";
 import {
@@ -60,10 +60,12 @@ export async function deployCommand(
     spinner.text = `Connecting to ${network.name}...`;
 
     const evmClient = new EVMClient(network);
-    const wallet = evmClient.getSigner(privateKey);
+    const account = evmClient.getAccount(privateKey);
+    const publicClient = evmClient.getProvider();
+    const walletClient = evmClient.getWalletClient(privateKey);
 
     spinner.text = "Getting deployment info...";
-    const balance = await evmClient.getBalance(wallet.address);
+    const balance = await evmClient.getBalance(account.address);
 
     spinner.succeed("Ready to deploy");
     newLine();
@@ -71,8 +73,8 @@ export async function deployCommand(
     printKeyValue("Contract:", contractName);
     printKeyValue("Network:", network.name);
     printKeyValue("Chain ID:", network.evmChainId.toString());
-    printKeyValue("Deployer:", wallet.address);
-    printKeyValue("Balance:", `${ethers.formatEther(balance)} SEL`);
+    printKeyValue("Deployer:", account.address);
+    printKeyValue("Balance:", `${formatEther(balance)} SEL`);
     newLine();
 
     // Parse constructor args if provided
@@ -100,19 +102,28 @@ export async function deployCommand(
 
     spinner.start("Deploying contract...");
 
-    // Deploy contract
-    const factory = new ethers.ContractFactory(
-      artifact.abi,
-      artifact.bytecode,
-      wallet
-    );
-    const contract = await factory.deploy(...constructorArgs);
+    // Prepare deployment data
+    const deployData = encodeDeployData({
+      abi: artifact.abi as Abi,
+      bytecode: artifact.bytecode as `0x${string}`,
+      args: constructorArgs,
+    });
+
+    // Deploy contract using viem
+    const hash = await walletClient.deployContract({
+      abi: artifact.abi as Abi,
+      bytecode: artifact.bytecode as `0x${string}`,
+      args: constructorArgs,
+    });
 
     spinner.text = "Waiting for deployment confirmation...";
-    await contract.waitForDeployment();
+    const receipt = await publicClient.waitForTransactionReceipt({ hash });
 
-    const address = await contract.getAddress();
-    const deployTx = contract.deploymentTransaction();
+    const address = receipt.contractAddress;
+
+    if (!address) {
+      throw new Error("Contract deployment failed - no contract address");
+    }
 
     spinner.succeed("Contract deployed successfully!");
     newLine();
@@ -125,11 +136,8 @@ export async function deployCommand(
     printKeyValue("Address:", address, chalk.white);
     printKeyValue("Network:", network.name);
     printKeyValue("Chain ID:", network.evmChainId.toString());
-
-    if (deployTx) {
-      printKeyValue("Tx Hash:", deployTx.hash);
-      printKeyValue("Gas Used:", deployTx.gasLimit?.toString() || "N/A");
-    }
+    printKeyValue("Tx Hash:", hash);
+    printKeyValue("Gas Used:", receipt.gasUsed?.toString() || "N/A");
 
     newLine();
 
@@ -144,7 +152,7 @@ export async function deployCommand(
       address,
       network: networkKey,
       chainId: network.evmChainId,
-      txHash: deployTx?.hash,
+      txHash: hash,
       deployedAt: new Date().toISOString(),
       constructorArgs,
     });

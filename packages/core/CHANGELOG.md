@@ -13,6 +13,22 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - GitHub Actions CI/CD workflows
 - npm publish workflow with provenance
 
+### Changed
+
+- **Migrated EVM stack from ethers.js to viem + wagmi**
+  - Replaced `ethers.js` v6 with `viem` v2 for EVM operations
+  - Added `wagmi` v2 and `@wagmi/core` v2 for React hooks
+  - Added `@tanstack/react-query` v5 for async state management
+  - Improved TypeScript type inference and bundle size
+- Updated React peer dependency to `^18.0.0 || ^19.0.0` for Next.js 16+ compatibility
+
+### Breaking Changes
+
+- `getEvmProvider()` returns viem's `PublicClient` instead of ethers `JsonRpcProvider`
+- `sendEvmTransaction()` and `writeEvmContract()` now require chain configuration
+- Wallet utilities use viem's `PrivateKeyAccount` type
+- Contract interaction uses viem's `getContract()` API
+
 ---
 
 ## [1.0.0] - 2025-11-25

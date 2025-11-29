@@ -17,6 +17,8 @@ A modular, extensible TypeScript SDK for connecting to the Selendra blockchain.
 - 🔄 **Event-Driven** - React to connection changes
 - 🔁 **Auto-Reconnect** - Built-in reconnection logic
 - 📖 **Well-Documented** - Comprehensive JSDoc comments
+- ⚡ **Powered by viem** - Modern, lightweight EVM library
+- 🔗 **wagmi Compatible** - Seamless React integration
 
 ## 📁 Project Structure
 
@@ -85,10 +87,15 @@ const sdk = new SelendraSDK({
 
 await sdk.connect();
 
-// Access the ethers provider
-const provider = sdk.getEvmProvider();
-const blockNumber = await provider?.getBlockNumber();
+// Access the viem public client
+const client = sdk.getEvmProvider();
+const blockNumber = await client?.getBlockNumber();
 console.log("Current block:", blockNumber);
+
+// Get balance using viem
+const balance = await client?.getBalance({ 
+  address: '0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb' 
+});
 
 await sdk.disconnect();
 ```
@@ -188,19 +195,20 @@ const api = sdk.getApi();
 const chain = await api?.rpc.system.chain();
 ```
 
-##### `getEvmProvider(): ethers.JsonRpcProvider | null`
+##### `getEvmProvider(): PublicClient | null`
 
-Get the ethers provider instance (EVM only).
+Get the viem public client instance (EVM only).
 
-**Returns:** Ethers `JsonRpcProvider` instance or null
+**Returns:** Viem `PublicClient` instance or null
 
 **Throws:** Error if called on Substrate chain
 
 **Example:**
 
 ```typescript
-const provider = sdk.getEvmProvider();
-const balance = await provider?.getBalance(address);
+const client = sdk.getEvmProvider();
+const balance = await client?.getBalance({ address });
+const blockNumber = await client?.getBlockNumber();
 ```
 
 #### Builder Pattern Methods
@@ -457,7 +465,10 @@ npm run clean
 ## Dependencies
 
 - `@polkadot/api` - Polkadot.js API for Substrate chains
-- `ethers` - Ethereum library for EVM chains
+- `viem` - Modern, lightweight Ethereum library for EVM chains
+- `wagmi` - React hooks for Ethereum (optional, for React integration)
+- `@wagmi/core` - Core wagmi functionality
+- `@tanstack/react-query` - Async state management for React
 - `eventemitter3` - Event emitter
 
 ## License
@@ -471,16 +482,17 @@ Apache-2.0
 
 ## Roadmap
 
-This is a minimal version focusing on connection management. Future versions will include:
+This SDK provides comprehensive blockchain functionality:
 
-- [ ] Account management
-- [ ] Balance queries
-- [ ] Transaction submission
-- [ ] Contract interactions
-- [ ] Staking operations
-- [ ] Governance features
-- [ ] Event subscriptions
-- [ ] React hooks
+- [x] Account management (viem accounts)
+- [x] Balance queries (Substrate & EVM)
+- [x] Transaction submission
+- [x] Contract interactions (viem contract APIs)
+- [x] Staking operations (30 pallets supported)
+- [x] Governance features (Democracy, Council, Treasury)
+- [x] Event subscriptions
+- [x] React hooks (wagmi compatible)
+- [x] Unified Accounts (Substrate ↔ EVM mapping)
 
 ## Contributing
 

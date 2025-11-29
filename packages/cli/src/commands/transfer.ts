@@ -6,7 +6,7 @@
 
 import chalk from "chalk";
 import ora from "ora";
-import { ethers } from "ethers";
+import { isAddress, parseEther, formatEther } from "viem";
 import {
   EVMClient,
   getNetwork,
@@ -36,7 +36,7 @@ interface TransferOptions {
 
 export async function transferCommand(to: string, options: TransferOptions) {
   // Validate recipient address
-  if (!ethers.isAddress(to)) {
+  if (!isAddress(to)) {
     console.error(chalk.red("Invalid recipient address"));
     console.log(chalk.gray("Use a valid EVM address (0x...)"));
     process.exit(1);
@@ -68,16 +68,17 @@ export async function transferCommand(to: string, options: TransferOptions) {
 
   try {
     const evmClient = new EVMClient(network);
-    const wallet = evmClient.getSigner(privateKey);
+    const account = evmClient.getAccount(privateKey);
+    const publicClient = evmClient.getProvider();
+    const walletClient = evmClient.getWalletClient(privateKey);
 
     // Get balances and gas info
-    const [senderBalance, feeData] = await Promise.all([
-      evmClient.getBalance(wallet.address),
-      evmClient.getFeeData(),
+    const [senderBalance, gasPrice] = await Promise.all([
+      evmClient.getBalance(account.address),
+      evmClient.getGasPrice(),
     ]);
 
     const amountWei = parseBalance(amount);
-    const gasPrice = feeData.gasPrice || 0n;
     const estimatedGas = 21000n; // Standard ETH transfer
     const estimatedFee = gasPrice * estimatedGas;
     const totalCost = amountWei + estimatedFee;
@@ -86,7 +87,7 @@ export async function transferCommand(to: string, options: TransferOptions) {
     newLine();
 
     printHeader("Transfer Details");
-    printKeyValue("From:", wallet.address);
+    printKeyValue("From:", account.address);
     printKeyValue("To:", to);
     printKeyValue("Amount:", `${amount} SEL`);
     printKeyValue("Network:", network.name);
@@ -124,14 +125,14 @@ export async function transferCommand(to: string, options: TransferOptions) {
 
     spinner.start("Sending transaction...");
 
-    // Send transaction
-    const tx = await wallet.sendTransaction({
-      to,
+    // Send transaction using viem
+    const hash = await walletClient.sendTransaction({
+      to: to as `0x${string}`,
       value: amountWei,
     });
 
     spinner.text = "Waiting for confirmation...";
-    const receipt = await tx.wait();
+    const receipt = await publicClient.waitForTransactionReceipt({ hash });
 
     spinner.succeed("Transfer successful!");
     newLine();
@@ -140,19 +141,19 @@ export async function transferCommand(to: string, options: TransferOptions) {
     newLine();
 
     printHeader("Transaction Details");
-    printKeyValue("Tx Hash:", tx.hash);
-    printKeyValue("Block:", receipt?.blockNumber?.toString() || "N/A");
-    printKeyValue("Gas Used:", receipt?.gasUsed?.toString() || "N/A");
+    printKeyValue("Tx Hash:", hash);
+    printKeyValue("Block:", receipt.blockNumber?.toString() || "N/A");
+    printKeyValue("Gas Used:", receipt.gasUsed?.toString() || "N/A");
     printKeyValue(
       "Status:",
-      receipt?.status === 1 ? "Success" : "Failed",
-      receipt?.status === 1 ? chalk.green : chalk.red
+      receipt.status === "success" ? "Success" : "Failed",
+      receipt.status === "success" ? chalk.green : chalk.red
     );
     newLine();
 
     if (network.explorer) {
       console.log(chalk.gray("View on explorer:"));
-      console.log(chalk.cyan(`${network.explorer}/tx/${tx.hash}`));
+      console.log(chalk.cyan(`${network.explorer}/tx/${hash}`));
       newLine();
     }
   } catch (error: any) {

@@ -8,7 +8,7 @@
 
 import EventEmitter from "eventemitter3";
 import type { ApiPromise } from "@polkadot/api";
-import type { JsonRpcProvider } from "ethers";
+import type { PublicClient, Chain, Transport } from "viem";
 
 import {
   ChainType,
@@ -353,7 +353,9 @@ export class SelendraSDK extends EventEmitter<SDKEvents> {
       }
 
       try {
-        const balance = await provider.getBalance(address);
+        const balance = await provider.getBalance({
+          address: address as `0x${string}`,
+        });
         return balance;
       } catch (error) {
         throw new Error(
@@ -585,7 +587,7 @@ export class SelendraSDK extends EventEmitter<SDKEvents> {
   async executeContractTransaction(
     privateKey: string,
     contractAddress: string,
-    abi: string[],
+    abi: any[],
     functionName: string,
     args: any[] = [],
     value?: string
@@ -601,7 +603,7 @@ export class SelendraSDK extends EventEmitter<SDKEvents> {
     return this.provider.executeContractTransaction(
       privateKey,
       contractAddress,
-      abi,
+      abi as any,
       functionName,
       args,
       value
@@ -629,7 +631,7 @@ export class SelendraSDK extends EventEmitter<SDKEvents> {
    */
   async callContractFunction(
     contractAddress: string,
-    abi: string[],
+    abi: any[],
     functionName: string,
     args: any[] = []
   ): Promise<any> {
@@ -643,7 +645,7 @@ export class SelendraSDK extends EventEmitter<SDKEvents> {
     }
     return this.provider.callContractFunction(
       contractAddress,
-      abi,
+      abi as any,
       functionName,
       args
     );
@@ -739,14 +741,20 @@ export class SelendraSDK extends EventEmitter<SDKEvents> {
       throw new Error("EVM provider not initialized");
     }
 
-    const { ethers } = await import("ethers");
-    const provider = this.provider.getProvider();
+    const { getContract } = await import("viem");
+    const client = this.provider.getProvider();
 
-    if (!provider) {
+    if (!client) {
       throw new Error("EVM provider not connected");
     }
 
-    return new ethers.Contract(address, abi, provider);
+    // Note: viem's getContract needs proper ABI format, not human-readable strings
+    // For backwards compatibility, we return a simplified contract interface
+    return getContract({
+      address: address as `0x${string}`,
+      abi: abi as any,
+      client,
+    });
   }
 
   /**
@@ -778,16 +786,46 @@ export class SelendraSDK extends EventEmitter<SDKEvents> {
       throw new Error("EVM provider not initialized");
     }
 
-    // Minimal ABI for basic contract interactions
+    // Minimal ABI for basic ERC20 contract interactions (viem format)
     const minimalABI = [
-      "function name() view returns (string)",
-      "function symbol() view returns (string)",
-      "function decimals() view returns (uint8)",
-      "function totalSupply() view returns (uint256)",
-      "function balanceOf(address) view returns (uint256)",
-    ];
+      {
+        name: "name",
+        type: "function",
+        inputs: [],
+        outputs: [{ type: "string" }],
+        stateMutability: "view",
+      },
+      {
+        name: "symbol",
+        type: "function",
+        inputs: [],
+        outputs: [{ type: "string" }],
+        stateMutability: "view",
+      },
+      {
+        name: "decimals",
+        type: "function",
+        inputs: [],
+        outputs: [{ type: "uint8" }],
+        stateMutability: "view",
+      },
+      {
+        name: "totalSupply",
+        type: "function",
+        inputs: [],
+        outputs: [{ type: "uint256" }],
+        stateMutability: "view",
+      },
+      {
+        name: "balanceOf",
+        type: "function",
+        inputs: [{ name: "account", type: "address" }],
+        outputs: [{ type: "uint256" }],
+        stateMutability: "view",
+      },
+    ] as const;
 
-    return this.getContract(address, minimalABI, chainType);
+    return this.getContract(address, minimalABI as any, chainType);
   }
 
   // ==========================================================================
@@ -822,8 +860,7 @@ export class SelendraSDK extends EventEmitter<SDKEvents> {
         throw new Error("EVM provider not connected");
       }
 
-      const blockNumber = await provider.getBlockNumber();
-      const block = await provider.getBlock(blockNumber);
+      const block = await provider.getBlock({ blockTag: "latest" });
 
       return {
         number: block?.number,
@@ -893,12 +930,12 @@ export class SelendraSDK extends EventEmitter<SDKEvents> {
   }
 
   /**
-   * Get the ethers provider instance (EVM only)
+   * Get the viem public client instance (EVM only)
    *
-   * @returns {JsonRpcProvider | null} Ethers provider or null
+   * @returns {PublicClient | null} Viem public client or null
    * @throws {Error} If called on Substrate chain
    */
-  getEvmProvider(): JsonRpcProvider | null {
+  getEvmProvider(): PublicClient<Transport, Chain> | null {
     if (this.config.chainType === ChainType.Substrate) {
       throw new Error("getEvmProvider() is only available for EVM chains");
     }

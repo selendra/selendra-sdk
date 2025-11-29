@@ -6,7 +6,7 @@
 
 import chalk from "chalk";
 import ora from "ora";
-import { ethers } from "ethers";
+import { isAddress } from "viem";
 import {
   EVMClient,
   SubstrateClient,
@@ -45,7 +45,7 @@ export async function balanceCommand(address: string, options: BalanceOptions) {
     const evmClient = new EVMClient(network);
 
     // Check if it's an EVM address or Substrate address
-    const isEvmAddress = address.startsWith("0x") && address.length === 42;
+    const isEvmAddress = address.startsWith("0x") && isAddress(address);
 
     let evmBalance: bigint | null = null;
     let substrateBalance: {
@@ -56,7 +56,7 @@ export async function balanceCommand(address: string, options: BalanceOptions) {
 
     // Get EVM balance if it's an EVM address
     if (isEvmAddress) {
-      evmBalance = await evmClient.getBalance(address);
+      evmBalance = await evmClient.getBalance(address as `0x${string}`);
     }
 
     // Try to get Substrate balance

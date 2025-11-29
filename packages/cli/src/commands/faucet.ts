@@ -6,7 +6,7 @@
 
 import chalk from "chalk";
 import ora from "ora";
-import { ethers } from "ethers";
+import { isAddress } from "viem";
 import { EVMClient, getNetwork, formatBalance } from "../utils/client.js";
 import {
   printHeader,
@@ -20,7 +20,7 @@ const FAUCET_URL = "https://faucet.selendra.org";
 
 export async function faucetCommand(address: string) {
   // Validate address
-  if (!ethers.isAddress(address)) {
+  if (!isAddress(address)) {
     console.error(chalk.red("Invalid Ethereum address"));
     console.log(
       chalk.gray(
@@ -70,7 +70,7 @@ export async function faucetCommand(address: string) {
 
     const network = getNetwork("testnet");
     const evmClient = new EVMClient(network);
-    const balance = await evmClient.getBalance(address);
+    const balance = await evmClient.getBalance(address as `0x${string}`);
 
     spinner.succeed("Balance retrieved");
     newLine();

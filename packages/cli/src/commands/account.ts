@@ -5,7 +5,8 @@
  */
 
 import chalk from "chalk";
-import { ethers } from "ethers";
+import { generatePrivateKey, privateKeyToAccount } from "viem/accounts";
+import { english, generateMnemonic, mnemonicToAccount } from "viem/accounts";
 import { Keyring } from "@polkadot/keyring";
 import { mnemonicGenerate, cryptoWaitReady } from "@polkadot/util-crypto";
 import {
@@ -46,25 +47,28 @@ export async function accountCommand(action: string) {
 async function createNewAccount() {
   printHeader("Creating New EVM Account");
 
-  // Generate random wallet
-  const wallet = ethers.Wallet.createRandom();
+  // Generate random wallet using viem
+  const mnemonic = generateMnemonic(english);
+  const account = mnemonicToAccount(mnemonic);
+  const privateKey = generatePrivateKey();
+  const accountFromKey = privateKeyToAccount(privateKey);
 
   printSuccess("Account created successfully!");
   newLine();
 
   printHeader("Account Details");
-  printKeyValue("Address (EVM):", wallet.address);
+  printKeyValue("Address (EVM):", account.address);
   newLine();
 
   printWarning("IMPORTANT: Save these credentials securely!");
   newLine();
 
   console.log(chalk.cyan("Private Key:"));
-  console.log(chalk.gray(wallet.privateKey));
+  console.log(chalk.gray(privateKey));
   newLine();
 
   console.log(chalk.cyan("Mnemonic (Seed Phrase):"));
-  console.log(chalk.gray(wallet.mnemonic?.phrase || "N/A"));
+  console.log(chalk.gray(mnemonic));
   newLine();
 
   console.log(chalk.gray("─".repeat(70)));
@@ -78,8 +82,8 @@ async function createNewAccount() {
 
   printNextSteps([
     "Save your seed phrase in a secure location",
-    "Get testnet tokens: selendra faucet " + wallet.address,
-    "Check balance: selendra balance " + wallet.address,
+    "Get testnet tokens: selendra faucet " + account.address,
+    "Check balance: selendra balance " + account.address,
   ]);
 }
 

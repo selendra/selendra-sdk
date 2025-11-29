@@ -644,7 +644,13 @@ export type { TechCommitteeResult } from "./pallets/technical-committee/client.j
 
 // Re-export commonly used types from dependencies for convenience
 export type { ApiPromise } from "@polkadot/api";
-export type { JsonRpcProvider } from "ethers";
+export type {
+  PublicClient,
+  WalletClient,
+  Chain,
+  Transport,
+  Account,
+} from "viem";
 
 /**
  * Default export for CommonJS compatibility

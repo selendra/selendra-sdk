@@ -11,6 +11,30 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Documentation for npm publishing process
 
+### Changed
+
+- **Migrated from ethers.js to viem + wagmi** - Complete EVM stack modernization
+  - Replaced `ethers.js` with `viem` for all EVM operations
+  - Added `wagmi` and `@wagmi/core` for React integration
+  - Added `@tanstack/react-query` for async state management
+  - Improved bundle size and tree-shaking support
+  - Better TypeScript type inference
+  
+### Breaking Changes
+
+- **EVM Provider API**: `getEvmProvider()` now returns viem's `PublicClient` instead of ethers `JsonRpcProvider`
+  - Before: `provider.getBalance(address)` 
+  - After: `client.getBalance({ address })`
+- **Wallet Creation**: Use viem's account utilities instead of ethers.Wallet
+  - Before: `new ethers.Wallet(privateKey)`
+  - After: `privateKeyToAccount(privateKey)`
+- **Contract Interaction**: Use viem's contract APIs
+  - Before: `new ethers.Contract(address, abi, provider)`
+  - After: `getContract({ address, abi, client })`
+- **Formatting**: Use viem utilities
+  - Before: `ethers.formatEther()`, `ethers.parseEther()`
+  - After: `formatEther()`, `parseEther()` from viem
+
 ---
 
 ## [1.0.0] - 2025-11-17

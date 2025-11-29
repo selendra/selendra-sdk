@@ -6,7 +6,7 @@
 
 import chalk from "chalk";
 import ora from "ora";
-import { ethers } from "ethers";
+import { formatGwei } from "viem";
 import {
   EVMClient,
   SubstrateClient,
@@ -62,7 +62,7 @@ export async function statusCommand(options: StatusOptions) {
               rpc: network.httpRpc,
             },
             evm: {
-              blockNumber,
+              blockNumber: Number(blockNumber),
               gasPrice: feeData.gasPrice?.toString(),
               maxFeePerGas: feeData.maxFeePerGas?.toString(),
             },
@@ -82,17 +82,21 @@ export async function statusCommand(options: StatusOptions) {
     printKeyValue("WebSocket:", network.wsRpc);
 
     printHeader("Live Data (EVM)");
-    printKeyValue("Block Height:", blockNumber.toLocaleString(), chalk.green);
+    printKeyValue(
+      "Block Height:",
+      Number(blockNumber).toLocaleString(),
+      chalk.green
+    );
     printKeyValue(
       "Gas Price:",
-      `${ethers.formatUnits(feeData.gasPrice || 0n, "gwei")} gwei`,
+      `${formatGwei(feeData.gasPrice || 0n)} gwei`,
       chalk.green
     );
 
     if (feeData.maxFeePerGas) {
       printKeyValue(
         "Max Fee:",
-        `${ethers.formatUnits(feeData.maxFeePerGas, "gwei")} gwei`,
+        `${formatGwei(feeData.maxFeePerGas)} gwei`,
         chalk.green
       );
     }

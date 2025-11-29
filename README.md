@@ -10,10 +10,11 @@ SDK for building applications on Selendra blockchain.
 TypeScript SDK for Selendra blockchain with full support for:
 
 - ✅ **30 Pallets** - Complete coverage of all Selendra runtime pallets
-- ✅ **EVM Support** - Full Ethereum compatibility via Frontier
-- ✅ **React Hooks** - Production-ready hooks for dApp development
+- ✅ **EVM Support** - Full Ethereum compatibility via Frontier (powered by viem)
+- ✅ **React Hooks** - Production-ready hooks for dApp development (wagmi compatible)
 - ✅ **Unified Accounts** - Seamless Substrate ↔ EVM account mapping
 - ✅ **Type Safety** - Full TypeScript with comprehensive types
+- ✅ **Modern Stack** - Built with viem + wagmi for optimal bundle size and performance
 
 ## Packages
 
@@ -64,12 +65,18 @@ import {
   useSelendra,
   useBalance,
 } from "@selendrajs/sdk/react";
+import { WagmiProvider } from 'wagmi';
+import { QueryClientProvider } from '@tanstack/react-query';
 
 function App() {
   return (
-    <SelendraProvider config={{ rpcUrl: "wss://rpc.selendra.org" }}>
-      <Wallet />
-    </SelendraProvider>
+    <WagmiProvider config={wagmiConfig}>
+      <QueryClientProvider client={queryClient}>
+        <SelendraProvider config={{ rpcUrl: "wss://rpc.selendra.org" }}>
+          <Wallet />
+        </SelendraProvider>
+      </QueryClientProvider>
+    </WagmiProvider>
   );
 }
 
