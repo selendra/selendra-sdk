@@ -93,8 +93,8 @@ const blockNumber = await client?.getBlockNumber();
 console.log("Current block:", blockNumber);
 
 // Get balance using viem
-const balance = await client?.getBalance({ 
-  address: '0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb' 
+const balance = await client?.getBalance({
+  address: "0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb",
 });
 
 await sdk.disconnect();

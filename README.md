@@ -18,10 +18,10 @@ TypeScript SDK for Selendra blockchain with full support for:
 
 ## Packages
 
-| Package                | Description               | NPM                                                                                                                 |
-| ---------------------- | ------------------------- | ------------------------------------------------------------------------------------------------------------------- |
+| Package           | Description               | NPM                                                                                                       |
+| ----------------- | ------------------------- | --------------------------------------------------------------------------------------------------------- |
 | `@selendrajs/sdk` | Core SDK with all pallets | [![npm](https://img.shields.io/npm/v/@selendrajs/sdk.svg)](https://www.npmjs.com/package/@selendrajs/sdk) |
-| `@selendrajs/cli`      | Command-line interface    | [![npm](https://img.shields.io/npm/v/@selendrajs/cli.svg)](https://www.npmjs.com/package/@selendrajs/cli)           |
+| `@selendrajs/cli` | Command-line interface    | [![npm](https://img.shields.io/npm/v/@selendrajs/cli.svg)](https://www.npmjs.com/package/@selendrajs/cli) |
 
 ## Installation
 
@@ -65,8 +65,8 @@ import {
   useSelendra,
   useBalance,
 } from "@selendrajs/sdk/react";
-import { WagmiProvider } from 'wagmi';
-import { QueryClientProvider } from '@tanstack/react-query';
+import { WagmiProvider } from "wagmi";
+import { QueryClientProvider } from "@tanstack/react-query";
 
 function App() {
   return (

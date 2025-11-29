@@ -10,12 +10,12 @@ This document tracks planned features, improvements, and bug fixes for the Selen
 
 ## 📊 Task Overview
 
-| Priority | Total | Completed | In Progress | Not Started |
-|----------|-------|-----------|-------------|-------------|
-| 🔴 High | 6 | 0 | 0 | 6 |
-| 🟡 Medium | 7 | 0 | 0 | 7 |
-| 🟢 Low | 5 | 0 | 0 | 5 |
-| **Total** | **18** | **0** | **0** | **18** |
+| Priority  | Total  | Completed | In Progress | Not Started |
+| --------- | ------ | --------- | ----------- | ----------- |
+| 🔴 High   | 6      | 3         | 0           | 3           |
+| 🟡 Medium | 7      | 0         | 0           | 7           |
+| 🟢 Low    | 5      | 0         | 0           | 5           |
+| **Total** | **18** | **3**     | **0**       | **15**      |
 
 ---
 
@@ -24,6 +24,7 @@ This document tracks planned features, improvements, and bug fixes for the Selen
 These are critical for developer experience and should be implemented first.
 
 ### TASK-001: Working Faucet API Integration
+
 **Priority:** 🔴 High  
 **Effort:** Low (2-4 hours)  
 **Component:** CLI  
@@ -33,6 +34,7 @@ These are critical for developer experience and should be implemented first.
 Currently, `selendra faucet <address>` only displays manual instructions. Need to integrate with the actual faucet API for automatic token distribution.
 
 **Acceptance Criteria:**
+
 - [ ] Integrate with Selendra testnet faucet API
 - [ ] Auto-request tokens with rate limiting awareness
 - [ ] Show clear success/failure messages with tx hash
@@ -40,9 +42,11 @@ Currently, `selendra faucet <address>` only displays manual instructions. Need t
 - [ ] Add `--amount` flag if API supports custom amounts
 
 **Files to Modify:**
+
 - `packages/cli/src/commands/faucet.ts`
 
 **API Endpoint (TBD):**
+
 ```
 POST https://faucet-api.selendra.org/request
 Body: { address: "0x...", network: "testnet" }
@@ -51,25 +55,29 @@ Body: { address: "0x...", network: "testnet" }
 ---
 
 ### TASK-002: Transaction Lookup Command
+
 **Priority:** 🔴 High  
 **Effort:** Low (2-3 hours)  
 **Component:** CLI  
-**Status:** ⬜ Not Started
+**Status:** ✅ Completed
 
 **Description:**  
 Add `selendra tx <hash>` command to look up transaction details from the blockchain.
 
 **Acceptance Criteria:**
-- [ ] Query transaction by hash (EVM and Substrate)
-- [ ] Display: status, block, from, to, value, gas used, timestamp
-- [ ] Format output nicely with colors
-- [ ] Add `--json` flag for programmatic output
-- [ ] Link to block explorer
+
+- [x] Query transaction by hash (EVM and Substrate)
+- [x] Display: status, block, from, to, value, gas used, timestamp
+- [x] Format output nicely with colors
+- [x] Add `--json` flag for programmatic output
+- [x] Link to block explorer
 
 **Files to Create:**
+
 - `packages/cli/src/commands/tx.ts`
 
 **Example Usage:**
+
 ```bash
 selendra tx 0x123... --network testnet
 selendra tx 0x123... --json
@@ -78,6 +86,7 @@ selendra tx 0x123... --json
 ---
 
 ### TASK-003: Contract Verification Command
+
 **Priority:** 🔴 High  
 **Effort:** Medium (4-8 hours)  
 **Component:** CLI  
@@ -87,6 +96,7 @@ selendra tx 0x123... --json
 Add `selendra verify <contract-name> <address>` command to verify contracts on the Selendra block explorer.
 
 **Acceptance Criteria:**
+
 - [ ] Read contract source from artifacts
 - [ ] Submit to explorer verification API
 - [ ] Support constructor arguments
@@ -94,44 +104,51 @@ Add `selendra verify <contract-name> <address>` command to verify contracts on t
 - [ ] Handle verification status polling
 
 **Files to Create:**
+
 - `packages/cli/src/commands/verify.ts`
 
 **Example Usage:**
+
 ```bash
 selendra verify MyToken 0x123... --network testnet
 selendra verify MyToken 0x123... --constructor-args "arg1,arg2"
 ```
 
 **Dependencies:**
+
 - Requires Selendra Explorer API endpoint for verification
 
 ---
 
 ### TASK-004: Gas Estimation Utility
+
 **Priority:** 🔴 High  
 **Effort:** Low (2-3 hours)  
 **Component:** SDK + CLI  
-**Status:** ⬜ Not Started
+**Status:** ✅ Completed
 
 **Description:**  
 Add gas estimation before sending transactions and a CLI command to check current gas prices.
 
 **Acceptance Criteria:**
-- [ ] SDK: Add `estimateGas()` method for transactions
-- [ ] SDK: Add `estimateContractGas()` for contract calls
-- [ ] CLI: Add `selendra gas` command showing current prices
-- [ ] Show gas in gwei and estimated cost in SEL
+
+- [x] SDK: Add `estimateGas()` method for transactions
+- [x] SDK: Add `estimateContractGas()` for contract calls
+- [x] CLI: Add `selendra gas` command showing current prices
+- [x] Show gas in gwei and estimated cost in SEL
 
 **Files to Modify/Create:**
+
 - `packages/core/src/providers/evm.ts` - Add estimation methods
 - `packages/cli/src/commands/gas.ts` - New command
 
 **Example Usage:**
+
 ```bash
 selendra gas --network testnet
 # Output:
 # Gas Price: 1.5 gwei
-# Base Fee: 1.0 gwei  
+# Base Fee: 1.0 gwei
 # Priority Fee: 0.5 gwei
 # Estimated transfer cost: 0.000031 SEL
 ```
@@ -139,25 +156,29 @@ selendra gas --network testnet
 ---
 
 ### TASK-005: Block Explorer Command
+
 **Priority:** 🔴 High  
 **Effort:** Low (2-3 hours)  
 **Component:** CLI  
-**Status:** ⬜ Not Started
+**Status:** ✅ Completed
 
 **Description:**  
 Add `selendra block <number|hash|latest>` command to inspect block details.
 
 **Acceptance Criteria:**
-- [ ] Query block by number, hash, or "latest"
-- [ ] Display: number, hash, timestamp, tx count, gas used, miner
-- [ ] Support both EVM and Substrate blocks
-- [ ] Add `--json` flag
-- [ ] Add `--txs` flag to list transactions
+
+- [x] Query block by number, hash, or "latest"
+- [x] Display: number, hash, timestamp, tx count, gas used, miner
+- [x] Support both EVM and Substrate blocks
+- [x] Add `--json` flag
+- [x] Add `--txs` flag to list transactions
 
 **Files to Create:**
+
 - `packages/cli/src/commands/block.ts`
 
 **Example Usage:**
+
 ```bash
 selendra block latest --network testnet
 selendra block 1000000 --txs
@@ -166,6 +187,7 @@ selendra block 1000000 --txs
 ---
 
 ### TASK-006: Multicall Support
+
 **Priority:** 🔴 High  
 **Effort:** Medium (4-6 hours)  
 **Component:** SDK  
@@ -175,6 +197,7 @@ selendra block 1000000 --txs
 Add multicall support to batch multiple read calls into a single RPC request. Essential for dApp performance.
 
 **Acceptance Criteria:**
+
 - [ ] Implement `Multicall` class using standard Multicall3 contract
 - [ ] Support arbitrary contract calls in a batch
 - [ ] Return typed results
@@ -182,15 +205,17 @@ Add multicall support to batch multiple read calls into a single RPC request. Es
 - [ ] Deploy Multicall3 if not present on Selendra
 
 **Files to Create:**
+
 - `packages/core/src/utils/multicall.ts`
 
 **Example Usage:**
+
 ```typescript
 const multicall = new Multicall(client);
 const results = await multicall.call([
-  { target: tokenA, abi: erc20Abi, functionName: 'balanceOf', args: [user] },
-  { target: tokenB, abi: erc20Abi, functionName: 'balanceOf', args: [user] },
-  { target: tokenA, abi: erc20Abi, functionName: 'totalSupply' },
+  { target: tokenA, abi: erc20Abi, functionName: "balanceOf", args: [user] },
+  { target: tokenB, abi: erc20Abi, functionName: "balanceOf", args: [user] },
+  { target: tokenA, abi: erc20Abi, functionName: "totalSupply" },
 ]);
 ```
 
@@ -201,6 +226,7 @@ const results = await multicall.call([
 Important for production-grade development but not blocking basic usage.
 
 ### TASK-007: Interactive Contract REPL
+
 **Priority:** 🟡 Medium  
 **Effort:** Medium (6-8 hours)  
 **Component:** CLI  
@@ -210,6 +236,7 @@ Important for production-grade development but not blocking basic usage.
 Add `selendra interact <contract-address>` command for interactive contract interaction.
 
 **Acceptance Criteria:**
+
 - [ ] Load contract ABI from artifacts or user input
 - [ ] Interactive prompt to select functions
 - [ ] Support read and write operations
@@ -217,9 +244,11 @@ Add `selendra interact <contract-address>` command for interactive contract inte
 - [ ] Save interaction history
 
 **Files to Create:**
+
 - `packages/cli/src/commands/interact.ts`
 
 **Example Usage:**
+
 ```bash
 selendra interact 0x123... --abi ./MyToken.json
 > balanceOf(0x456...)
@@ -229,6 +258,7 @@ selendra interact 0x123... --abi ./MyToken.json
 ---
 
 ### TASK-008: Project Configuration File
+
 **Priority:** 🟡 Medium  
 **Effort:** Medium (4-6 hours)  
 **Component:** CLI  
@@ -238,6 +268,7 @@ selendra interact 0x123... --abi ./MyToken.json
 Support a `selendra.config.ts` file for project-level configuration.
 
 **Acceptance Criteria:**
+
 - [ ] Auto-detect config file in project root
 - [ ] Support network configurations
 - [ ] Store deployed contract addresses
@@ -245,25 +276,27 @@ Support a `selendra.config.ts` file for project-level configuration.
 - [ ] Environment variable interpolation
 
 **Files to Create:**
+
 - `packages/cli/src/utils/config.ts`
 - `packages/cli/src/templates/selendra.config.ts`
 
 **Example Config:**
+
 ```typescript
 // selendra.config.ts
 export default {
-  defaultNetwork: 'testnet',
+  defaultNetwork: "testnet",
   networks: {
     testnet: {
-      url: 'https://rpc-testnet.selendra.org',
+      url: "https://rpc-testnet.selendra.org",
       chainId: 1953,
       accounts: [process.env.PRIVATE_KEY],
     },
   },
   contracts: {
     MyToken: {
-      testnet: '0x123...',
-      mainnet: '0x456...',
+      testnet: "0x123...",
+      mainnet: "0x456...",
     },
   },
 };
@@ -272,6 +305,7 @@ export default {
 ---
 
 ### TASK-009: ABI Management Commands
+
 **Priority:** 🟡 Medium  
 **Effort:** Low (2-3 hours)  
 **Component:** CLI  
@@ -281,17 +315,20 @@ export default {
 Add commands to export and import contract ABIs.
 
 **Acceptance Criteria:**
+
 - [ ] `selendra abi export <contract>` - Export ABI to JSON
 - [ ] `selendra abi import <file>` - Import external ABI
 - [ ] `selendra abi list` - List available ABIs
 - [ ] Support TypeScript type generation
 
 **Files to Create:**
+
 - `packages/cli/src/commands/abi.ts`
 
 ---
 
 ### TASK-010: Event Logs Query Command
+
 **Priority:** 🟡 Medium  
 **Effort:** Medium (3-4 hours)  
 **Component:** CLI  
@@ -301,6 +338,7 @@ Add commands to export and import contract ABIs.
 Add `selendra logs <contract>` command to query and filter event logs.
 
 **Acceptance Criteria:**
+
 - [ ] Query events by contract address
 - [ ] Filter by event name
 - [ ] Filter by block range
@@ -308,9 +346,11 @@ Add `selendra logs <contract>` command to query and filter event logs.
 - [ ] Stream live events with `--watch`
 
 **Files to Create:**
+
 - `packages/cli/src/commands/logs.ts`
 
 **Example Usage:**
+
 ```bash
 selendra logs 0x123... --event Transfer --from-block 1000000
 selendra logs 0x123... --watch
@@ -319,6 +359,7 @@ selendra logs 0x123... --watch
 ---
 
 ### TASK-011: Transaction Simulation
+
 **Priority:** 🟡 Medium  
 **Effort:** Medium (4-6 hours)  
 **Component:** SDK  
@@ -328,18 +369,21 @@ selendra logs 0x123... --watch
 Add dry-run/simulation capability before sending transactions.
 
 **Acceptance Criteria:**
+
 - [ ] Simulate transaction without sending
 - [ ] Return expected gas, return values, state changes
 - [ ] Detect potential reverts before spending gas
 - [ ] Support both EVM and Substrate
 
 **Files to Modify:**
+
 - `packages/core/src/providers/evm.ts`
 - `packages/core/src/providers/substrate.ts`
 
 ---
 
 ### TASK-012: SDK Error Handling Improvements
+
 **Priority:** 🟡 Medium  
 **Effort:** Low (2-3 hours)  
 **Component:** SDK  
@@ -349,17 +393,20 @@ Add dry-run/simulation capability before sending transactions.
 Improve error messages and add error codes for better debugging.
 
 **Acceptance Criteria:**
+
 - [ ] Create `SelendraError` class with error codes
 - [ ] Parse and decode revert reasons from contracts
 - [ ] Add troubleshooting suggestions in errors
 - [ ] Document all error codes
 
 **Files to Create:**
+
 - `packages/core/src/errors/index.ts`
 
 ---
 
 ### TASK-013: Account Management Improvements
+
 **Priority:** 🟡 Medium  
 **Effort:** Medium (4-6 hours)  
 **Component:** CLI  
@@ -369,6 +416,7 @@ Improve error messages and add error codes for better debugging.
 Enhance account management with encrypted keystore.
 
 **Acceptance Criteria:**
+
 - [ ] `selendra account import` - Import from private key or mnemonic
 - [ ] `selendra account list` - List saved accounts
 - [ ] `selendra account export` - Export account
@@ -376,6 +424,7 @@ Enhance account management with encrypted keystore.
 - [ ] Hardware wallet support (Ledger)
 
 **Files to Modify:**
+
 - `packages/cli/src/commands/account.ts`
 
 ---
@@ -385,6 +434,7 @@ Enhance account management with encrypted keystore.
 Nice-to-have features for improved developer experience.
 
 ### TASK-014: Documentation Site
+
 **Priority:** 🟢 Low  
 **Effort:** High (8-16 hours)  
 **Component:** Docs  
@@ -394,6 +444,7 @@ Nice-to-have features for improved developer experience.
 Create a documentation website using VitePress or Docusaurus.
 
 **Acceptance Criteria:**
+
 - [ ] API reference (from TypeDoc)
 - [ ] Getting started guide
 - [ ] Tutorials and examples
@@ -403,6 +454,7 @@ Create a documentation website using VitePress or Docusaurus.
 ---
 
 ### TASK-015: Interactive Tutorials
+
 **Priority:** 🟢 Low  
 **Effort:** High (8-12 hours)  
 **Component:** CLI  
@@ -412,6 +464,7 @@ Create a documentation website using VitePress or Docusaurus.
 Add `selendra learn` command with interactive tutorials.
 
 **Acceptance Criteria:**
+
 - [ ] Step-by-step guided tutorials
 - [ ] Progress tracking
 - [ ] Topics: First Contract, Tokens, NFTs, DeFi basics
@@ -419,6 +472,7 @@ Add `selendra learn` command with interactive tutorials.
 ---
 
 ### TASK-016: Network Health Dashboard
+
 **Priority:** 🟢 Low  
 **Effort:** Medium (4-6 hours)  
 **Component:** CLI  
@@ -428,6 +482,7 @@ Add `selendra learn` command with interactive tutorials.
 Enhanced `selendra status` with real-time network health.
 
 **Acceptance Criteria:**
+
 - [ ] TPS (transactions per second)
 - [ ] Active validators count
 - [ ] Network uptime
@@ -437,6 +492,7 @@ Enhanced `selendra status` with real-time network health.
 ---
 
 ### TASK-017: Plugin System
+
 **Priority:** 🟢 Low  
 **Effort:** High (12-20 hours)  
 **Component:** CLI  
@@ -446,6 +502,7 @@ Enhanced `selendra status` with real-time network health.
 Allow third-party CLI plugins for extensibility.
 
 **Acceptance Criteria:**
+
 - [ ] Plugin discovery and installation
 - [ ] Plugin API hooks
 - [ ] Plugin registry
@@ -454,6 +511,7 @@ Allow third-party CLI plugins for extensibility.
 ---
 
 ### TASK-018: Bash/Zsh Completions
+
 **Priority:** 🟢 Low  
 **Effort:** Low (2-3 hours)  
 **Component:** CLI  
@@ -463,6 +521,7 @@ Allow third-party CLI plugins for extensibility.
 Add shell auto-completion for CLI commands.
 
 **Acceptance Criteria:**
+
 - [ ] Bash completion script
 - [ ] Zsh completion script
 - [ ] Installation instructions
@@ -470,21 +529,30 @@ Add shell auto-completion for CLI commands.
 
 ---
 
+### TASK-019: Documentation
+
+document all inside /home/user0/projects/selendra-biz/selendra/devtools/website-docs/content/docs
+
+---
+
 ## 🐛 Bug Fixes & Technical Debt
 
 ### BUG-001: Package Lock Sync
+
 **Priority:** 🟡 Medium  
 **Status:** ⬜ Not Started
 
 Update all package-lock.json files after viem migration.
 
 ### BUG-002: Test Coverage
+
 **Priority:** 🟡 Medium  
 **Status:** ⬜ Not Started
 
 Add unit tests for CLI commands. Current coverage is minimal.
 
 ### BUG-003: ESLint Configuration
+
 **Priority:** 🟢 Low  
 **Status:** ⬜ Not Started
 
@@ -495,17 +563,19 @@ Add ESLint + Prettier configuration for consistent code style.
 ## 📝 Notes
 
 ### Dependencies for Tasks
+
 - **TASK-003** (Verify) depends on Selendra Explorer API availability
 - **TASK-006** (Multicall) may require deploying Multicall3 contract
 - **TASK-001** (Faucet) depends on faucet API endpoint
 
 ### Version Planning
-| Version | Tasks |
-|---------|-------|
-| v1.1.0 | TASK-001, TASK-002, TASK-004, TASK-005 |
-| v1.2.0 | TASK-003, TASK-006, TASK-007 |
-| v1.3.0 | TASK-008, TASK-009, TASK-010 |
-| v2.0.0 | TASK-011, TASK-012, TASK-013, TASK-014 |
+
+| Version | Tasks                                  |
+| ------- | -------------------------------------- |
+| v1.1.0  | TASK-001, TASK-002, TASK-004, TASK-005 |
+| v1.2.0  | TASK-003, TASK-006, TASK-007           |
+| v1.3.0  | TASK-008, TASK-009, TASK-010           |
+| v2.0.0  | TASK-011, TASK-012, TASK-013, TASK-014 |
 
 ---
 
@@ -522,11 +592,14 @@ Add ESLint + Prettier configuration for consistent code style.
 ## 📈 Progress Tracking
 
 ```
-[                                                  ] 0%
+[████████░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░] 17% (3/18)
 ```
 
+**Completed:** TASK-002, TASK-004, TASK-005
+
 **Legend:**
+
 - ⬜ Not Started
-- 🔄 In Progress  
+- 🔄 In Progress
 - ✅ Completed
 - ❌ Blocked

@@ -19,11 +19,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Added `@tanstack/react-query` for async state management
   - Improved bundle size and tree-shaking support
   - Better TypeScript type inference
-  
+
 ### Breaking Changes
 
 - **EVM Provider API**: `getEvmProvider()` now returns viem's `PublicClient` instead of ethers `JsonRpcProvider`
-  - Before: `provider.getBalance(address)` 
+  - Before: `provider.getBalance(address)`
   - After: `client.getBalance({ address })`
 - **Wallet Creation**: Use viem's account utilities instead of ethers.Wallet
   - Before: `new ethers.Wallet(privateKey)`

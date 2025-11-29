@@ -16,8 +16,11 @@ import { compileCommand } from "./commands/compile.js";
 import { deployCommand } from "./commands/deploy.js";
 import { balanceCommand } from "./commands/balance.js";
 import { transferCommand } from "./commands/transfer.js";
-import { chainCommand, blockCommand } from "./commands/chain.js";
+import { chainCommand } from "./commands/chain.js";
+import { blockCommand } from "./commands/block.js";
 import { stakeCommand } from "./commands/stake.js";
+import { txCommand } from "./commands/tx.js";
+import { gasCommand } from "./commands/gas.js";
 
 const program = new Command();
 
@@ -93,14 +96,40 @@ program
 program
   .command("block")
   .description("Show block information")
-  .argument("[number]", "Block number (latest if not specified)")
+  .argument("[identifier]", "Block number, hash, or 'latest' (default: latest)")
   .option(
     "-n, --network <network>",
     "Network to query (mainnet|testnet|local)",
     "mainnet"
   )
   .option("--json", "Output as JSON")
+  .option("--txs", "Include transaction details")
   .action(blockCommand);
+
+// Transaction lookup
+program
+  .command("tx")
+  .description("Look up transaction details by hash")
+  .argument("<hash>", "Transaction hash (0x...)")
+  .option(
+    "-n, --network <network>",
+    "Network to query (mainnet|testnet|local)",
+    "mainnet"
+  )
+  .option("--json", "Output as JSON")
+  .action(txCommand);
+
+// Gas estimation
+program
+  .command("gas")
+  .description("Show current gas prices and estimation")
+  .option(
+    "-n, --network <network>",
+    "Network to query (mainnet|testnet|local)",
+    "mainnet"
+  )
+  .option("--json", "Output as JSON")
+  .action(gasCommand);
 
 // ========================================
 // Account Commands

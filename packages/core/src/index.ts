@@ -25,7 +25,7 @@ export {
   SubstrateProvider,
   EvmProvider,
 } from "./providers/index.js";
-export type { BaseProviderEvents } from "./providers/index.js";
+export type { BaseProviderEvents, GasEstimate, GasCostsResult } from "./providers/index.js";
 
 // Export Unified Accounts
 export {
