@@ -2,9 +2,23 @@
 
 > **Last Updated:** November 29, 2025  
 > **Branch:** task1  
-> **Status:** Active Development
+> **Status:** ✅ Completed - Ready for v2.0.0 Release
+> **Version:** SDK v2.0.0 | CLI v1.0.0
 
 This document tracks planned features, improvements, and bug fixes for the Selendra SDK and CLI tools.
+
+---
+
+## 🎉 v2.0.0 Release Notes
+
+**Breaking Changes:**
+- Migrated EVM stack from ethers.js to viem + wagmi
+- `getEvmProvider()` returns viem's `PublicClient` instead of ethers `JsonRpcProvider`
+- Contract interactions use viem's `getContract()` API
+- Wallet utilities use viem's `PrivateKeyAccount` type
+- BigNumber replaced with native JavaScript `bigint`
+
+See [CHANGELOG.md](/packages/core/CHANGELOG.md) for full migration guide.
 
 ---
 

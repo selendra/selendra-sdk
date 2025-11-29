@@ -5,10 +5,48 @@ All notable changes to `@selendrajs/sdk` will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased]
+## [2.0.0] - 2025-11-29
+
+### ⚠️ BREAKING CHANGES
+
+This is a major release that migrates the EVM stack from ethers.js to viem + wagmi. If you're using EVM functionality, you'll need to update your code.
+
+#### Migration Required
+
+1. **Provider Changes**
+   - `getEvmProvider()` now returns viem's `PublicClient` instead of ethers `JsonRpcProvider`
+   - Use `client.getBalance({ address })` instead of `provider.getBalance(address)`
+   - Use `client.getBlockNumber()` instead of `provider.getBlockNumber()`
+
+2. **Wallet Changes**
+   - Wallet utilities use viem's `PrivateKeyAccount` type
+   - Use `privateKeyToAccount()` from `viem/accounts` instead of `new ethers.Wallet()`
+
+3. **Contract Interaction**
+   - Use viem's `getContract()` API instead of `new ethers.Contract()`
+   - Contract reads: `contract.read.methodName([args])` instead of `contract.methodName(args)`
+   - Contract writes: `contract.write.methodName([args])` instead of `contract.methodName(args)`
+
+4. **Transaction Signing**
+   - `sendEvmTransaction()` and `writeEvmContract()` now require chain configuration
+   - Transactions use `createWalletClient()` with explicit chain
+
+5. **BigNumber → bigint**
+   - Replace `ethers.BigNumber` with native JavaScript `bigint`
+   - Use `parseEther()` and `formatEther()` from viem
+
+#### Migration Guide
+
+See [Migration from ethers.js to viem](/docs/sdk/migration/ethers-to-viem) for detailed examples.
 
 ### Added
 
+- **viem v2 Integration** - Modern, lightweight EVM library (~35kb vs ~120kb)
+- **wagmi v2 Integration** - React hooks for Ethereum
+- **@tanstack/react-query v5** - Async state management
+- **Selendra Chain Definitions** - Pre-configured `selendra` and `selendraTestnet` chains
+- **Interactive Tutorials** - `selendra learn` command in CLI
+- **Plugin System** - `selendra plugin` command for extensibility
 - TypeDoc documentation generation
 - GitHub Actions CI/CD workflows
 - npm publish workflow with provenance
@@ -21,13 +59,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Added `@tanstack/react-query` v5 for async state management
   - Improved TypeScript type inference and bundle size
 - Updated React peer dependency to `^18.0.0 || ^19.0.0` for Next.js 16+ compatibility
+- Improved error messages and type safety throughout
 
-### Breaking Changes
+### Removed
 
-- `getEvmProvider()` returns viem's `PublicClient` instead of ethers `JsonRpcProvider`
-- `sendEvmTransaction()` and `writeEvmContract()` now require chain configuration
-- Wallet utilities use viem's `PrivateKeyAccount` type
-- Contract interaction uses viem's `getContract()` API
+- `ethers` dependency removed entirely
+- Legacy ethers-based wallet utilities
 
 ---
 
@@ -134,6 +171,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
-[Unreleased]: https://github.com/selendra/selendra-sdk/compare/v1.0.0...HEAD
+[Unreleased]: https://github.com/selendra/selendra-sdk/compare/v2.0.0...HEAD
+[2.0.0]: https://github.com/selendra/selendra-sdk/compare/v1.0.0...v2.0.0
 [1.0.0]: https://github.com/selendra/selendra-sdk/compare/v0.1.0...v1.0.0
 [0.1.0]: https://github.com/selendra/selendra-sdk/releases/tag/v0.1.0
